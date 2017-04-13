@@ -4,7 +4,8 @@
   "description": "Redux middleware for implementing authentication with a redux application",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "yarn test -- --watch"
   },
   "repository": {
     "type": "git",
