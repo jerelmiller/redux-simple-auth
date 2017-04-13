@@ -1,0 +1,25 @@
+{
+  "name": "redux-simple-auth",
+  "version": "0.0.1",
+  "description": "Redux middleware for implementing authentication with a redux application",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jerelmiller/redux-simple-auth.git"
+  },
+  "keywords": [
+    "redux",
+    "redux-middleware",
+    "middleware",
+    "authentication"
+  ],
+  "author": "Jerel Miller <jerelmiller@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jerelmiller/redux-simple-auth/issues"
+  },
+  "homepage": "https://github.com/jerelmiller/redux-simple-auth#readme"
+}
