@@ -3,6 +3,7 @@ import createLocalStorageStore from '../../src/sessionStores/localStorage'
 const defaultKey = 'redux-simple-auth-session'
 
 const createMockLocalStorage = () => ({
+  getItem: jest.fn(() => '{}'),
   setItem: jest.fn(),
   removeItem: jest.fn()
 })
@@ -83,6 +84,22 @@ describe('local storage', () => {
       })
 
       expect(storage.restore()).toEqual({})
+    })
+
+    describe('when custom key is given', () => {
+      it('gets data from local storage for key', () => {
+        const localStorage = createMockLocalStorage()
+        const storage = createLocalStorageStore({
+          key: 'my-custom-key',
+          localStorageImplementation: localStorage
+        })
+
+        storage.restore()
+
+        expect(localStorage.getItem).toHaveBeenCalledWith(
+          'my-custom-key'
+        )
+      })
     })
   })
 
