@@ -85,4 +85,42 @@ describe('local storage', () => {
       expect(storage.restore()).toEqual({})
     })
   })
+
+  describe('#clear', () => {
+    it('clears data from local storage', () => {
+      const localStorage = createMockLocalStorage()
+      const storage = createLocalStorageStore({
+        localStorageImplementation: localStorage
+      })
+
+      storage.clear()
+
+      expect(localStorage.removeItem).toHaveBeenCalledWith(defaultKey)
+    })
+
+    it('returns resolved promise', () => {
+      const storage = createLocalStorageStore({
+        promiseImplementation: mockPromise,
+        localStorageImplementation: createMockLocalStorage()
+      })
+
+      expect(storage.clear()).toBe('resolved')
+    })
+
+    describe('when custom key is given', () => {
+      it('clears data using custom key', () => {
+        const localStorage = createMockLocalStorage()
+        const storage = createLocalStorageStore({
+          key: 'my-custom-key',
+          localStorageImplementation: localStorage
+        })
+
+        storage.clear()
+
+        expect(localStorage.removeItem).toHaveBeenCalledWith(
+          'my-custom-key'
+        )
+      })
+    })
+  })
 })
