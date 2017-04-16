@@ -1,4 +1,5 @@
-import { createAuthMiddleware } from '../src'
+import { authenticate, createAuthMiddleware, reducer } from '../src'
+import testAuthenticator from '../src/authenticators/test'
 
 const createMockStorage = () => ({
   clear: jest.fn()
@@ -42,7 +43,7 @@ describe('auth middleware', () => {
       const nextHandler = middleware({ getState })
       const actionHandler = nextHandler(() => {})
 
-      actionHandler()
+      actionHandler({ type: 'test' })
 
       expect(storage.clear).toHaveBeenCalled()
     })
@@ -57,7 +58,7 @@ describe('auth middleware', () => {
       const nextHandler = middleware({ getState })
       const actionHandler = nextHandler(() => {})
 
-      actionHandler()
+      actionHandler({ type: 'test' })
 
       expect(storage.clear).not.toHaveBeenCalled()
     })
@@ -72,9 +73,25 @@ describe('auth middleware', () => {
       const nextHandler = middleware({ getState })
       const actionHandler = nextHandler(() => {})
 
-      actionHandler()
+      actionHandler({ type: 'test' })
 
       expect(storage.clear).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('when authenticating', () => {
+    it('calls authenticators authenticate', () => {
+      const getState = () => ({ session: reducer(undefined, {}) })
+      const spy = jest.spyOn(testAuthenticator, 'authenticate')
+      const middleware = createAuthMiddleware()
+      const nextHandler = middleware({ getState })
+      const actionHandler = nextHandler(() => {})
+      const data = { username: 'test', password: 'password' }
+      const action = authenticate(testAuthenticator, data)
+
+      actionHandler(action)
+
+      expect(spy).toHaveBeenCalledWith(data)
     })
   })
 })
