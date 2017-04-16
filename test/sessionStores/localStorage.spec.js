@@ -3,7 +3,6 @@ import createLocalStorageStore from '../../src/sessionStores/localStorage'
 const defaultKey = 'redux-simple-auth-session'
 
 const createMockLocalStorage = () => ({
-  getItem: jest.fn(),
   setItem: jest.fn(),
   removeItem: jest.fn()
 })
@@ -55,6 +54,35 @@ describe('local storage', () => {
           JSON.stringify(data)
         )
       })
+    })
+  })
+
+  describe('#restore', () => {
+    it('returns resolved promise with data from local storage', () => {
+      const data = { id: 1, name: 'John Doe', }
+      const storage = createLocalStorageStore({
+        promiseImplementation: {
+          resolve: data => data
+        },
+        localStorageImplementation: {
+          getItem: () => JSON.stringify(data)
+        }
+      })
+
+      expect(storage.restore()).toEqual(data)
+    })
+
+    it('returns empty object if no data for key', () => {
+      const storage = createLocalStorageStore({
+        promiseImplementation: {
+          resolve: data => data
+        },
+        localStorageImplementation: {
+          getItem: () => null
+        }
+      })
+
+      expect(storage.restore()).toEqual({})
     })
   })
 })
