@@ -10,6 +10,7 @@ const createMockStorage = () => ({
 })
 
 const createTestAuthenticator = () => createAuthenticator({
+  name: 'test',
   authenticate: jest.fn(data => Promise.resolve(data))
 })
 
@@ -91,11 +92,13 @@ describe('auth middleware', () => {
     it('calls authenticators authenticate', () => {
       const testAuthenticator = createTestAuthenticator()
       const getState = () => ({ session: reducer(undefined, {}) })
-      const middleware = createAuthMiddleware()
+      const middleware = createAuthMiddleware({
+        authenticators: [testAuthenticator]
+      })
       const nextHandler = middleware({ getState })
       const actionHandler = nextHandler(() => {})
       const data = { username: 'test', password: 'password' }
-      const action = authenticate(testAuthenticator, data)
+      const action = authenticate('test', data)
 
       actionHandler(action)
 
