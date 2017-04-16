@@ -1,5 +1,9 @@
 import { createAuthMiddleware } from '../src'
 
+const createMockStorage = () => ({
+  clear: jest.fn()
+})
+
 describe('auth middleware', () => {
   const middleware = createAuthMiddleware()
 
@@ -24,6 +28,53 @@ describe('auth middleware', () => {
 
       expect(actionHandler).toBeInstanceOf(Function)
       expect(actionHandler.length).toBe(1)
+    })
+  })
+
+  describe('when no longer authenticated', () => {
+    it('clears state from storage', () => {
+      const storage = createMockStorage()
+      const middleware = createAuthMiddleware({ storage })
+      const getState =
+        jest.fn()
+          .mockReturnValueOnce({ session: { isAuthenticated: true }})
+          .mockReturnValueOnce({ session: { isAuthenticated: false }})
+      const nextHandler = middleware({ getState })
+      const actionHandler = nextHandler(() => {})
+
+      actionHandler()
+
+      expect(storage.clear).toHaveBeenCalled()
+    })
+
+    it('does not clear if still authenticated', () => {
+      const storage = createMockStorage()
+      const middleware = createAuthMiddleware({ storage })
+      const getState =
+        jest.fn()
+          .mockReturnValueOnce({ session: { isAuthenticated: true }})
+          .mockReturnValueOnce({ session: { isAuthenticated: true }})
+      const nextHandler = middleware({ getState })
+      const actionHandler = nextHandler(() => {})
+
+      actionHandler()
+
+      expect(storage.clear).not.toHaveBeenCalled()
+    })
+
+    it('does not clear if not previously authenticated', () => {
+      const storage = createMockStorage()
+      const middleware = createAuthMiddleware({ storage })
+      const getState =
+        jest.fn()
+          .mockReturnValueOnce({ session: { isAuthenticated: false }})
+          .mockReturnValueOnce({ session: { isAuthenticated: false }})
+      const nextHandler = middleware({ getState })
+      const actionHandler = nextHandler(() => {})
+
+      actionHandler()
+
+      expect(storage.clear).not.toHaveBeenCalled()
     })
   })
 })
