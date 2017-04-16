@@ -1,8 +1,16 @@
-import { authenticate, createAuthMiddleware, reducer } from '../src'
-import testAuthenticator from '../src/authenticators/test'
+import {
+  authenticate,
+  createAuthenticator,
+  createAuthMiddleware,
+  reducer
+} from '../src'
 
 const createMockStorage = () => ({
   clear: jest.fn()
+})
+
+const createTestAuthenticator = () => createAuthenticator({
+  authenticate: jest.fn(data => Promise.resolve(data))
 })
 
 describe('auth middleware', () => {
@@ -81,8 +89,8 @@ describe('auth middleware', () => {
 
   describe('when authenticating', () => {
     it('calls authenticators authenticate', () => {
+      const testAuthenticator = createTestAuthenticator()
       const getState = () => ({ session: reducer(undefined, {}) })
-      const spy = jest.spyOn(testAuthenticator, 'authenticate')
       const middleware = createAuthMiddleware()
       const nextHandler = middleware({ getState })
       const actionHandler = nextHandler(() => {})
@@ -91,7 +99,7 @@ describe('auth middleware', () => {
 
       actionHandler(action)
 
-      expect(spy).toHaveBeenCalledWith(data)
+      expect(testAuthenticator.authenticate).toHaveBeenCalledWith(data)
     })
   })
 })
