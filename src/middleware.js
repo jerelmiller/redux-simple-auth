@@ -51,7 +51,15 @@ const createAuthMiddleware = (config = {}) => {
               dispatch(authenticateFailed())
             })
         default:
+          const { session: prevSession } = getState()
           next(action)
+          const { session } = getState()
+
+          if (session.data !== prevSession.data) {
+            const { authenticator, data } = session
+
+            storage.persist({ authenticated: { ...data, authenticator }})
+          }
       }
     }
   }

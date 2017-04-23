@@ -53,6 +53,31 @@ describe('auth middleware', () => {
     })
   })
 
+  describe('when authenticated data changes', () => {
+    it('persists changes to storage', () => {
+      const middleware = configureMiddleware(successAuthenticator)
+      const mockStore = configureStore([middleware])
+      const getState = jest.fn()
+        .mockReturnValueOnce({
+          session: { authenticator: null, data: {}}
+        })
+        .mockReturnValueOnce({
+          session: { authenticator: 'test', data: { token: '1234' }}
+        })
+      const store = mockStore(getState)
+      const data = { username: 'test', password: 'password' }
+
+      store.dispatch({ type: 'test' })
+
+      expect(storage.persist).toHaveBeenCalledWith({
+        authenticated: {
+          authenticator: 'test',
+          token: '1234'
+        }
+      })
+    })
+  })
+
   describe('when authenticating', () => {
     it('calls authenticators authenticate', () => {
       const middleware = configureMiddleware(spiedAuthenticator)
