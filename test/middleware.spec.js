@@ -22,9 +22,9 @@ const configureMiddleware = (...authenticators) =>
   createAuthMiddleware({ storage, authenticators })
 
 afterEach(() => {
-  storage.clear.mockReset()
-  storage.persist.mockReset()
-  storage.restore.mockReset()
+  storage.clear.mockClear()
+  storage.persist.mockClear()
+  storage.restore.mockClear()
 })
 
 describe('auth middleware', () => {
@@ -109,7 +109,7 @@ describe('auth middleware', () => {
 
       expect(spiedAuthenticator.authenticate).toHaveBeenCalledWith(data)
 
-      spiedAuthenticator.authenticate.mockReset()
+      spiedAuthenticator.authenticate.mockClear()
     })
 
     describe('when successful', () => {
