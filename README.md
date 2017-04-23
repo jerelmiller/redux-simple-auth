@@ -2,7 +2,8 @@
 
 # Redux Simple Auth
 
-Redux middleware inspired by the great Ember Simple Auth library
+Redux middleware inspired by the wonderful [Ember Simple
+Auth](http://ember-simple-auth.com/) library
 
 ## Installation
 
