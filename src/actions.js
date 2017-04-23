@@ -2,7 +2,8 @@ import {
   AUTHENTICATE,
   AUTHENTICATE_FAILED,
   AUTHENTICATE_SUCCEEDED,
-  INVALIDATE_SESSION
+  INVALIDATE_SESSION,
+  RESTORE
 } from './actionTypes'
 
 export const authenticate = (authenticator, payload) => ({
@@ -22,4 +23,9 @@ export const authenticateFailed = () => ({
 
 export const invalidateSession = () => ({
   type: INVALIDATE_SESSION
+})
+
+export const restore = payload => ({
+  type: RESTORE,
+  payload
 })
