@@ -9,20 +9,19 @@ const createAuthMiddleware = (config = {}) => {
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
 
-  return ({ dispatch, getState }) => next => action => {
+  return ({ dispatch, getState }) => next => async action => {
     const { session: prevSession } = getState()
 
     if (action.type === AUTHENTICATE) {
-      return findAuthenticator(action.authenticator)
-        .authenticate(action.payload)
-        .then(data => {
-          storage.persist({
-            authenticator: action.authenticator,
-            authenticated: data
-          })
+      const authenticator = findAuthenticator(action.authenticator)
+      const data = await authenticator.authenticate(action.payload)
 
-          dispatch(authenticateSucceeded())
-        })
+      storage.persist({
+        authenticator: action.authenticator,
+        authenticated: data
+      })
+
+      return dispatch(authenticateSucceeded())
     }
 
     next(action)
