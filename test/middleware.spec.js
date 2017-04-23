@@ -112,7 +112,7 @@ describe('auth middleware', () => {
       it('sets authenticated data on local storage', async () => {
         const testAuthenticator = createAuthenticator({
           name: 'test',
-          authenticate: jest.fn(data => Promise.resolve({ token: 'abcd' }))
+          authenticate: data => Promise.resolve({ token: 'abcd' })
         })
         const middleware = createAuthMiddleware({
           storage,
@@ -136,7 +136,7 @@ describe('auth middleware', () => {
       it('dispatches AUTHENTICATE_SUCCEEDED', async () => {
         const testAuthenticator = createAuthenticator({
           name: 'test',
-          authenticate: jest.fn(data => Promise.resolve({ token: 'abcd' }))
+          authenticate: data => Promise.resolve({ token: 'abcd' })
         })
         const middleware = createAuthMiddleware({
           storage,
@@ -158,7 +158,7 @@ describe('auth middleware', () => {
       it('clears data on local storage', async () => {
         const testAuthenticator = createAuthenticator({
           name: 'test',
-          authenticate: jest.fn(() => Promise.reject())
+          authenticate: () => Promise.reject()
         })
         const middleware = createAuthMiddleware({
           storage,
@@ -177,7 +177,7 @@ describe('auth middleware', () => {
       it('dispatches AUTHENTICATE_FAILED', async () => {
         const testAuthenticator = createAuthenticator({
           name: 'test',
-          authenticate: jest.fn(() => Promise.reject())
+          authenticate: () => Promise.reject()
         })
         const middleware = createAuthMiddleware({
           storage,
