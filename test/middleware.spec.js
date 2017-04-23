@@ -4,10 +4,7 @@ import {
   createAuthMiddleware,
   reducer
 } from '../src'
-
-const createMockStorage = () => ({
-  clear: jest.fn()
-})
+import createMockStorage from './utils/testStorage'
 
 const createTestAuthenticator = () => createAuthenticator({
   name: 'test',
