@@ -11,6 +11,10 @@
     "build": "yarn run build:commonjs",
     "prepublish": "yarn run clean && yarn run test && yarn run build"
   },
+  "files": [
+    "lib",
+    "src"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jerelmiller/redux-simple-auth.git"
