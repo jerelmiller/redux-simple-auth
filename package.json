@@ -2,10 +2,13 @@
   "name": "redux-simple-auth",
   "version": "0.0.1",
   "description": "Redux middleware for implementing authentication with a redux application",
-  "main": "src/index.js",
+  "main": "lib/index.js",
   "scripts": {
+    "clean": "rimraf lib",
     "test": "jest",
-    "test:watch": "yarn test -- --watch"
+    "test:watch": "yarn test -- --watch",
+    "build:commonjs": "BABEL_ENV=commonjs babel src --out-dir lib",
+    "build": "yarn run build:commonjs"
   },
   "repository": {
     "type": "git",
