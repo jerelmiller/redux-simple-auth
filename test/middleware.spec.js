@@ -4,6 +4,7 @@ import {
   createAuthMiddleware,
   reducer
 } from '../src'
+import { authenticateSucceeded } from '../src/actions'
 import createMockStorage from './utils/testStorage'
 import configureStore from 'redux-mock-store'
 
@@ -129,6 +130,27 @@ describe('auth middleware', () => {
               token: 'abcd'
             }
           })
+          done()
+        })
+      })
+
+      it('dispatches AUTHENTICATE_SUCCEEDED', done => {
+        const testAuthenticator = createAuthenticator({
+          name: 'test',
+          authenticate: jest.fn(data => Promise.resolve({ token: 'abcd' }))
+        })
+        const middleware = createAuthMiddleware({
+          storage,
+          authenticators: [testAuthenticator]
+        })
+        const mockStore = configureStore([middleware])
+        const store = mockStore({ session: { isAuthenticated: false }})
+        const data = { username: 'test', password: 'password' }
+        const action = authenticate('test', data)
+        const expectedActions = [authenticateSucceeded()]
+
+        store.dispatch(action).then(() => {
+          expect(store.getActions()).toEqual(expectedActions)
           done()
         })
       })

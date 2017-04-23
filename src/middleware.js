@@ -1,5 +1,6 @@
 import createLocalStorageStore from './storage/localStorage'
 import { AUTHENTICATE } from './actionTypes'
+import { authenticateSucceeded } from './actions'
 
 const createAuthMiddleware = (config = {}) => {
   const storage = config.storage || createLocalStorageStore()
@@ -8,7 +9,7 @@ const createAuthMiddleware = (config = {}) => {
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
 
-  return ({ getState }) => next => action => {
+  return ({ dispatch, getState }) => next => action => {
     const { session: prevSession } = getState()
 
     if (action.type === AUTHENTICATE) {
@@ -19,6 +20,8 @@ const createAuthMiddleware = (config = {}) => {
             authenticator: action.authenticator,
             authenticated: data
           })
+
+          dispatch(authenticateSucceeded())
         })
     }
 
