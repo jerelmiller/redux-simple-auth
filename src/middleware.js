@@ -28,8 +28,10 @@ const createAuthMiddleware = (config = {}) => {
             .authenticate(action.payload)
             .then(data => {
               storage.persist({
-                authenticator: action.authenticator,
-                authenticated: data
+                authenticated: {
+                  ...data,
+                  authenticator: action.authenticator
+                }
               })
 
               dispatch(authenticateSucceeded(data))

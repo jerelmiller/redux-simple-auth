@@ -126,9 +126,9 @@ describe('auth middleware', () => {
         await store.dispatch(action)
 
         expect(storage.persist).toHaveBeenCalledWith({
-          authenticator: 'test',
           authenticated: {
-            token: 'abcdefg'
+            token: 'abcdefg',
+            authenticator: 'test'
           }
         })
       })
