@@ -87,6 +87,27 @@ const authMiddleware = createAuthMiddleware({
 })
 ```
 
+### Actions
+
+Authenticate with a named authenticator:
+```javascript
+import { authenticate } from 'redux-simple-auth'
+
+store.dispatch(
+  authenticate('credentials', {
+    email: 'user@example.com',
+    password: 'password'
+  })
+)
+```
+
+Invalidate the session:
+```javascript
+import { invalidateSession } from 'redux-simple-auth'
+
+store.dispatch(invalidateSession())
+```
+
 ## License
 
 MIT
