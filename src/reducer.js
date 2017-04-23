@@ -1,7 +1,8 @@
 import {
   AUTHENTICATE_FAILED,
   AUTHENTICATE_SUCCEEDED,
-  INVALIDATE_SESSION
+  INVALIDATE_SESSION,
+  RESTORE
 } from './actionTypes'
 
 const initialState = {
@@ -22,6 +23,15 @@ const reducer = (state = initialState, action) => {
     case AUTHENTICATE_FAILED:
     case INVALIDATE_SESSION:
       return { ...state, isAuthenticated: false, data: {}}
+    case RESTORE:
+      const { authenticator, ...data } = action.payload
+
+      return {
+        ...state,
+        authenticator,
+        data,
+        isAuthenticated: true
+      }
     default:
       return state
   }

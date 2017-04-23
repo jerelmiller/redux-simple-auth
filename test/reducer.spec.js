@@ -2,7 +2,8 @@ import { reducer } from '../src'
 import {
   AUTHENTICATE_FAILED,
   AUTHENTICATE_SUCCEEDED,
-  INVALIDATE_SESSION
+  INVALIDATE_SESSION,
+  RESTORE
 } from '../src/actionTypes'
 
 describe('session reducer', () => {
@@ -51,6 +52,25 @@ describe('session reducer', () => {
 
     const state = reducer(currentState, {
       type: AUTHENTICATE_FAILED
+    })
+
+    expect(state).toEqual(expected)
+  })
+
+  it('handles RESTORE', () => {
+    const currentState = reducer(undefined, {})
+    const expected = {
+      authenticator: 'credentials',
+      isAuthenticated: true,
+      data: { token: '1234' }
+    }
+
+    const state = reducer(currentState, {
+      type: RESTORE,
+      payload: {
+        authenticator: 'credentials',
+        token: '1234'
+      }
     })
 
     expect(state).toEqual(expected)
