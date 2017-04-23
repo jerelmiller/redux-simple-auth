@@ -12,12 +12,13 @@ const createAuthMiddleware = (config = {}) => {
   return ({ dispatch, getState }) => {
     storage
       .restore()
-      .then(({ authenticated = {}}) => {
-        const authenticator = findAuthenticator(authenticated.authenticator)
+      .then(({ authenticated = {} }) => {
+        const { authenticator: authenticatorName, ...data } = authenticated
+        const authenticator = findAuthenticator(authenticatorName)
 
         if (authenticator) {
           return authenticator
-            .restore(authenticated)
+            .restore(data)
             .then(() => dispatch(restore(authenticated)))
         }
       })
