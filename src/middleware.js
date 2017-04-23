@@ -1,6 +1,6 @@
 import createLocalStorageStore from './storage/localStorage'
 import { AUTHENTICATE } from './actionTypes'
-import { authenticateSucceeded } from './actions'
+import { authenticateFailed, authenticateSucceeded } from './actions'
 
 const createAuthMiddleware = (config = {}) => {
   const storage = config.storage || createLocalStorageStore()
@@ -14,14 +14,20 @@ const createAuthMiddleware = (config = {}) => {
 
     if (action.type === AUTHENTICATE) {
       const authenticator = findAuthenticator(action.authenticator)
-      const data = await authenticator.authenticate(action.payload)
+      try {
+        const data = await authenticator.authenticate(action.payload)
+        storage.persist({
+          authenticator: action.authenticator,
+          authenticated: data
+        })
 
-      storage.persist({
-        authenticator: action.authenticator,
-        authenticated: data
-      })
+        dispatch(authenticateSucceeded())
+      } catch(e) {
+        storage.clear()
+        dispatch(authenticateFailed())
+      }
 
-      return dispatch(authenticateSucceeded())
+      return
     }
 
     next(action)

@@ -4,7 +4,7 @@ import {
   createAuthMiddleware,
   reducer
 } from '../src'
-import { authenticateSucceeded } from '../src/actions'
+import { authenticateFailed, authenticateSucceeded } from '../src/actions'
 import createMockStorage from './utils/testStorage'
 import configureStore from 'redux-mock-store'
 
@@ -147,6 +147,47 @@ describe('auth middleware', () => {
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
         const expectedActions = [authenticateSucceeded()]
+
+        await store.dispatch(action)
+
+        expect(store.getActions()).toEqual(expectedActions)
+      })
+    })
+
+    describe('when not successful', () => {
+      it('clears data on local storage', async () => {
+        const testAuthenticator = createAuthenticator({
+          name: 'test',
+          authenticate: jest.fn(() => Promise.reject())
+        })
+        const middleware = createAuthMiddleware({
+          storage,
+          authenticators: [testAuthenticator]
+        })
+        const mockStore = configureStore([middleware])
+        const store = mockStore({ session: { isAuthenticated: false }})
+        const data = { username: 'test', password: 'password' }
+        const action = authenticate('test', data)
+
+        await store.dispatch(action)
+
+        expect(storage.clear).toHaveBeenCalled()
+      })
+
+      it('dispatches AUTHENTICATE_FAILED', async () => {
+        const testAuthenticator = createAuthenticator({
+          name: 'test',
+          authenticate: jest.fn(() => Promise.reject())
+        })
+        const middleware = createAuthMiddleware({
+          storage,
+          authenticators: [testAuthenticator]
+        })
+        const mockStore = configureStore([middleware])
+        const store = mockStore({ session: { isAuthenticated: false }})
+        const data = { username: 'test', password: 'password' }
+        const action = authenticate('test', data)
+        const expectedActions = [authenticateFailed()]
 
         await store.dispatch(action)
 
