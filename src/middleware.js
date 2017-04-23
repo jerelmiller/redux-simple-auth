@@ -12,10 +12,17 @@ const createAuthMiddleware = (config = {}) => {
     const { session: prevSession } = getState()
 
     if (action.type === AUTHENTICATE) {
-      findAuthenticator(action.authenticator).authenticate(action.payload)
-    } else {
-      next(action)
+      return findAuthenticator(action.authenticator)
+        .authenticate(action.payload)
+        .then(data => {
+          storage.persist({
+            authenticator: action.authenticator,
+            authenticated: data
+          })
+        })
     }
+
+    next(action)
 
     const { session } = getState()
 

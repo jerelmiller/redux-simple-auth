@@ -104,5 +104,37 @@ describe('auth middleware', () => {
 
       expect(testAuthenticator.authenticate).toHaveBeenCalledWith(data)
     })
+
+    describe('when successful', () => {
+      it('sets authenticated data on local storage', done => {
+        const testAuthenticator = createAuthenticator({
+          name: 'test',
+          authenticate: jest.fn(data => Promise.resolve({ token: 'abcd' }))
+        })
+        const getState = () => ({ session: reducer(undefined, {}) })
+        const storage = {
+          persist: jest.fn(),
+          clear: jest.fn()
+        }
+        const middleware = createAuthMiddleware({
+          storage,
+          authenticators: [testAuthenticator]
+        })
+        const nextHandler = middleware({ getState })
+        const actionHandler = nextHandler(() => {})
+        const data = { username: 'test', password: 'password' }
+        const action = authenticate('test', data)
+
+        actionHandler(action).then(() => {
+          expect(storage.persist).toHaveBeenCalledWith({
+            authenticator: 'test',
+            authenticated: {
+              token: 'abcd'
+            }
+          })
+          done()
+        })
+      })
+    })
   })
 })
