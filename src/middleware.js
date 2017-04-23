@@ -38,7 +38,7 @@ const createAuthMiddleware = (config = {}) => {
 
           if (!authenticator) {
             throw new Error(
-              `No authenticator with name: ${action.authenticator} was ` +
+              `No authenticator with name: \`${action.authenticator}\` was ` +
               'found. Be sure you have defined it in the authenticators config.'
             )
           }
