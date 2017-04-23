@@ -96,11 +96,18 @@ describe('auth middleware', () => {
     describe('when successful', () => {
       const middleware = configureMiddleware(successAuthenticator)
       const mockStore = configureStore([middleware])
-      const store = mockStore({ session: reducer(undefined, {})})
-
-      afterEach(() => store.clearActions())
 
       it('sets authenticated data on local storage', async () => {
+        const initialState = reducer(undefined, {})
+        const getState = jest.fn()
+          .mockReturnValueOnce({ session: initialState })
+          .mockReturnValueOnce({
+            session: reducer(
+              initialState,
+              authenticateSucceeded('test', { token: '1234' })
+            )
+          })
+        const store = mockStore(getState)
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
 
@@ -108,13 +115,14 @@ describe('auth middleware', () => {
 
         expect(storage.persist).toHaveBeenCalledWith({
           authenticated: {
-            token: 'abcdefg',
+            token: '1234',
             authenticator: 'test'
           }
         })
       })
 
       it('dispatches AUTHENTICATE_SUCCEEDED', async () => {
+        const store = mockStore({ session: reducer(undefined, {})})
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
         const expectedAction = authenticateSucceeded('test', {
