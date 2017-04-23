@@ -1,4 +1,4 @@
-import createLocalStorageStore from './sessionStores/localStorage'
+import createLocalStorageStore from './storage/localStorage'
 import { AUTHENTICATE } from './actionTypes'
 
 const createAuthMiddleware = (config = {}) => {
