@@ -109,7 +109,7 @@ describe('auth middleware', () => {
     })
 
     describe('when successful', () => {
-      it('sets authenticated data on local storage', done => {
+      it('sets authenticated data on local storage', async () => {
         const testAuthenticator = createAuthenticator({
           name: 'test',
           authenticate: jest.fn(data => Promise.resolve({ token: 'abcd' }))
@@ -123,18 +123,17 @@ describe('auth middleware', () => {
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
 
-        store.dispatch(action).then(() => {
-          expect(storage.persist).toHaveBeenCalledWith({
-            authenticator: 'test',
-            authenticated: {
-              token: 'abcd'
-            }
-          })
-          done()
+        await store.dispatch(action)
+
+        expect(storage.persist).toHaveBeenCalledWith({
+          authenticator: 'test',
+          authenticated: {
+            token: 'abcd'
+          }
         })
       })
 
-      it('dispatches AUTHENTICATE_SUCCEEDED', done => {
+      it('dispatches AUTHENTICATE_SUCCEEDED', async () => {
         const testAuthenticator = createAuthenticator({
           name: 'test',
           authenticate: jest.fn(data => Promise.resolve({ token: 'abcd' }))
@@ -149,10 +148,9 @@ describe('auth middleware', () => {
         const action = authenticate('test', data)
         const expectedActions = [authenticateSucceeded()]
 
-        store.dispatch(action).then(() => {
-          expect(store.getActions()).toEqual(expectedActions)
-          done()
-        })
+        await store.dispatch(action)
+
+        expect(store.getActions()).toEqual(expectedActions)
       })
     })
   })
