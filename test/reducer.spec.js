@@ -1,5 +1,6 @@
 import { reducer } from '../src'
 import {
+  AUTHENTICATE_FAILED,
   AUTHENTICATE_SUCCEEDED,
   INVALIDATE_SESSION
 } from '../src/actionTypes'
@@ -30,6 +31,17 @@ describe('session reducer', () => {
       payload: {
         token: 'abcdefg'
       }
+    })
+
+    expect(state).toEqual(expected)
+  })
+
+  it('handles AUTHENTICATE_FAILED', () => {
+    const currentState = { isAuthenticated: false, data: {} }
+    const expected = { isAuthenticated: false, data: {}}
+
+    const state = reducer(currentState, {
+      type: AUTHENTICATE_FAILED
     })
 
     expect(state).toEqual(expected)
