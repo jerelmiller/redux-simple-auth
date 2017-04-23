@@ -36,7 +36,7 @@ const store = createStore(
 ```
 
 **reducers/index.js**
-```
+```javascript
 import { combineReducers } from 'redux'
 import { reducer as session } from 'redux-simple-auth'
 
