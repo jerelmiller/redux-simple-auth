@@ -7,7 +7,11 @@ import {
 
 describe('session reducer', () => {
   it('returns default state when initialized', () => {
-    const expected = { isAuthenticated: false, data: {}}
+    const expected = {
+      authenticator: null,
+      isAuthenticated: false,
+      data: {}
+    }
     const state = reducer(undefined, {})
 
     expect(state).toEqual(expected)
@@ -24,10 +28,15 @@ describe('session reducer', () => {
 
   it('handles AUTHENTICATE_SUCCEEDED', () => {
     const currentState = { isAuthenticated: false }
-    const expected = { isAuthenticated: true, data: { token: 'abcdefg' }}
+    const expected = {
+      isAuthenticated: true,
+      authenticator: 'test',
+      data: { token: 'abcdefg' }
+    }
 
     const state = reducer(currentState, {
       type: AUTHENTICATE_SUCCEEDED,
+      authenticator: 'test',
       payload: {
         token: 'abcdefg'
       }

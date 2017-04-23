@@ -5,6 +5,7 @@ import {
 } from './actionTypes'
 
 const initialState = {
+  authenticator: null,
   isAuthenticated: false,
   data: {}
 }
@@ -12,7 +13,12 @@ const initialState = {
 const reducer = (state = initialState, action) => {
   switch (action.type) {
     case AUTHENTICATE_SUCCEEDED:
-      return { ...state, isAuthenticated: true, data: action.payload }
+      return {
+        ...state,
+        authenticator: action.authenticator,
+        isAuthenticated: true,
+        data: action.payload
+      }
     case AUTHENTICATE_FAILED:
     case INVALIDATE_SESSION:
       return { ...state, isAuthenticated: false, data: {}}
