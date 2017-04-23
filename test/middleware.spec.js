@@ -69,7 +69,7 @@ describe('auth middleware', () => {
       expect(storage.clear).not.toHaveBeenCalled()
     })
 
-    it('does not clear if not previously authenticated', () => {
+    it('does not clear if previously unauthenticated', () => {
       const storage = createMockStorage()
       const middleware = createAuthMiddleware({ storage })
       const mockStore = configureStore([middleware])
