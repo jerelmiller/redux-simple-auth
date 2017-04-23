@@ -1,6 +1,11 @@
 import createLocalStorageStore from './storage/localStorage'
 import { AUTHENTICATE } from './actionTypes'
-import { authenticateFailed, authenticateSucceeded, restore } from './actions'
+import {
+  authenticateFailed,
+  authenticateSucceeded,
+  restore,
+  restoreFailed
+} from './actions'
 
 const createAuthMiddleware = (config = {}) => {
   const storage = config.storage || createLocalStorageStore()
@@ -19,7 +24,10 @@ const createAuthMiddleware = (config = {}) => {
         if (authenticator) {
           return authenticator
             .restore(data)
-            .then(() => dispatch(restore(authenticated)))
+            .then(
+              () => dispatch(restore(authenticated)),
+              () => dispatch(restoreFailed())
+            )
         }
       })
 

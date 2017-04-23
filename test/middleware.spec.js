@@ -165,11 +165,10 @@ describe('auth middleware', () => {
         const store = mockStore({ session: { isAuthenticated: false }})
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
-        const expectedActions = [authenticateFailed()]
 
         await store.dispatch(action)
 
-        expect(store.getActions()).toEqual(expectedActions)
+        expect(store.getActions()).toContainEqual(authenticateFailed())
       })
     })
   })
