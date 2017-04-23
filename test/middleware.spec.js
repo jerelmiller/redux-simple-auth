@@ -88,16 +88,15 @@ describe('auth middleware', () => {
   describe('when authenticating', () => {
     it('calls authenticators authenticate', () => {
       const testAuthenticator = createTestAuthenticator()
-      const getState = () => ({ session: reducer(undefined, {}) })
       const middleware = createAuthMiddleware({
         authenticators: [testAuthenticator]
       })
-      const nextHandler = middleware({ getState })
-      const actionHandler = nextHandler(() => {})
+      const mockStore = configureStore([middleware])
+      const store = mockStore()
       const data = { username: 'test', password: 'password' }
       const action = authenticate('test', data)
 
-      actionHandler(action)
+      store.dispatch(action)
 
       expect(testAuthenticator.authenticate).toHaveBeenCalledWith(data)
     })
@@ -108,7 +107,6 @@ describe('auth middleware', () => {
           name: 'test',
           authenticate: jest.fn(data => Promise.resolve({ token: 'abcd' }))
         })
-        const getState = () => ({ session: reducer(undefined, {}) })
         const storage = {
           persist: jest.fn()
         }
@@ -116,12 +114,12 @@ describe('auth middleware', () => {
           storage,
           authenticators: [testAuthenticator]
         })
-        const nextHandler = middleware({ getState })
-        const actionHandler = nextHandler(() => {})
+        const mockStore = configureStore([middleware])
+        const store = mockStore()
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
 
-        actionHandler(action).then(() => {
+        store.dispatch(action).then(() => {
           expect(storage.persist).toHaveBeenCalledWith({
             authenticator: 'test',
             authenticated: {
