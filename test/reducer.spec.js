@@ -23,9 +23,14 @@ describe('session reducer', () => {
 
   it('handles AUTHENTICATE_SUCCEEDED', () => {
     const currentState = { isAuthenticated: false }
-    const expected = { isAuthenticated: true }
+    const expected = { isAuthenticated: true, data: { token: 'abcdefg' }}
 
-    const state = reducer(currentState, { type: AUTHENTICATE_SUCCEEDED })
+    const state = reducer(currentState, {
+      type: AUTHENTICATE_SUCCEEDED,
+      payload: {
+        token: 'abcdefg'
+      }
+    })
 
     expect(state).toEqual(expected)
   })
