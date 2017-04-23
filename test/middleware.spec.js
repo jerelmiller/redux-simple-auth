@@ -57,14 +57,14 @@ describe('auth middleware', () => {
     it('does not clear if still authenticated', () => {
       const storage = createMockStorage()
       const middleware = createAuthMiddleware({ storage })
+      const mockStore = configureStore([middleware])
       const getState =
         jest.fn()
           .mockReturnValueOnce({ session: { isAuthenticated: true }})
           .mockReturnValueOnce({ session: { isAuthenticated: true }})
-      const nextHandler = middleware({ getState })
-      const actionHandler = nextHandler(() => {})
+      const store = mockStore(getState)
 
-      actionHandler({ type: 'test' })
+      store.dispatch({ type: 'test' })
 
       expect(storage.clear).not.toHaveBeenCalled()
     })
@@ -72,14 +72,14 @@ describe('auth middleware', () => {
     it('does not clear if not previously authenticated', () => {
       const storage = createMockStorage()
       const middleware = createAuthMiddleware({ storage })
+      const mockStore = configureStore([middleware])
       const getState =
         jest.fn()
           .mockReturnValueOnce({ session: { isAuthenticated: false }})
           .mockReturnValueOnce({ session: { isAuthenticated: false }})
-      const nextHandler = middleware({ getState })
-      const actionHandler = nextHandler(() => {})
+      const store = mockStore(getState)
 
-      actionHandler({ type: 'test' })
+      store.dispatch({ type: 'test' })
 
       expect(storage.clear).not.toHaveBeenCalled()
     })
