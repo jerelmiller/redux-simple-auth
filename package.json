@@ -8,7 +8,8 @@
     "test": "jest",
     "test:watch": "yarn test -- --watch",
     "build:commonjs": "BABEL_ENV=commonjs babel src --out-dir lib",
-    "build": "yarn run build:commonjs"
+    "build": "yarn run build:commonjs",
+    "prepublish": "yarn run clean && yarn run test && yarn run build"
   },
   "repository": {
     "type": "git",
