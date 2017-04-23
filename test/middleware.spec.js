@@ -4,18 +4,24 @@ import {
   createAuthMiddleware,
   reducer
 } from '../src'
-import { authenticateFailed, authenticateSucceeded } from '../src/actions'
+import {
+  authenticateFailed,
+  authenticateSucceeded
+} from '../src/actions'
+import {
+  failAuthenticator,
+  spiedAuthenticator,
+  successAuthenticator
+} from './utils/authenticators'
 import createMockStorage from './utils/testStorage'
 import configureStore from 'redux-mock-store'
 
 const storage = createMockStorage()
 
-const createTestAuthenticator = () => createAuthenticator({
-  name: 'test',
-  authenticate: jest.fn(data => Promise.resolve(data))
-})
+const configureMiddleware = (...authenticators) =>
+  createAuthMiddleware({ storage, authenticators })
 
-beforeEach(() => {
+afterEach(() => {
   storage.clear.mockReset()
   storage.persist.mockReset()
   storage.restore.mockReset()
@@ -50,7 +56,7 @@ describe('auth middleware', () => {
 
   describe('when no longer authenticated', () => {
     it('clears state from storage', () => {
-      const middleware = createAuthMiddleware({ storage })
+      const middleware = configureMiddleware()
       const mockStore = configureStore([middleware])
       const getState = jest.fn()
         .mockReturnValueOnce({ session: { isAuthenticated: true }})
@@ -63,7 +69,7 @@ describe('auth middleware', () => {
     })
 
     it('does not clear if still authenticated', () => {
-      const middleware = createAuthMiddleware({ storage })
+      const middleware = configureMiddleware()
       const mockStore = configureStore([middleware])
       const getState =
         jest.fn()
@@ -77,7 +83,7 @@ describe('auth middleware', () => {
     })
 
     it('does not clear if previously unauthenticated', () => {
-      const middleware = createAuthMiddleware({ storage })
+      const middleware = configureMiddleware()
       const mockStore = configureStore([middleware])
       const getState =
         jest.fn()
@@ -93,11 +99,7 @@ describe('auth middleware', () => {
 
   describe('when authenticating', () => {
     it('calls authenticators authenticate', () => {
-      const testAuthenticator = createTestAuthenticator()
-      const middleware = createAuthMiddleware({
-        storage,
-        authenticators: [testAuthenticator]
-      })
+      const middleware = configureMiddleware(spiedAuthenticator)
       const mockStore = configureStore([middleware])
       const store = mockStore()
       const data = { username: 'test', password: 'password' }
@@ -105,21 +107,19 @@ describe('auth middleware', () => {
 
       store.dispatch(action)
 
-      expect(testAuthenticator.authenticate).toHaveBeenCalledWith(data)
+      expect(spiedAuthenticator.authenticate).toHaveBeenCalledWith(data)
+
+      spiedAuthenticator.authenticate.mockReset()
     })
 
     describe('when successful', () => {
+      const middleware = configureMiddleware(successAuthenticator)
+      const mockStore = configureStore([middleware])
+      const store = mockStore({ session: reducer(undefined, {})})
+
+      afterEach(() => store.clearActions())
+
       it('sets authenticated data on local storage', async () => {
-        const testAuthenticator = createAuthenticator({
-          name: 'test',
-          authenticate: data => Promise.resolve({ token: 'abcd' })
-        })
-        const middleware = createAuthMiddleware({
-          storage,
-          authenticators: [testAuthenticator]
-        })
-        const mockStore = configureStore([middleware])
-        const store = mockStore({ session: { isAuthenticated: false }})
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
 
@@ -128,22 +128,12 @@ describe('auth middleware', () => {
         expect(storage.persist).toHaveBeenCalledWith({
           authenticator: 'test',
           authenticated: {
-            token: 'abcd'
+            token: 'abcdefg'
           }
         })
       })
 
       it('dispatches AUTHENTICATE_SUCCEEDED', async () => {
-        const testAuthenticator = createAuthenticator({
-          name: 'test',
-          authenticate: data => Promise.resolve({ token: 'abcd' })
-        })
-        const middleware = createAuthMiddleware({
-          storage,
-          authenticators: [testAuthenticator]
-        })
-        const mockStore = configureStore([middleware])
-        const store = mockStore({ session: { isAuthenticated: false }})
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
         const expectedActions = [authenticateSucceeded()]
@@ -156,14 +146,7 @@ describe('auth middleware', () => {
 
     describe('when not successful', () => {
       it('clears data on local storage', async () => {
-        const testAuthenticator = createAuthenticator({
-          name: 'test',
-          authenticate: () => Promise.reject()
-        })
-        const middleware = createAuthMiddleware({
-          storage,
-          authenticators: [testAuthenticator]
-        })
+        const middleware = configureMiddleware(failAuthenticator)
         const mockStore = configureStore([middleware])
         const store = mockStore({ session: { isAuthenticated: false }})
         const data = { username: 'test', password: 'password' }
@@ -175,14 +158,7 @@ describe('auth middleware', () => {
       })
 
       it('dispatches AUTHENTICATE_FAILED', async () => {
-        const testAuthenticator = createAuthenticator({
-          name: 'test',
-          authenticate: () => Promise.reject()
-        })
-        const middleware = createAuthMiddleware({
-          storage,
-          authenticators: [testAuthenticator]
-        })
+        const middleware = configureMiddleware(failAuthenticator)
         const mockStore = configureStore([middleware])
         const store = mockStore({ session: { isAuthenticated: false }})
         const data = { username: 'test', password: 'password' }
