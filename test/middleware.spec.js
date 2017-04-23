@@ -113,8 +113,7 @@ describe('auth middleware', () => {
         })
         const getState = () => ({ session: reducer(undefined, {}) })
         const storage = {
-          persist: jest.fn(),
-          clear: jest.fn()
+          persist: jest.fn()
         }
         const middleware = createAuthMiddleware({
           storage,
