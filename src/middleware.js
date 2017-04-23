@@ -21,7 +21,7 @@ const createAuthMiddleware = (config = {}) => {
           authenticated: data
         })
 
-        dispatch(authenticateSucceeded())
+        dispatch(authenticateSucceeded(data))
       } catch(e) {
         storage.clear()
         dispatch(authenticateFailed())
