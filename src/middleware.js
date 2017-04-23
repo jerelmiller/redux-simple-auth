@@ -47,7 +47,8 @@ const createAuthMiddleware = (config = {}) => {
             .authenticate(action.payload)
             .then(
               data => dispatch(authenticateSucceeded(authenticator.name, data)),
-              () => dispatch(authenticateFailed()))
+              () => dispatch(authenticateFailed())
+            )
         default:
           const { session: prevSession } = getState()
           next(action)
