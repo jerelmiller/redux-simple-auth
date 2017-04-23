@@ -1,6 +1,6 @@
 {
   "name": "redux-simple-auth",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "Redux middleware for implementing authentication with a redux application",
   "main": "src/index.js",
   "scripts": {
