@@ -2,9 +2,11 @@ import {
   authenticate,
   createAuthenticator,
   createAuthMiddleware,
+  invalidateSession,
   reducer
 } from '../src'
 import createMockStorage from './utils/testStorage'
+import configureStore from 'redux-mock-store'
 
 const createTestAuthenticator = () => createAuthenticator({
   name: 'test',
@@ -42,14 +44,13 @@ describe('auth middleware', () => {
     it('clears state from storage', () => {
       const storage = createMockStorage()
       const middleware = createAuthMiddleware({ storage })
-      const getState =
-        jest.fn()
-          .mockReturnValueOnce({ session: { isAuthenticated: true }})
-          .mockReturnValueOnce({ session: { isAuthenticated: false }})
-      const nextHandler = middleware({ getState })
-      const actionHandler = nextHandler(() => {})
+      const mockStore = configureStore([middleware])
+      const getState = jest.fn()
+        .mockReturnValueOnce({ session: { isAuthenticated: true }})
+        .mockReturnValueOnce({ session: { isAuthenticated: false }})
+      const store = mockStore(getState)
 
-      actionHandler({ type: 'test' })
+      store.dispatch(invalidateSession())
 
       expect(storage.clear).toHaveBeenCalled()
     })
