@@ -171,4 +171,14 @@ describe('auth middleware', () => {
       })
     })
   })
+
+  describe('session restoration', () => {
+    it('hydrates session data from storage', () => {
+      const middleware = configureMiddleware()
+      const mockStore = configureStore([middleware])
+      mockStore({ session: { isAuthenticated: false }})
+
+      expect(storage.restore).toHaveBeenCalled()
+    })
+  })
 })

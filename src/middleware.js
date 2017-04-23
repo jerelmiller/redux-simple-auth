@@ -9,33 +9,37 @@ const createAuthMiddleware = (config = {}) => {
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
 
-  return ({ dispatch, getState }) => next => async action => {
-    switch (action.type) {
-      case AUTHENTICATE:
-        const authenticator = findAuthenticator(action.authenticator)
-        try {
-          const data = await authenticator.authenticate(action.payload)
-          storage.persist({
-            authenticator: action.authenticator,
-            authenticated: data
-          })
+  return ({ dispatch, getState }) => {
+    storage.restore()
 
-          dispatch(authenticateSucceeded(data))
-        } catch(e) {
-          storage.clear()
-          dispatch(authenticateFailed())
-        }
-        return
-      default:
-        const { session: prevSession } = getState()
+    return next => async action => {
+      switch (action.type) {
+        case AUTHENTICATE:
+          const authenticator = findAuthenticator(action.authenticator)
+          try {
+            const data = await authenticator.authenticate(action.payload)
+            storage.persist({
+              authenticator: action.authenticator,
+              authenticated: data
+            })
 
-        next(action)
+            dispatch(authenticateSucceeded(data))
+          } catch(e) {
+            storage.clear()
+            dispatch(authenticateFailed())
+          }
+          return
+        default:
+          const { session: prevSession } = getState()
 
-        const { session } = getState()
+          next(action)
 
-        if (prevSession.isAuthenticated && !session.isAuthenticated) {
-          storage.clear()
-        }
+          const { session } = getState()
+
+          if (prevSession.isAuthenticated && !session.isAuthenticated) {
+            storage.clear()
+          }
+      }
     }
   }
 }
