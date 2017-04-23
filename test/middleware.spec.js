@@ -119,7 +119,7 @@ describe('auth middleware', () => {
           authenticators: [testAuthenticator]
         })
         const mockStore = configureStore([middleware])
-        const store = mockStore()
+        const store = mockStore({ session: { isAuthenticated: false }})
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
 
