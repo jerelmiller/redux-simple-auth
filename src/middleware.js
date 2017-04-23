@@ -19,23 +19,25 @@ const createAuthMiddleware = (config = {}) => {
           .then(() => dispatch(restore(authenticated)))
       })
 
-    return next => async action => {
+    return next => action => {
       switch (action.type) {
         case AUTHENTICATE:
           const authenticator = findAuthenticator(action.authenticator)
-          try {
-            const data = await authenticator.authenticate(action.payload)
-            storage.persist({
-              authenticator: action.authenticator,
-              authenticated: data
-            })
 
-            dispatch(authenticateSucceeded(data))
-          } catch(e) {
-            storage.clear()
-            dispatch(authenticateFailed())
-          }
-          return
+          return authenticator
+            .authenticate(action.payload)
+            .then(data => {
+              storage.persist({
+                authenticator: action.authenticator,
+                authenticated: data
+              })
+
+              dispatch(authenticateSucceeded(data))
+            })
+            .catch(() => {
+              storage.clear()
+              dispatch(authenticateFailed())
+            })
         default:
           const { session: prevSession } = getState()
 
