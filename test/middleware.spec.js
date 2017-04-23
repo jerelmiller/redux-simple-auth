@@ -7,9 +7,17 @@ import {
 import createMockStorage from './utils/testStorage'
 import configureStore from 'redux-mock-store'
 
+const storage = createMockStorage()
+
 const createTestAuthenticator = () => createAuthenticator({
   name: 'test',
   authenticate: jest.fn(data => Promise.resolve(data))
+})
+
+beforeEach(() => {
+  storage.clear.mockReset()
+  storage.persist.mockReset()
+  storage.restore.mockReset()
 })
 
 describe('auth middleware', () => {
@@ -41,7 +49,6 @@ describe('auth middleware', () => {
 
   describe('when no longer authenticated', () => {
     it('clears state from storage', () => {
-      const storage = createMockStorage()
       const middleware = createAuthMiddleware({ storage })
       const mockStore = configureStore([middleware])
       const getState = jest.fn()
@@ -55,7 +62,6 @@ describe('auth middleware', () => {
     })
 
     it('does not clear if still authenticated', () => {
-      const storage = createMockStorage()
       const middleware = createAuthMiddleware({ storage })
       const mockStore = configureStore([middleware])
       const getState =
@@ -70,7 +76,6 @@ describe('auth middleware', () => {
     })
 
     it('does not clear if previously unauthenticated', () => {
-      const storage = createMockStorage()
       const middleware = createAuthMiddleware({ storage })
       const mockStore = configureStore([middleware])
       const getState =
@@ -89,6 +94,7 @@ describe('auth middleware', () => {
     it('calls authenticators authenticate', () => {
       const testAuthenticator = createTestAuthenticator()
       const middleware = createAuthMiddleware({
+        storage,
         authenticators: [testAuthenticator]
       })
       const mockStore = configureStore([middleware])
@@ -107,9 +113,6 @@ describe('auth middleware', () => {
           name: 'test',
           authenticate: jest.fn(data => Promise.resolve({ token: 'abcd' }))
         })
-        const storage = {
-          persist: jest.fn()
-        }
         const middleware = createAuthMiddleware({
           storage,
           authenticators: [testAuthenticator]
