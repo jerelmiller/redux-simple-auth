@@ -3,12 +3,13 @@ import {
   AUTHENTICATE_SUCCEEDED,
   INVALIDATE_SESSION
 } from './actionTypes'
-const defaultState = {
+
+const initialState = {
   isAuthenticated: false,
   data: {}
 }
 
-const reducer = (state = defaultState, action) => {
+const reducer = (state = initialState, action) => {
   switch (action.type) {
     case AUTHENTICATE_SUCCEEDED:
       return { ...state, isAuthenticated: true, data: action.payload }
