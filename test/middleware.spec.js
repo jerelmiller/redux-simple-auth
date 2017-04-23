@@ -28,7 +28,7 @@ afterEach(() => {
 })
 
 describe('auth middleware', () => {
-  const middleware = createAuthMiddleware()
+  const middleware = createAuthMiddleware({ storage })
 
   it('returns a function that handles {getState, dispatch}', () => {
     expect(middleware).toBeInstanceOf(Function)
