@@ -93,6 +93,24 @@ describe('auth middleware', () => {
       spiedAuthenticator.authenticate.mockClear()
     })
 
+    describe('when authenticator is not found', () => {
+      it('throws error', () => {
+        const authenticator = createAuthenticator({
+          name: 'fake'
+        })
+        const middleware = configureMiddleware(authenticator)
+        const mockStore = configureStore([middleware])
+        const store = mockStore()
+        const action = authenticate('not-real', {})
+
+        expect(() => store.dispatch(action))
+          .toThrow(
+            'No authenticator with name: not-real was found. Be sure ' +
+            'you have defined it in the authenticators config'
+          )
+      })
+    })
+
     describe('when successful', () => {
       const middleware = configureMiddleware(successAuthenticator)
       const mockStore = configureStore([middleware])

@@ -36,6 +36,13 @@ const createAuthMiddleware = (config = {}) => {
         case AUTHENTICATE:
           const authenticator = findAuthenticator(action.authenticator)
 
+          if (!authenticator) {
+            throw new Error(
+              `No authenticator with name: ${action.authenticator} was ` +
+              'found. Be sure you have defined it in the authenticators config.'
+            )
+          }
+
           return authenticator
             .authenticate(action.payload)
             .then(
