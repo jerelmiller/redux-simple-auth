@@ -1,5 +1,8 @@
 import { reducer } from '../src'
-import { INVALIDATE_SESSION } from '../src/actionTypes'
+import {
+  AUTHENTICATE_SUCCEEDED,
+  INVALIDATE_SESSION
+} from '../src/actionTypes'
 
 describe('session reducer', () => {
   it('returns default state when initialized', () => {
@@ -14,6 +17,15 @@ describe('session reducer', () => {
     const expected = { isAuthenticated: false }
 
     const state = reducer(currentState, { type: INVALIDATE_SESSION })
+
+    expect(state).toEqual(expected)
+  })
+
+  it('handles AUTHENTICATE_SUCCEEDED', () => {
+    const currentState = { isAuthenticated: false }
+    const expected = { isAuthenticated: true }
+
+    const state = reducer(currentState, { type: AUTHENTICATE_SUCCEEDED })
 
     expect(state).toEqual(expected)
   })
