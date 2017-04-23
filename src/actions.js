@@ -12,8 +12,9 @@ export const authenticate = (authenticator, payload) => ({
   payload
 })
 
-export const authenticateSucceeded = payload => ({
+export const authenticateSucceeded = (authenticator, payload) => ({
   type: AUTHENTICATE_SUCCEEDED,
+  authenticator,
   payload
 })
 

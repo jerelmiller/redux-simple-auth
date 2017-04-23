@@ -136,7 +136,9 @@ describe('auth middleware', () => {
       it('dispatches AUTHENTICATE_SUCCEEDED', async () => {
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
-        const expectedActions = [authenticateSucceeded({ token: 'abcdefg' })]
+        const expectedActions = [
+          authenticateSucceeded('test', { token: 'abcdefg' })
+        ]
 
         await store.dispatch(action)
 

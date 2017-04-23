@@ -34,7 +34,7 @@ const createAuthMiddleware = (config = {}) => {
                 }
               })
 
-              dispatch(authenticateSucceeded(data))
+              dispatch(authenticateSucceeded(authenticator.name, data))
             })
             .catch(() => {
               storage.clear()
