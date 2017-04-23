@@ -12,7 +12,7 @@ const reducer = (state = defaultState, action) => {
     case AUTHENTICATE_SUCCEEDED:
       return { ...state, isAuthenticated: true, data: action.payload }
     case INVALIDATE_SESSION:
-      return { ...state, isAuthenticated: false }
+      return { ...state, isAuthenticated: false, data: {}}
     default:
       return state
   }

@@ -13,8 +13,8 @@ describe('session reducer', () => {
   })
 
   it('handles INVALIDATE_SESSION', () => {
-    const currentState = { isAuthenticated: true }
-    const expected = { isAuthenticated: false }
+    const currentState = { isAuthenticated: true, data: { token: 'abcdefg' }}
+    const expected = { isAuthenticated: false, data: {} }
 
     const state = reducer(currentState, { type: INVALIDATE_SESSION })
 
