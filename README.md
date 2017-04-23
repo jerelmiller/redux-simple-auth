@@ -45,6 +45,41 @@ export default combineReducers({
 })
 ```
 
+### Configuring the middleware
+
+**Changing the session storage**
+```javascript
+import {
+  createAuthMiddleware,
+  createLocalStorageStore
+} from 'redux-simple-auth'
+
+const localStorageStore = createLocalStorageStore()
+
+const authMiddleware = createAuthMiddleware({
+  storage: localStorageStore
+})
+```
+
+**Defining authenticators**
+```javascript
+import { createAuthMiddleware, createAuthenticator } from 'redux-simple-auth'
+
+const credentialsAuthenticator = createAuthenticator({
+  name: 'credentials',
+  authenticate(credentials) {
+    return fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials)
+    }).then(({ token }) => ({ token }))
+  }
+})
+
+const authMiddleware = createAuthMiddleware({
+  authenticators: [credentialsAuthenticator]
+})
+```
+
 ## License
 
 MIT
