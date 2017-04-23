@@ -12,11 +12,6 @@ const createLocalStorageStore = ({
     const data = localStorage.getItem(key)
 
     return Promise.resolve(JSON.parse(data) || {})
-  },
-  clear() {
-    localStorage.removeItem(key)
-
-    return Promise.resolve()
   }
 })
 

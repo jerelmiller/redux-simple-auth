@@ -48,19 +48,10 @@ const createAuthMiddleware = (config = {}) => {
 
               dispatch(authenticateSucceeded(authenticator.name, data))
             }, () => {
-              storage.clear()
               dispatch(authenticateFailed())
             })
         default:
-          const { session: prevSession } = getState()
-
           next(action)
-
-          const { session } = getState()
-
-          if (prevSession.isAuthenticated && !session.isAuthenticated) {
-            storage.clear()
-          }
       }
     }
   }
