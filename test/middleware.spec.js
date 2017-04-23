@@ -105,7 +105,7 @@ describe('auth middleware', () => {
 
         expect(() => store.dispatch(action))
           .toThrow(
-            'No authenticator with name: `not-real` was found. Be sure ' +
+            'No authenticator with name `not-real` was found. Be sure ' +
             'you have defined it in the authenticators config'
           )
       })
