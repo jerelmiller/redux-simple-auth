@@ -2,7 +2,6 @@ import {
   authenticate,
   createAuthenticator,
   createAuthMiddleware,
-  invalidateSession,
   reducer
 } from '../src'
 import createMockStorage from './utils/testStorage'
@@ -50,7 +49,7 @@ describe('auth middleware', () => {
         .mockReturnValueOnce({ session: { isAuthenticated: false }})
       const store = mockStore(getState)
 
-      store.dispatch(invalidateSession())
+      store.dispatch({ type: 'test' })
 
       expect(storage.clear).toHaveBeenCalled()
     })
