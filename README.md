@@ -72,6 +72,13 @@ const credentialsAuthenticator = createAuthenticator({
       method: 'POST',
       body: JSON.stringify(credentials)
     }).then(({ token }) => ({ token }))
+  },
+  restore(data) {
+    if (data.token) {
+      return Promise.resolve(data)
+    }
+
+    return Promise.reject()
   }
 })
 
