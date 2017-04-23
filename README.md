@@ -4,10 +4,22 @@
 
 Redux middleware inspired by the great Ember Simple Auth library
 
-# Installation
+## Installation
+
+npm:
+```
+npm install --save redux-simple-auth
+```
+
+yarn:
+```
+yarn add redux-simple-auth
+```
+
+## Usage
 
 TODO
 
-# Usage
+## License
 
-TODO
+MIT
