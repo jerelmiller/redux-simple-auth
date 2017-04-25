@@ -74,6 +74,23 @@ describe('cookie store', () => {
       )
     })
 
-    xit('allows setting expiration')
+    it('allows setting expiration in seconds', () => {
+      const now = Date.now()
+      const nativeNow = Date.now
+      Date.now = jest.fn(() => now)
+      const expectedDate = new Date(now + 120 * 1000)
+      const cookieStore = createCookieStore({ expires: 120 })
+      const spy = jest.spyOn(Cookie, 'set')
+
+      cookieStore.persist({ key: 'value' })
+
+      expect(spy).toHaveBeenCalledWith(
+        'redux-simple-auth-session',
+        { key: 'value' },
+        { domain: null, expires: expectedDate, path: '/', secure: false }
+      )
+
+      Date.now = nativeNow
+    })
   })
 })
