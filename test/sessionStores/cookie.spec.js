@@ -1,6 +1,5 @@
 import { createCookieStore } from '../../src/storage'
-
-const defaultKey = 'redux-simple-auth-session'
+import Cookie from 'js-cookie'
 
 describe('cookie store', () => {
   describe('#persist', () => {
@@ -8,6 +7,19 @@ describe('cookie store', () => {
       const cookieStore = createCookieStore()
 
       expect(cookieStore.persist()).resolves
+    })
+
+    it('saves data to cookie with default key', () => {
+      const cookieStore = createCookieStore()
+      const spy = jest.spyOn(Cookie, 'set')
+
+      cookieStore.persist({ key: 'value' })
+
+      expect(spy).toHaveBeenCalledWith(
+        'redux-simple-auth-session',
+        { key: 'value' },
+        { domain: null, expires: null, path: '/', secure: false }
+      )
     })
   })
 })
