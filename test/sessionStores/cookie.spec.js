@@ -22,7 +22,19 @@ describe('cookie store', () => {
       )
     })
 
-    xit('allows a configured cookie name')
+    it('allows a configured cookie name', () => {
+      const cookieStore = createCookieStore({ name: 'my-cookie-session' })
+      const spy = jest.spyOn(Cookie, 'set')
+
+      cookieStore.persist({ key: 'value' })
+
+      expect(spy).toHaveBeenCalledWith(
+        'my-cookie-session',
+        { key: 'value' },
+        { domain: null, expires: null, path: '/', secure: false }
+      )
+    })
+
     xit('allows a custom path')
     xit('allows a custom domain')
     xit('allows setting expiration')
