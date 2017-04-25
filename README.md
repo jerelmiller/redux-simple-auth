@@ -7,6 +7,10 @@ Auth](http://ember-simple-auth.com/) library
 
 ### DISCLAIMER: This package is still in active development
 
+Documentation is still very spotty and the API is very likely to change between
+now and completion. I plan to fully document usage as the API is more
+solidified.
+
 ## Installation
 
 npm:
