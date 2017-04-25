@@ -1,10 +1,10 @@
 import Cookie from 'js-cookie'
 
 const createCookieStore = ({
-  key = 'redux-simple-auth-session',
+  name = 'redux-simple-auth-session',
 } = {}) => ({
   persist(data) {
-    Cookie.set(key, data, {
+    Cookie.set(name, data, {
       domain: null,
       expires: null,
       path: '/',
