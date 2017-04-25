@@ -53,15 +53,25 @@ export default combineReducers({
 
 **Changing the session storage**
 ```javascript
-import {
-  createAuthMiddleware,
-  createLocalStorageStore
-} from 'redux-simple-auth'
+import { createAuthMiddleware } from 'redux-simple-auth'
+import { createLocalStorageStore } from 'redux-simple-auth/storage'
 
 const localStorageStore = createLocalStorageStore()
 
 const authMiddleware = createAuthMiddleware({
   storage: localStorageStore
+})
+```
+
+**Using a cookie store**
+```javascript
+import { createAuthMiddleware } from 'redux-simple-auth'
+import { createCookieStore } from 'redux-simple-auth/storage'
+
+const cookieStore = createCookieStore()
+
+const authMiddleware = createAuthMiddleware({
+  storage: cookieStore
 })
 ```
 
