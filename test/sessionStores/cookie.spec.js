@@ -53,6 +53,7 @@ describe('cookie store', () => {
       const spy = jest.spyOn(Cookie, 'set')
 
       cookieStore.persist({ key: 'value' })
+
       expect(spy).toHaveBeenCalledWith(
         'redux-simple-auth-session',
         { key: 'value' },
@@ -65,6 +66,7 @@ describe('cookie store', () => {
       const spy = jest.spyOn(Cookie, 'set')
 
       cookieStore.persist({ key: 'value' })
+
       expect(spy).toHaveBeenCalledWith(
         'redux-simple-auth-session',
         { key: 'value' },
