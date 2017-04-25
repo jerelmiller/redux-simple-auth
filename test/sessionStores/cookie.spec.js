@@ -48,7 +48,18 @@ describe('cookie store', () => {
       )
     })
 
-    xit('allows a custom domain')
+    it('allows a custom domain', () => {
+      const cookieStore = createCookieStore({ domain: 'domain.com' })
+      const spy = jest.spyOn(Cookie, 'set')
+
+      cookieStore.persist({ key: 'value' })
+      expect(spy).toHaveBeenCalledWith(
+        'redux-simple-auth-session',
+        { key: 'value' },
+        { domain: 'domain.com', expires: null, path: '/', secure: false }
+      )
+    })
+
     xit('allows setting expiration')
     xit('allows setting secure cookie')
   })
