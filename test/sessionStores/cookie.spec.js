@@ -93,4 +93,15 @@ describe('cookie store', () => {
       Date.now = nativeNow
     })
   })
+
+  describe('#restore', () => {
+    it('returns promise', () => {
+      const cookieStore = createCookieStore()
+      cookieStore.persist({ key: 'value' })
+
+      cookieStore.restore()
+
+      return expect(cookieStore.restore()).resolves
+    })
+  })
 })
