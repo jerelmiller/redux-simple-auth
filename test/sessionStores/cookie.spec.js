@@ -112,5 +112,14 @@ describe('cookie store', () => {
 
       expect(result).toEqual({ key: 'value' })
     })
+
+    it('honors custom key', async () => {
+      const cookieStore = createCookieStore({ name: 'my-custom-session' })
+      cookieStore.persist({ key: 'value' })
+
+      const result = await cookieStore.restore()
+
+      expect(result).toEqual({ key: 'value' })
+    })
   })
 })
