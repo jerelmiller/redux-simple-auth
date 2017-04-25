@@ -60,7 +60,18 @@ describe('cookie store', () => {
       )
     })
 
+    it('allows setting secure cookie', () => {
+      const cookieStore = createCookieStore({ secure: true })
+      const spy = jest.spyOn(Cookie, 'set')
+
+      cookieStore.persist({ key: 'value' })
+      expect(spy).toHaveBeenCalledWith(
+        'redux-simple-auth-session',
+        { key: 'value' },
+        { domain: null, expires: null, path: '/', secure: true }
+      )
+    })
+
     xit('allows setting expiration')
-    xit('allows setting secure cookie')
   })
 })

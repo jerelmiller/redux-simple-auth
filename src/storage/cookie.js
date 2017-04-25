@@ -3,14 +3,15 @@ import Cookie from 'js-cookie'
 const createCookieStore = ({
   name = 'redux-simple-auth-session',
   path = '/',
-  domain = null
+  domain = null,
+  secure = false
 } = {}) => ({
   persist(data) {
     Cookie.set(name, data, {
       domain,
       expires: null,
       path,
-      secure: false
+      secure
     })
     return Promise.resolve()
   },
