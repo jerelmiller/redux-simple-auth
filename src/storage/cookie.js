@@ -20,7 +20,7 @@ const createCookieStore = ({
     return Promise.resolve()
   },
   restore() {
-    return Promise.resolve({})
+    return Promise.resolve(Cookie.getJSON(name))
   }
 })
 

@@ -95,13 +95,22 @@ describe('cookie store', () => {
   })
 
   describe('#restore', () => {
-    it('returns promise', () => {
+    it('returns promise', async () => {
       const cookieStore = createCookieStore()
       cookieStore.persist({ key: 'value' })
 
       cookieStore.restore()
 
-      return expect(cookieStore.restore()).resolves
+      await expect(cookieStore.restore()).resolves
+    })
+
+    it('resolves with data from cookie', async () => {
+      const cookieStore = createCookieStore()
+      cookieStore.persist({ key: 'value' })
+
+      const result = await cookieStore.restore()
+
+      expect(result).toEqual({ key: 'value' })
     })
   })
 })
