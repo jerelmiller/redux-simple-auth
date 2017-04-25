@@ -65,6 +65,18 @@ const authMiddleware = createAuthMiddleware({
 })
 ```
 
+**Using a cookie store**
+```javascript
+import { createAuthMiddleware } from 'redux-simple-auth'
+import { createCookieStore } from 'redux-simple-auth/storage'
+
+const cookieStore = createCookieStore()
+
+const authMiddleware = createAuthMiddleware({
+  storage: cookieStore
+})
+```
+
 **Defining authenticators**
 ```javascript
 import { createAuthMiddleware, createAuthenticator } from 'redux-simple-auth'
