@@ -21,5 +21,11 @@ describe('cookie store', () => {
         { domain: null, expires: null, path: '/', secure: false }
       )
     })
+
+    xit('allows a configured cookie name')
+    xit('allows a custom path')
+    xit('allows a custom domain')
+    xit('allows setting expiration')
+    xit('allows setting secure cookie')
   })
 })
