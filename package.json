@@ -53,6 +53,8 @@
     "js-cookie": "^2.1.4"
   },
   "jest": {
-    "setupFiles": ["./test/browserMocks.js"]
+    "setupFiles": [
+      "./test/browserMocks.js"
+    ]
   }
 }
