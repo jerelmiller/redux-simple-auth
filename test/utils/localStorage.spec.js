@@ -9,7 +9,9 @@ describe('isLocalStorageAvailable', () => {
 
   it('when localStorage is not available it returns false', () => {
     const originalSetItem = localStorage.setItem
-    localStorage.setItem = jest.fn(() => { throw new Error('') })
+    localStorage.setItem = jest.fn(() => {
+      throw new Error()
+    })
 
     const result = isLocalStorageAvailable()
 

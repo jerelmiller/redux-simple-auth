@@ -30,7 +30,7 @@ const reducer = (state = initialState, action) => {
         isAuthenticated: false,
         data: {}
       }
-    case RESTORE:
+    case RESTORE: {
       const { authenticator, ...data } = action.payload
 
       return {
@@ -39,6 +39,7 @@ const reducer = (state = initialState, action) => {
         data,
         isAuthenticated: true
       }
+    }
     default:
       return state
   }

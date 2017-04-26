@@ -8,7 +8,7 @@ export const spiedAuthenticator = createAuthenticator({
 
 export const successAuthenticator = createAuthenticator({
   name: 'test',
-  authenticate: data => Promise.resolve({ token: 'abcdefg' }),
+  authenticate: () => Promise.resolve({ token: 'abcdefg' }),
   restore: () => Promise.resolve()
 })
 

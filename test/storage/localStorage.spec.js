@@ -60,7 +60,7 @@ describe('local storage', () => {
 
   describe('#restore', () => {
     it('returns resolved promise with data from local storage', () => {
-      const data = { id: 1, name: 'John Doe', }
+      const data = { id: 1, name: 'John Doe' }
       const storage = createLocalStorageStore({
         promiseImplementation: {
           resolve: data => data

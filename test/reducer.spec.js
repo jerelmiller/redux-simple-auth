@@ -52,7 +52,7 @@ describe('session reducer', () => {
   })
 
   it('handles AUTHENTICATE_FAILED', () => {
-    const currentState = { isAuthenticated: false, data: {} }
+    const currentState = { isAuthenticated: false, data: {}}
     const expected = { authenticator: null, isAuthenticated: false, data: {}}
 
     const state = reducer(currentState, {

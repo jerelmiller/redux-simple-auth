@@ -139,7 +139,7 @@ describe('auth middleware', () => {
       })
 
       it('dispatches AUTHENTICATE_SUCCEEDED', async () => {
-        const store = mockStore({ session: reducer(undefined, {})})
+        const store = mockStore({ session: reducer(undefined, {}) })
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
         const expectedAction = authenticateSucceeded('test', {
