@@ -1,4 +1,6 @@
-export default ({ key = 'redux-simple-auth-session' } = {}) => ({
+const DEFAULT_KEY = 'redux-simple-auth-session'
+
+export default ({ key = DEFAULT_KEY } = {}) => ({
   persist: data => {
     localStorage.setItem(key, JSON.stringify(data || {}))
   },
