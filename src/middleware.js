@@ -7,7 +7,7 @@ import {
   restoreFailed
 } from './actions'
 
-const createAuthMiddleware = (config = {}) => {
+export default (config = {}) => {
   const storage = config.storage || createAdaptiveStore()
   const authenticators = config.authenticators || []
 
@@ -15,31 +15,29 @@ const createAuthMiddleware = (config = {}) => {
     authenticators.find(authenticator => authenticator.name === name)
 
   return ({ dispatch, getState }) => {
-    storage
-      .restore()
-      .then(({ authenticated = {}}) => {
-        const { authenticator: authenticatorName, ...data } = authenticated
-        const authenticator = findAuthenticator(authenticatorName)
+    const { authenticated = {}} = storage.restore()
+    const { authenticator: authenticatorName, ...data } = authenticated
+    const authenticator = findAuthenticator(authenticatorName)
 
-        if (authenticator) {
-          return authenticator
-            .restore(data)
-            .then(
-              () => dispatch(restore(authenticated)),
-              () => dispatch(restoreFailed())
-            )
-        }
-      })
+    if (authenticator) {
+      authenticator
+        .restore(data)
+        .then(
+          () => dispatch(restore(authenticated)),
+          () => dispatch(restoreFailed())
+        )
+    }
 
     return next => action => {
       switch (action.type) {
         case AUTHENTICATE: {
-          const authenticator = findAuthenticator(action.authenticator)
+          const authenticator = findAuthenticator(action.meta.authenticator)
 
           if (!authenticator) {
             throw new Error(
-              `No authenticator with name \`${action.authenticator}\` was ` +
-              'found. Be sure you have defined it in the authenticators config.'
+              `No authenticator with name \`${action.meta.authenticator}\` ` +
+              'was found. Be sure you have defined it in the authenticators ' +
+              'config.'
             )
           }
 
@@ -65,5 +63,3 @@ const createAuthMiddleware = (config = {}) => {
     }
   }
 }
-
-export default createAuthMiddleware

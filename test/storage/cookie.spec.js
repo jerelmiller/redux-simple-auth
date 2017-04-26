@@ -1,15 +1,8 @@
-/* eslint-disable no-unused-expressions */
 import { createCookieStore } from '../../src/storage'
 import Cookie from 'js-cookie'
 
 describe('cookie store', () => {
   describe('#persist', () => {
-    it('returns resolved promise', () => {
-      const cookieStore = createCookieStore()
-
-      expect(cookieStore.persist()).resolves
-    })
-
     it('saves data to cookie with default key', () => {
       const cookieStore = createCookieStore()
       const spy = jest.spyOn(Cookie, 'set')
@@ -96,29 +89,20 @@ describe('cookie store', () => {
   })
 
   describe('#restore', () => {
-    it('returns promise', async () => {
+    it('returns data from cookie', () => {
       const cookieStore = createCookieStore()
       cookieStore.persist({ key: 'value' })
 
-      cookieStore.restore()
-
-      await expect(cookieStore.restore()).resolves
-    })
-
-    it('resolves with data from cookie', async () => {
-      const cookieStore = createCookieStore()
-      cookieStore.persist({ key: 'value' })
-
-      const result = await cookieStore.restore()
+      const result = cookieStore.restore()
 
       expect(result).toEqual({ key: 'value' })
     })
 
-    it('honors custom key', async () => {
+    it('honors custom key', () => {
       const cookieStore = createCookieStore({ name: 'my-custom-session' })
       cookieStore.persist({ key: 'value' })
 
-      const result = await cookieStore.restore()
+      const result = cookieStore.restore()
 
       expect(result).toEqual({ key: 'value' })
     })

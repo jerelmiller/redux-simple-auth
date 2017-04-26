@@ -1,18 +1,8 @@
-const createLocalStorageStore = ({
-  key = 'redux-simple-auth-session',
-  promiseImplementation: Promise = window.Promise,
-  localStorageImplementation: localStorage = window.localStorage
-} = {}) => ({
-  persist(data) {
+const DEFAULT_KEY = 'redux-simple-auth-session'
+
+export default ({ key = DEFAULT_KEY } = {}) => ({
+  persist: data => {
     localStorage.setItem(key, JSON.stringify(data || {}))
-
-    return Promise.resolve()
   },
-  restore() {
-    const data = localStorage.getItem(key)
-
-    return Promise.resolve(JSON.parse(data) || {})
-  }
+  restore: () => JSON.parse(localStorage.getItem(key)) || {}
 })
-
-export default createLocalStorageStore

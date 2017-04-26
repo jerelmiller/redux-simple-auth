@@ -1,4 +1,4 @@
-const createAuthenticator = ({
+export default ({
   name,
   restore = () => Promise.reject(),
   authenticate = () => Promise.reject(),
@@ -9,5 +9,3 @@ const createAuthenticator = ({
   authenticate,
   invalidate
 })
-
-export default createAuthenticator

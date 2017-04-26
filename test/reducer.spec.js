@@ -1,11 +1,11 @@
 import { reducer } from '../src'
 import {
-  AUTHENTICATE_FAILED,
-  AUTHENTICATE_SUCCEEDED,
-  INVALIDATE_SESSION,
-  RESTORE,
-  RESTORE_FAILED
-} from '../src/actionTypes'
+  authenticateSucceeded,
+  authenticateFailed,
+  invalidateSession,
+  restore,
+  restoreFailed
+} from '../src/actions'
 
 describe('session reducer', () => {
   it('returns default state when initialized', () => {
@@ -27,7 +27,7 @@ describe('session reducer', () => {
       data: {}
     }
 
-    const state = reducer(currentState, { type: INVALIDATE_SESSION })
+    const state = reducer(currentState, invalidateSession())
 
     expect(state).toEqual(expected)
   })
@@ -40,13 +40,10 @@ describe('session reducer', () => {
       data: { token: 'abcdefg' }
     }
 
-    const state = reducer(currentState, {
-      type: AUTHENTICATE_SUCCEEDED,
-      authenticator: 'test',
-      payload: {
-        token: 'abcdefg'
-      }
-    })
+    const state = reducer(
+      currentState,
+      authenticateSucceeded('test', { token: 'abcdefg' })
+    )
 
     expect(state).toEqual(expected)
   })
@@ -55,9 +52,7 @@ describe('session reducer', () => {
     const currentState = { isAuthenticated: false, data: {}}
     const expected = { authenticator: null, isAuthenticated: false, data: {}}
 
-    const state = reducer(currentState, {
-      type: AUTHENTICATE_FAILED
-    })
+    const state = reducer(currentState, authenticateFailed())
 
     expect(state).toEqual(expected)
   })
@@ -70,13 +65,10 @@ describe('session reducer', () => {
       data: { token: '1234' }
     }
 
-    const state = reducer(currentState, {
-      type: RESTORE,
-      payload: {
-        authenticator: 'credentials',
-        token: '1234'
-      }
-    })
+    const state = reducer(
+      currentState,
+      restore({ authenticator: 'credentials', token: '1234' })
+    )
 
     expect(state).toEqual(expected)
   })
@@ -89,9 +81,7 @@ describe('session reducer', () => {
       data: {}
     }
 
-    const state = reducer(currentState, {
-      type: RESTORE_FAILED
-    })
+    const state = reducer(currentState, restoreFailed())
 
     expect(state).toEqual(expected)
   })

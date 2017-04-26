@@ -16,7 +16,11 @@ describe('actions', () => {
     it('returns action that describes authentication', () => {
       const authenticator = 'test-authenticator'
       const payload = { email: 'test@test.com', password: 'password' }
-      const expected = { type: AUTHENTICATE, authenticator, payload }
+      const expected = {
+        type: AUTHENTICATE,
+        meta: { authenticator },
+        payload
+      }
 
       const action = actions.authenticate(authenticator, payload)
 
