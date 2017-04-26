@@ -2,10 +2,10 @@ import { createAdaptiveStore } from '../../src/storage'
 
 describe('Adaptive store', () => {
   describe('it builds a store', () => {
-    const result = createAdaptiveStore()
+    const store = createAdaptiveStore()
 
-    expect(result).toHaveProperty('persist')
-    expect(result).toHaveProperty('restore')
+    expect(store).toHaveProperty('persist')
+    expect(store).toHaveProperty('restore')
   })
 
   describe('when localStorage is available', () => {
