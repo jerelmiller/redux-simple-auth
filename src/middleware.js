@@ -7,7 +7,7 @@ import {
   restoreFailed
 } from './actions'
 
-const createAuthMiddleware = (config = {}) => {
+export default (config = {}) => {
   const storage = config.storage || createAdaptiveStore()
   const authenticators = config.authenticators || []
 
@@ -62,5 +62,3 @@ const createAuthMiddleware = (config = {}) => {
     }
   }
 }
-
-export default createAuthMiddleware
