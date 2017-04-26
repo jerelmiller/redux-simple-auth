@@ -9,8 +9,38 @@ describe('Adaptive store', () => {
   })
 
   describe('when localStorage is available', () => {
-    xit('builds localStorage store if available')
-    xit('honors local storage options')
+    it('builds localStorage store if available', () => {
+      const setItemSpy = jest.spyOn(localStorage, 'setItem')
+      const getItemSpy = jest.spyOn(localStorage, 'getItem')
+
+      const store = createAdaptiveStore()
+      store.persist({ key: 'value' })
+      store.restore()
+
+      expect(setItemSpy).toHaveBeenCalled()
+      expect(getItemSpy).toHaveBeenCalled()
+
+      setItemSpy.mockRestore()
+      getItemSpy.mockRestore()
+    })
+
+    it('honors local storage options', () => {
+      const setItemSpy = jest.spyOn(localStorage, 'setItem')
+      const getItemSpy = jest.spyOn(localStorage, 'getItem')
+
+      const store = createAdaptiveStore({ localStorageKey: 'my-custom-key' })
+      store.persist({ key: 'value' })
+      store.restore()
+
+      expect(setItemSpy).toHaveBeenCalledWith(
+        'my-custom-key',
+        JSON.stringify({ key: 'value' })
+      )
+      expect(getItemSpy).toHaveBeenCalledWith('my-custom-key')
+
+      setItemSpy.mockRestore()
+      getItemSpy.mockRestore()
+    })
   })
 
   describe('when local storage is not available', () => {

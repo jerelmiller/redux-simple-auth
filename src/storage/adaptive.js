@@ -1,7 +1,9 @@
 import createLocalStorageStore from './localStorage'
 
-const createAdaptiveStore = () => {
-  return createLocalStorageStore()
+const createAdaptiveStore = ({
+  localStorageKey = 'redux-simple-auth-session'
+} = {}) => {
+  return createLocalStorageStore({ key: localStorageKey })
 }
 
 export default createAdaptiveStore
