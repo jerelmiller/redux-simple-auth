@@ -2,7 +2,7 @@ import Cookie from 'js-cookie'
 
 const secondsFromNow = seconds => new Date(Date.now() + seconds * 1000)
 
-const createCookieStore = ({
+export default ({
   name = 'redux-simple-auth-session',
   path = '/',
   domain = null,
@@ -19,5 +19,3 @@ const createCookieStore = ({
   },
   restore: () => Cookie.getJSON(name)
 })
-
-export default createCookieStore
