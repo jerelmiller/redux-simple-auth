@@ -9,7 +9,7 @@ import {
 
 export const authenticate = (authenticator, payload) => ({
   type: AUTHENTICATE,
-  authenticator,
+  meta: { authenticator },
   payload
 })
 

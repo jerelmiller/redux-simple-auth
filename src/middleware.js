@@ -31,12 +31,13 @@ export default (config = {}) => {
     return next => action => {
       switch (action.type) {
         case AUTHENTICATE: {
-          const authenticator = findAuthenticator(action.authenticator)
+          const authenticator = findAuthenticator(action.meta.authenticator)
 
           if (!authenticator) {
             throw new Error(
-              `No authenticator with name \`${action.authenticator}\` was ` +
-              'found. Be sure you have defined it in the authenticators config.'
+              `No authenticator with name \`${action.meta.authenticator}\` ` +
+              'was found. Be sure you have defined it in the authenticators ' +
+              'config.'
             )
           }
 
