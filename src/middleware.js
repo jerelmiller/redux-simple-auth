@@ -1,4 +1,4 @@
-import createLocalStorageStore from './storage/localStorage'
+import createAdaptiveStore from './storage/adaptive'
 import { AUTHENTICATE } from './actionTypes'
 import {
   authenticateFailed,
@@ -8,7 +8,7 @@ import {
 } from './actions'
 
 const createAuthMiddleware = (config = {}) => {
-  const storage = config.storage || createLocalStorageStore()
+  const storage = config.storage || createAdaptiveStore()
   const authenticators = config.authenticators || []
 
   const findAuthenticator = name =>
