@@ -2,7 +2,7 @@ import createCookieStore from './cookie'
 import createLocalStorageStore from './localStorage'
 import { isLocalStorageAvailable } from '../utils/localStorage'
 
-const createAdaptiveStore = ({
+export default ({
   localStorageKey: key,
   cookieName: name,
   cookieDomain: domain,
@@ -12,5 +12,3 @@ const createAdaptiveStore = ({
   isLocalStorageAvailable() ?
     createLocalStorageStore({ key }) :
     createCookieStore({ name, domain, expires, secure })
-
-export default createAdaptiveStore
