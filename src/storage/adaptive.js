@@ -8,10 +8,9 @@ const createAdaptiveStore = ({
   cookieDomain: domain,
   cookieExpires: expires,
   cookieSecure: secure
-} = {}) => {
-  return isLocalStorageAvailable() ?
+} = {}) =>
+  isLocalStorageAvailable() ?
     createLocalStorageStore({ key }) :
     createCookieStore({ name, domain, expires, secure })
-}
 
 export default createAdaptiveStore
