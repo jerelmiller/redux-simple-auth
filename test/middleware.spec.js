@@ -65,7 +65,6 @@ describe('auth middleware', () => {
           session: { authenticator: 'test', data: { token: '1234' }}
         })
       const store = mockStore(getState)
-      const data = { username: 'test', password: 'password' }
 
       store.dispatch({ type: 'test' })
 
