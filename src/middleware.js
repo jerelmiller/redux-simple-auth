@@ -17,7 +17,7 @@ const createAuthMiddleware = (config = {}) => {
   return ({ dispatch, getState }) => {
     storage
       .restore()
-      .then(({ authenticated = {} }) => {
+      .then(({ authenticated = {}}) => {
         const { authenticator: authenticatorName, ...data } = authenticated
         const authenticator = findAuthenticator(authenticatorName)
 
@@ -33,7 +33,7 @@ const createAuthMiddleware = (config = {}) => {
 
     return next => action => {
       switch (action.type) {
-        case AUTHENTICATE:
+        case AUTHENTICATE: {
           const authenticator = findAuthenticator(action.authenticator)
 
           if (!authenticator) {
@@ -49,7 +49,8 @@ const createAuthMiddleware = (config = {}) => {
               data => dispatch(authenticateSucceeded(authenticator.name, data)),
               () => dispatch(authenticateFailed())
             )
-        default:
+        }
+        default: {
           const { session: prevSession } = getState()
           next(action)
           const { session } = getState()
@@ -59,6 +60,7 @@ const createAuthMiddleware = (config = {}) => {
 
             storage.persist({ authenticated: { ...data, authenticator }})
           }
+        }
       }
     }
   }
