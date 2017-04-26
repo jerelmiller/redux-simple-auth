@@ -9,21 +9,7 @@ const createMockLocalStorage = () => ({
 })
 
 describe('local storage', () => {
-  const mockPromise = {
-    resolve: () => 'resolved'
-  }
-
   describe('#persist', () => {
-    it('returns resolved promise', () => {
-      const localStorage = createMockLocalStorage()
-      const storage = createLocalStorageStore({
-        promiseImplementation: mockPromise,
-        localStorageImplementation: localStorage
-      })
-
-      expect(storage.persist()).toBe('resolved')
-    })
-
     it('sets item on local storage', () => {
       const localStorage = createMockLocalStorage()
       const storage = createLocalStorageStore({
@@ -62,9 +48,6 @@ describe('local storage', () => {
     it('returns resolved promise with data from local storage', () => {
       const data = { id: 1, name: 'John Doe' }
       const storage = createLocalStorageStore({
-        promiseImplementation: {
-          resolve: data => data
-        },
         localStorageImplementation: {
           getItem: () => JSON.stringify(data)
         }
@@ -75,9 +58,6 @@ describe('local storage', () => {
 
     it('returns empty object if no data for key', () => {
       const storage = createLocalStorageStore({
-        promiseImplementation: {
-          resolve: data => data
-        },
         localStorageImplementation: {
           getItem: () => null
         }

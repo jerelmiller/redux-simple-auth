@@ -3,16 +3,10 @@ const createLocalStorageStore = ({
   promiseImplementation: Promise = window.Promise,
   localStorageImplementation: localStorage = window.localStorage
 } = {}) => ({
-  persist(data) {
+  persist: data => {
     localStorage.setItem(key, JSON.stringify(data || {}))
-
-    return Promise.resolve()
   },
-  restore() {
-    const data = localStorage.getItem(key)
-
-    return Promise.resolve(JSON.parse(data) || {})
-  }
+  restore: () => JSON.parse(localStorage.getItem(key)) || {}
 })
 
 export default createLocalStorageStore

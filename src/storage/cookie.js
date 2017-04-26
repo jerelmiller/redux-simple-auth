@@ -9,19 +9,15 @@ const createCookieStore = ({
   secure = false,
   expires = null
 } = {}) => ({
-  persist(data) {
+  persist: data => {
     Cookie.set(name, data, {
       domain,
       path,
       secure,
       expires: expires && secondsFromNow(expires)
     })
-
-    return Promise.resolve()
   },
-  restore() {
-    return Promise.resolve(Cookie.getJSON(name))
-  }
+  restore: () => Cookie.getJSON(name)
 })
 
 export default createCookieStore
