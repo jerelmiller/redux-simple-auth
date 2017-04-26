@@ -14,7 +14,7 @@ const createCookieStore = ({
       domain,
       path,
       secure,
-      expires: expires && secondsFromNow(expires),
+      expires: expires && secondsFromNow(expires)
     })
 
     return Promise.resolve()

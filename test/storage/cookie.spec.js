@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { createCookieStore } from '../../src/storage'
 import Cookie from 'js-cookie'
 
