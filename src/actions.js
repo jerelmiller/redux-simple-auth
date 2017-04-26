@@ -15,7 +15,7 @@ export const authenticate = (authenticator, payload) => ({
 
 export const authenticateSucceeded = (authenticator, payload) => ({
   type: AUTHENTICATE_SUCCEEDED,
-  authenticator,
+  meta: { authenticator },
   payload
 })
 

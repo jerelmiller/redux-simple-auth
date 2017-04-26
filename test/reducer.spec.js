@@ -42,7 +42,9 @@ describe('session reducer', () => {
 
     const state = reducer(currentState, {
       type: AUTHENTICATE_SUCCEEDED,
-      authenticator: 'test',
+      meta: {
+        authenticator: 'test'
+      },
       payload: {
         token: 'abcdefg'
       }

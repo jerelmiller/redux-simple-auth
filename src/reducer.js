@@ -17,7 +17,7 @@ const reducer = (state = initialState, action) => {
     case AUTHENTICATE_SUCCEEDED:
       return {
         ...state,
-        authenticator: action.authenticator,
+        authenticator: action.meta.authenticator,
         isAuthenticated: true,
         data: action.payload
       }
