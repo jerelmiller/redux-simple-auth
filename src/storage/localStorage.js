@@ -1,6 +1,5 @@
 const createLocalStorageStore = ({
-  key = 'redux-simple-auth-session',
-  localStorageImplementation: localStorage = window.localStorage
+  key = 'redux-simple-auth-session'
 } = {}) => ({
   persist: data => {
     localStorage.setItem(key, JSON.stringify(data || {}))
