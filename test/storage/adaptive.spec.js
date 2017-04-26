@@ -46,7 +46,7 @@ describe('Adaptive store', () => {
 
   describe('when local storage is not available', () => {
     beforeEach(() => {
-      localStorage.setItem = jest.fn(() => { throw new Error })
+      localStorage.setItem = jest.fn(() => { throw new Error() })
     })
 
     it('builds cookie store', () => {
