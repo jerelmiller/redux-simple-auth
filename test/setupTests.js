@@ -1,3 +1,5 @@
+import fetch from 'jest-fetch-mock'
+
 const createLocalStorageMock = () => {
   let store = {}
 
@@ -16,6 +18,8 @@ const createLocalStorageMock = () => {
     }
   }
 }
+
+global.fetch = fetch
 
 Object.defineProperty(window, 'localStorage', {
   value: createLocalStorageMock()
