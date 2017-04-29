@@ -10,6 +10,7 @@ import {
 export default (config = {}) => {
   const storage = config.storage || createAdaptiveStore()
   const authenticators = config.authenticators || []
+  const authorizer = config.authorizer
 
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
@@ -49,7 +50,12 @@ export default (config = {}) => {
             )
         }
         case FETCH: {
+          const { session } = getState()
           const { url, options } = action.payload
+
+          if (authorizer) {
+            authorizer.authorize(session.data)
+          }
 
           return fetch(url, options)
         }

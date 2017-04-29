@@ -1,6 +1,7 @@
 import {
   authenticate,
   createAuthenticator,
+  createAuthorizer,
   createAuthMiddleware,
   reducer
 } from '../src'
@@ -212,6 +213,20 @@ describe('auth middleware', () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: 'test@test.com' })
         })
+    })
+
+    it('calls authorizor with authenticated data', () => {
+      const authorizer = createAuthorizer({ name: 'jwt', authorize: jest.fn() })
+      const middleware = createAuthMiddleware({ storage, authorizer })
+      const mockStore = configureStore([middleware])
+      const data = { token: '1235' }
+      const store = mockStore({ session: { data }})
+
+      store.dispatch(
+        fetchAction('https://test.com', { authorizer: 'jwt' })
+      )
+
+      expect(authorizer.authorize).toHaveBeenCalledWith(data)
     })
   })
 })
