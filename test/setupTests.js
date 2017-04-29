@@ -20,7 +20,4 @@ const createLocalStorageMock = () => {
 }
 
 global.fetch = fetch
-
-Object.defineProperty(window, 'localStorage', {
-  value: createLocalStorageMock()
-})
+global.localStorage = createLocalStorageMock()

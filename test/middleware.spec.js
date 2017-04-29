@@ -176,4 +176,12 @@ describe('auth middleware', () => {
       expect(storage.restore).toHaveBeenCalled()
     })
   })
+
+  describe('when fetch action is dispatched', () => {
+    it('fetches data', () => {
+      const middleware = configureMiddleware()
+
+
+    })
+  })
 })
