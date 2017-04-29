@@ -10,7 +10,7 @@ import {
 export default (config = {}) => {
   const storage = config.storage || createAdaptiveStore()
   const authenticators = config.authenticators || []
-  const authorizer = config.authorizer
+  const authorize = config.authorize
 
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
@@ -54,8 +54,8 @@ export default (config = {}) => {
           const { url, options } = action.payload
           const { headers = {}} = options
 
-          if (authorizer) {
-            authorizer.authorize(session.data, (name, value) => {
+          if (authorize) {
+            authorize(session.data, (name, value) => {
               headers[name] = value
             })
           }

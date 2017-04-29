@@ -1,7 +1,6 @@
 import {
   authenticate,
   createAuthenticator,
-  createAuthorizer,
   createAuthMiddleware,
   reducer
 } from '../src'
@@ -215,9 +214,9 @@ describe('auth middleware', () => {
         })
     })
 
-    it('calls authorizor with authenticated data', () => {
-      const authorizer = createAuthorizer({ name: 'jwt', authorize: jest.fn() })
-      const middleware = createAuthMiddleware({ storage, authorizer })
+    it('calls authorize with authenticated data', () => {
+      const authorize = jest.fn()
+      const middleware = createAuthMiddleware({ storage, authorize })
       const mockStore = configureStore([middleware])
       const data = { token: '1235' }
       const store = mockStore({ session: { data }})
@@ -226,20 +225,17 @@ describe('auth middleware', () => {
         fetchAction('https://test.com', { authorizer: 'jwt' })
       )
 
-      expect(authorizer.authorize).toHaveBeenCalledWith(
+      expect(authorize).toHaveBeenCalledWith(
         data,
         expect.any(Function)
       )
     })
 
-    it('sets headers when authorizer calls block function', () => {
-      const authorizer = createAuthorizer({
-        name: 'jwt',
-        authorize(data, block) {
-          block('Authorization', data.token)
-        }
-      })
-      const middleware = createAuthMiddleware({ storage, authorizer })
+    it('sets headers when authorize runs block function', () => {
+      const authorize = (data, block) => {
+        block('Authorization', data.token)
+      }
+      const middleware = createAuthMiddleware({ storage, authorize })
       const mockStore = configureStore([middleware])
       const data = { token: '1235' }
       const store = mockStore({ session: { data }})
