@@ -283,7 +283,7 @@ describe('auth middleware', () => {
         )
       })
 
-      it('does not dispatch if not authorized', async () => {
+      it('does not dispatch if not authenticated', async () => {
         fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
         const middleware = configureMiddleware()
         const mockStore = configureStore([middleware])
