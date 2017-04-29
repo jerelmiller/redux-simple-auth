@@ -52,12 +52,15 @@ export default (config = {}) => {
         case FETCH: {
           const { session } = getState()
           const { url, options } = action.payload
+          const { headers = {}} = options
 
           if (authorizer) {
-            authorizer.authorize(session.data)
+            authorizer.authorize(session.data, (name, value) => {
+              headers[name] = value
+            })
           }
 
-          return fetch(url, options)
+          return fetch(url, { ...options, headers })
         }
         default: {
           const { session: prevSession } = getState()

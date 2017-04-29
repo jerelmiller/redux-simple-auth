@@ -191,7 +191,7 @@ describe('auth middleware', () => {
 
       store.dispatch(fetchAction('https://test.com'))
 
-      expect(fetch).toHaveBeenCalledWith('https://test.com', {})
+      expect(fetch).toHaveBeenCalledWith('https://test.com', { headers: {}})
     })
 
     it('passes request options to fetch', () => {
@@ -226,7 +226,31 @@ describe('auth middleware', () => {
         fetchAction('https://test.com', { authorizer: 'jwt' })
       )
 
-      expect(authorizer.authorize).toHaveBeenCalledWith(data)
+      expect(authorizer.authorize).toHaveBeenCalledWith(
+        data,
+        expect.any(Function)
+      )
+    })
+
+    it('sets headers when authorizer calls block function', () => {
+      const authorizer = createAuthorizer({
+        name: 'jwt',
+        authorize(data, block) {
+          block('Authorization', data.token)
+        }
+      })
+      const middleware = createAuthMiddleware({ storage, authorizer })
+      const mockStore = configureStore([middleware])
+      const data = { token: '1235' }
+      const store = mockStore({ session: { data }})
+
+      store.dispatch(
+        fetchAction('https://test.com', { authorizer: 'jwt' })
+      )
+
+      expect(fetch).toHaveBeenCalledWith('https://test.com', {
+        headers: { Authorization: '1235' }
+      })
     })
   })
 })
