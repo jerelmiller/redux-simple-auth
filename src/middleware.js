@@ -63,7 +63,7 @@ export default (config = {}) => {
 
           return fetch(url, { ...options, headers })
             .then(response => {
-              if (response.status === 401) {
+              if (response.status === 401 && session.isAuthenticated) {
                 dispatch(invalidateSession())
               }
 

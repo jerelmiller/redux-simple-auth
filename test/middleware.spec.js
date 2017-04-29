@@ -273,12 +273,27 @@ describe('auth middleware', () => {
         const middleware = configureMiddleware()
         const mockStore = configureStore([middleware])
         const data = { token: '1235' }
-        const store = mockStore({ session: { data }})
+        const store = mockStore({ session: { data, isAuthenticated: true }})
         const invalidateAction = invalidateSession()
 
         await store.dispatch(fetchAction('https://test.com'))
 
         expect(store.getActions()).toEqual(
+          expect.arrayContaining([invalidateAction])
+        )
+      })
+
+      it('does not dispatch if not authorized', async () => {
+        fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
+        const middleware = configureMiddleware()
+        const mockStore = configureStore([middleware])
+        const data = { token: '1235' }
+        const store = mockStore({ session: { data, isAuthenticated: false }})
+        const invalidateAction = invalidateSession()
+
+        await store.dispatch(fetchAction('https://test.com'))
+
+        expect(store.getActions()).not.toEqual(
           expect.arrayContaining([invalidateAction])
         )
       })
