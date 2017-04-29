@@ -4,5 +4,6 @@ export { default as createAuthenticator } from './createAuthenticator'
 export { default as createAuthorizer } from './createAuthorizer'
 export {
   authenticate,
+  fetch,
   invalidateSession
 } from './actions'

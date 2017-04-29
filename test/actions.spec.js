@@ -1,4 +1,4 @@
-import { AUTHENTICATE, INVALIDATE_SESSION } from '../src/actionTypes'
+import { AUTHENTICATE, FETCH, INVALIDATE_SESSION } from '../src/actionTypes'
 import * as actions from '../src/actions'
 
 describe('actions', () => {
@@ -23,6 +23,42 @@ describe('actions', () => {
       }
 
       const action = actions.authenticate(authenticator, payload)
+
+      expect(action).toEqual(expected)
+    })
+  })
+
+  describe('fetch', () => {
+    it('returns action that describes fetch request', () => {
+      const expected = {
+        type: FETCH,
+        meta: { authorizer: 'jwt' },
+        payload: { url: 'https://test.com', options: {}}
+      }
+
+      const action = actions.fetch('https://test.com', { authorizer: 'jwt' })
+
+      expect(action).toEqual(expected)
+    })
+
+    it('sets request options in payload', () => {
+      const expected = {
+        type: FETCH,
+        meta: { authorizer: 'jwt' },
+        payload: {
+          url: 'https://test.com',
+          options: {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          }
+        }
+      }
+
+      const action = actions.fetch('https://test.com', {
+        authorizer: 'jwt',
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      })
 
       expect(action).toEqual(expected)
     })

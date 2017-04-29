@@ -2,6 +2,7 @@ import {
   AUTHENTICATE,
   AUTHENTICATE_FAILED,
   AUTHENTICATE_SUCCEEDED,
+  FETCH,
   INVALIDATE_SESSION,
   RESTORE,
   RESTORE_FAILED
@@ -21,6 +22,12 @@ export const authenticateSucceeded = (authenticator, payload) => ({
 
 export const authenticateFailed = () => ({
   type: AUTHENTICATE_FAILED
+})
+
+export const fetch = (url, { authorizer, ...options } = {}) => ({
+  type: FETCH,
+  meta: { authorizer },
+  payload: { url, options }
 })
 
 export const invalidateSession = () => ({
