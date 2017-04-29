@@ -185,6 +185,7 @@ describe('auth middleware', () => {
 
   describe('when fetch action is dispatched', () => {
     it('fetches data', () => {
+      fetch.mockResponse(JSON.stringify({ ok: true }))
       const middleware = configureMiddleware()
       const mockStore = configureStore([middleware])
       const store = mockStore({ session: reducer(undefined, {}) })
@@ -195,6 +196,7 @@ describe('auth middleware', () => {
     })
 
     it('passes request options to fetch', () => {
+      fetch.mockResponse(JSON.stringify({ ok: true }))
       const middleware = configureMiddleware()
       const mockStore = configureStore([middleware])
       const store = mockStore({ session: reducer(undefined, {}) })
@@ -216,6 +218,7 @@ describe('auth middleware', () => {
     })
 
     it('calls authorize with authenticated data', () => {
+      fetch.mockResponse(JSON.stringify({ ok: true }))
       const authorize = jest.fn()
       const middleware = createAuthMiddleware({ storage, authorize })
       const mockStore = configureStore([middleware])
@@ -231,6 +234,7 @@ describe('auth middleware', () => {
     })
 
     it('sets headers when authorize runs block function', () => {
+      fetch.mockResponse(JSON.stringify({ ok: true }))
       const authorize = (data, block) => {
         block('Authorization', data.token)
       }
@@ -248,6 +252,7 @@ describe('auth middleware', () => {
 
     describe('when request succeeds', () => {
       it('does not dispatch invalidate action', async () => {
+        fetch.mockResponse(JSON.stringify({ ok: true }))
         const middleware = configureMiddleware()
         const mockStore = configureStore([middleware])
         const data = { token: '1235' }
@@ -263,7 +268,7 @@ describe('auth middleware', () => {
     })
 
     describe('when request returns 401 unauthorized', () => {
-      fit('dispatches invalidateSession', async () => {
+      it('dispatches invalidateSession', async () => {
         fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
         const middleware = configureMiddleware()
         const mockStore = configureStore([middleware])
