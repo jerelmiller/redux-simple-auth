@@ -190,7 +190,28 @@ describe('auth middleware', () => {
 
       store.dispatch(fetchAction('https://test.com'))
 
-      expect(fetch).toHaveBeenCalledWith('https://test.com')
+      expect(fetch).toHaveBeenCalledWith('https://test.com', {})
+    })
+
+    it('passes request options to fetch', () => {
+      const middleware = configureMiddleware()
+      const mockStore = configureStore([middleware])
+      const store = mockStore({ session: reducer(undefined, {}) })
+
+      store.dispatch(
+        fetchAction('https://test.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: 'test@test.com' })
+        })
+      )
+
+      expect(fetch)
+        .toHaveBeenCalledWith('https://test.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: 'test@test.com' })
+        })
     })
   })
 })

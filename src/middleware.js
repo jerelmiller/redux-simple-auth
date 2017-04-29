@@ -49,9 +49,9 @@ export default (config = {}) => {
             )
         }
         case FETCH: {
-          const { url } = action.payload
+          const { url, options } = action.payload
 
-          return fetch(url)
+          return fetch(url, options)
         }
         default: {
           const { session: prevSession } = getState()
