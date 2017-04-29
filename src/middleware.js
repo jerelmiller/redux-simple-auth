@@ -1,8 +1,9 @@
 import createAdaptiveStore from './storage/adaptive'
-import { AUTHENTICATE } from './actionTypes'
+import { AUTHENTICATE, FETCH } from './actionTypes'
 import {
   authenticateFailed,
   authenticateSucceeded,
+  invalidateSession,
   restore,
   restoreFailed
 } from './actions'
@@ -10,6 +11,7 @@ import {
 export default (config = {}) => {
   const storage = config.storage || createAdaptiveStore()
   const authenticators = config.authenticators || []
+  const authorize = config.authorize
 
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
@@ -47,6 +49,26 @@ export default (config = {}) => {
               data => dispatch(authenticateSucceeded(authenticator.name, data)),
               () => dispatch(authenticateFailed())
             )
+        }
+        case FETCH: {
+          const { session } = getState()
+          const { url, options = {}} = action.payload
+          const { headers = {}} = options
+
+          if (authorize) {
+            authorize(session.data, (name, value) => {
+              headers[name] = value
+            })
+          }
+
+          return fetch(url, { ...options, headers })
+            .then(response => {
+              if (response.status === 401 && session.isAuthenticated) {
+                dispatch(invalidateSession())
+              }
+
+              return response
+            })
         }
         default: {
           const { session: prevSession } = getState()
