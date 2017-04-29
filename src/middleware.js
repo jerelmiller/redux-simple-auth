@@ -3,6 +3,7 @@ import { AUTHENTICATE, FETCH } from './actionTypes'
 import {
   authenticateFailed,
   authenticateSucceeded,
+  invalidateSession,
   restore,
   restoreFailed
 } from './actions'
@@ -51,7 +52,7 @@ export default (config = {}) => {
         }
         case FETCH: {
           const { session } = getState()
-          const { url, options } = action.payload
+          const { url, options = {}} = action.payload
           const { headers = {}} = options
 
           if (authorize) {
@@ -61,6 +62,13 @@ export default (config = {}) => {
           }
 
           return fetch(url, { ...options, headers })
+            .then(response => {
+              if (response.status === 401) {
+                dispatch(invalidateSession())
+              }
+
+              return response
+            })
         }
         default: {
           const { session: prevSession } = getState()

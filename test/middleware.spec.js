@@ -7,7 +7,8 @@ import {
 import {
   authenticateFailed,
   authenticateSucceeded,
-  fetch as fetchAction
+  fetch as fetchAction,
+  invalidateSession
 } from '../src/actions'
 import {
   failAuthenticator,
@@ -242,6 +243,39 @@ describe('auth middleware', () => {
 
       expect(fetch).toHaveBeenCalledWith('https://test.com', {
         headers: { Authorization: '1235' }
+      })
+    })
+
+    describe('when request succeeds', () => {
+      it('does not dispatch invalidate action', async () => {
+        const middleware = configureMiddleware()
+        const mockStore = configureStore([middleware])
+        const data = { token: '1235' }
+        const store = mockStore({ session: { data }})
+        const invalidateAction = invalidateSession()
+
+        await store.dispatch(fetchAction('https://test.com'))
+
+        expect(store.getActions()).not.toEqual(
+          expect.arrayContaining([invalidateAction])
+        )
+      })
+    })
+
+    describe('when request returns 401 unauthorized', () => {
+      fit('dispatches invalidateSession', async () => {
+        fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
+        const middleware = configureMiddleware()
+        const mockStore = configureStore([middleware])
+        const data = { token: '1235' }
+        const store = mockStore({ session: { data }})
+        const invalidateAction = invalidateSession()
+
+        await store.dispatch(fetchAction('https://test.com'))
+
+        expect(store.getActions()).toEqual(
+          expect.arrayContaining([invalidateAction])
+        )
       })
     })
   })
