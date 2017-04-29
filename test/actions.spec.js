@@ -32,11 +32,10 @@ describe('actions', () => {
     it('returns action that describes fetch request', () => {
       const expected = {
         type: FETCH,
-        meta: { authorizer: 'jwt' },
         payload: { url: 'https://test.com', options: {}}
       }
 
-      const action = actions.fetch('https://test.com', { authorizer: 'jwt' })
+      const action = actions.fetch('https://test.com')
 
       expect(action).toEqual(expected)
     })
@@ -44,7 +43,6 @@ describe('actions', () => {
     it('sets request options in payload', () => {
       const expected = {
         type: FETCH,
-        meta: { authorizer: 'jwt' },
         payload: {
           url: 'https://test.com',
           options: {

@@ -26,7 +26,6 @@ export const authenticateFailed = () => ({
 
 export const fetch = (url, { authorizer, ...options } = {}) => ({
   type: FETCH,
-  meta: { authorizer },
   payload: { url, options }
 })
 
