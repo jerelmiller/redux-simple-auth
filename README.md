@@ -101,6 +101,17 @@ const authMiddleware = createAuthMiddleware({
 })
 ```
 
+**Define an authorizer**
+```javascript
+const authMiddleware = createAuthMiddleware({
+  authorize(data, block) {
+    if (data.token) {
+      block('Authorization', `Bearer ${token}`)
+    }
+  }
+})
+```
+
 ### Actions
 
 Authenticate with a named authenticator:
@@ -120,6 +131,16 @@ Invalidate the session:
 import { invalidateSession } from 'redux-simple-auth'
 
 store.dispatch(invalidateSession())
+```
+
+Fetch an endpoint that requires authentication. Uses authorize function passed
+to middleware.
+```javascript
+import { fetch } from 'redux-simple-auth'
+
+store.dispatch(
+  fetch('https://www.example.com/me')
+)
 ```
 
 ## License
