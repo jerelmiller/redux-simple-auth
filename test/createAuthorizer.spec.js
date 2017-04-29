@@ -4,10 +4,10 @@ describe('createAuthorizer', () => {
   it('returns authorizer', () => {
     const authorizer = createAuthorizer({
       name: 'jwt',
-      authenticate() {}
+      authorize() {}
     })
 
     expect(authorizer).toHaveProperty('name')
-    expect(authorizer).toHaveProperty('authenticate')
+    expect(authorizer).toHaveProperty('authorize')
   })
 })

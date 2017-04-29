@@ -1,6 +1,6 @@
-const createAuthorizer = ({ name, authenticate }) => ({
+const createAuthorizer = ({ name, authorize }) => ({
   name,
-  authenticate
+  authorize
 })
 
 export default createAuthorizer
