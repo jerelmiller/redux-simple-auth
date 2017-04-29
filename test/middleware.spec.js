@@ -221,9 +221,7 @@ describe('auth middleware', () => {
       const data = { token: '1235' }
       const store = mockStore({ session: { data }})
 
-      store.dispatch(
-        fetchAction('https://test.com', { authorizer: 'jwt' })
-      )
+      store.dispatch(fetchAction('https://test.com'))
 
       expect(authorize).toHaveBeenCalledWith(
         data,
@@ -240,9 +238,7 @@ describe('auth middleware', () => {
       const data = { token: '1235' }
       const store = mockStore({ session: { data }})
 
-      store.dispatch(
-        fetchAction('https://test.com', { authorizer: 'jwt' })
-      )
+      store.dispatch(fetchAction('https://test.com'))
 
       expect(fetch).toHaveBeenCalledWith('https://test.com', {
         headers: { Authorization: '1235' }

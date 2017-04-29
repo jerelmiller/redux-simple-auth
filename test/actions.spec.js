@@ -32,7 +32,7 @@ describe('actions', () => {
     it('returns action that describes fetch request', () => {
       const expected = {
         type: FETCH,
-        payload: { url: 'https://test.com', options: {}}
+        payload: { url: 'https://test.com' }
       }
 
       const action = actions.fetch('https://test.com')
@@ -53,7 +53,6 @@ describe('actions', () => {
       }
 
       const action = actions.fetch('https://test.com', {
-        authorizer: 'jwt',
         method: 'POST',
         headers: { 'Content-Type': 'application/json' }
       })
