@@ -6,7 +6,8 @@ import {
 } from '../src'
 import {
   authenticateFailed,
-  authenticateSucceeded
+  authenticateSucceeded,
+  fetch as fetchAction
 } from '../src/actions'
 import {
   failAuthenticator,
@@ -20,6 +21,10 @@ const storage = createMockStorage()
 
 const configureMiddleware = (...authenticators) =>
   createAuthMiddleware({ storage, authenticators })
+
+beforeEach(() => {
+  fetch.resetMocks()
+})
 
 afterEach(() => {
   storage.persist.mockClear()
@@ -180,8 +185,12 @@ describe('auth middleware', () => {
   describe('when fetch action is dispatched', () => {
     it('fetches data', () => {
       const middleware = configureMiddleware()
+      const mockStore = configureStore([middleware])
+      const store = mockStore({ session: reducer(undefined, {}) })
 
+      store.dispatch(fetchAction('https://test.com'))
 
+      expect(fetch).toHaveBeenCalledWith('https://test.com')
     })
   })
 })

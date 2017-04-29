@@ -1,5 +1,5 @@
 import createAdaptiveStore from './storage/adaptive'
-import { AUTHENTICATE } from './actionTypes'
+import { AUTHENTICATE, FETCH } from './actionTypes'
 import {
   authenticateFailed,
   authenticateSucceeded,
@@ -47,6 +47,11 @@ export default (config = {}) => {
               data => dispatch(authenticateSucceeded(authenticator.name, data)),
               () => dispatch(authenticateFailed())
             )
+        }
+        case FETCH: {
+          const { url } = action.payload
+
+          return fetch(url)
         }
         default: {
           const { session: prevSession } = getState()
