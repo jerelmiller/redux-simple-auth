@@ -10,7 +10,7 @@ describe('createAuthenticator', () => {
     })
 
     it('throws when name is not a string', () => {
-      expect(() => createAuthenticator({ name: {}})).toThrow(
+      expect(() => createAuthenticator({ name: {} })).toThrow(
         'Expected the `name` property of the authenticator to be a string'
       )
     })

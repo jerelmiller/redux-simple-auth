@@ -13,10 +13,7 @@ describe('local storage', () => {
 
       storage.persist(data)
 
-      expect(spy).toHaveBeenCalledWith(
-        defaultKey,
-        JSON.stringify(data)
-      )
+      expect(spy).toHaveBeenCalledWith(defaultKey, JSON.stringify(data))
     })
 
     describe('when key is custom key', () => {
@@ -27,10 +24,7 @@ describe('local storage', () => {
 
         storage.persist(data)
 
-        expect(spy).toHaveBeenCalledWith(
-          'my-custom-key',
-          JSON.stringify(data)
-        )
+        expect(spy).toHaveBeenCalledWith('my-custom-key', JSON.stringify(data))
       })
     })
   })

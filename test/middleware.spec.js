@@ -79,8 +79,8 @@ describe('auth middleware', () => {
         })
       ).toThrow(
         'No authenticator was given. Be sure to configure an authenticator ' +
-        'by using the `authenticator` option for a single authenticator or ' +
-        'using the `authenticators` option to allow multiple authenticators'
+          'by using the `authenticator` option for a single authenticator or ' +
+          'using the `authenticators` option to allow multiple authenticators'
       )
     })
 
@@ -89,7 +89,7 @@ describe('auth middleware', () => {
         createAuthMiddleware({ storage, authenticators: spiedAuthenticator })
       ).toThrow(
         'Expected `authenticators` to be an array. If you only need a single ' +
-        'authenticator, consider using the `authenticator` option.'
+          'authenticator, consider using the `authenticator` option.'
       )
     })
 
@@ -98,7 +98,7 @@ describe('auth middleware', () => {
         createAuthMiddleware({ storage, authenticator: [spiedAuthenticator] })
       ).toThrow(
         'Expected `authenticator` to be an object. If you need multiple ' +
-        'authenticators, consider using the `authenticators` option.'
+          'authenticators, consider using the `authenticators` option.'
       )
     })
   })
@@ -107,12 +107,13 @@ describe('auth middleware', () => {
     it('persists changes to storage', () => {
       const middleware = configureMiddleware(successAuthenticator)
       const mockStore = configureStore([middleware])
-      const getState = jest.fn()
+      const getState = jest
+        .fn()
         .mockReturnValueOnce({
-          session: { authenticator: null, data: {}}
+          session: { authenticator: null, data: {} }
         })
         .mockReturnValueOnce({
-          session: { authenticator: 'test', data: { token: '1234' }}
+          session: { authenticator: 'test', data: { token: '1234' } }
         })
       const store = mockStore(getState)
 
@@ -169,11 +170,10 @@ describe('auth middleware', () => {
         const store = mockStore()
         const action = authenticate('not-real', {})
 
-        expect(() => store.dispatch(action))
-          .toThrow(
-            'No authenticator with name `not-real` was found. Be sure ' +
+        expect(() => store.dispatch(action)).toThrow(
+          'No authenticator with name `not-real` was found. Be sure ' +
             'you have defined it in the authenticators config'
-          )
+        )
       })
     })
 
@@ -183,7 +183,8 @@ describe('auth middleware', () => {
 
       it('sets authenticated data on local storage', async () => {
         const initialState = reducer(undefined, {})
-        const getState = jest.fn()
+        const getState = jest
+          .fn()
           .mockReturnValueOnce({ session: initialState })
           .mockReturnValueOnce({
             session: reducer(
@@ -223,7 +224,7 @@ describe('auth middleware', () => {
       it('dispatches AUTHENTICATE_FAILED', async () => {
         const middleware = configureMiddleware(failAuthenticator)
         const mockStore = configureStore([middleware])
-        const store = mockStore({ session: { isAuthenticated: false }})
+        const store = mockStore({ session: { isAuthenticated: false } })
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
 
@@ -238,7 +239,7 @@ describe('auth middleware', () => {
     it('hydrates session data from storage', () => {
       const middleware = configureMiddleware()
       const mockStore = configureStore([middleware])
-      mockStore({ session: { isAuthenticated: false }})
+      mockStore({ session: { isAuthenticated: false } })
 
       expect(storage.restore).toHaveBeenCalled()
     })
@@ -253,7 +254,7 @@ describe('auth middleware', () => {
 
       store.dispatch(fetchAction('https://test.com'))
 
-      expect(fetch).toHaveBeenCalledWith('https://test.com', { headers: {}})
+      expect(fetch).toHaveBeenCalledWith('https://test.com', { headers: {} })
     })
 
     it('passes request options to fetch', () => {
@@ -270,12 +271,11 @@ describe('auth middleware', () => {
         })
       )
 
-      expect(fetch)
-        .toHaveBeenCalledWith('https://test.com', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'test@test.com' })
-        })
+      expect(fetch).toHaveBeenCalledWith('https://test.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'test@test.com' })
+      })
     })
 
     it('calls authorize with authenticated data', () => {
@@ -288,14 +288,11 @@ describe('auth middleware', () => {
       })
       const mockStore = configureStore([middleware])
       const data = { token: '1235' }
-      const store = mockStore({ session: { data }})
+      const store = mockStore({ session: { data } })
 
       store.dispatch(fetchAction('https://test.com'))
 
-      expect(authorize).toHaveBeenCalledWith(
-        data,
-        expect.any(Function)
-      )
+      expect(authorize).toHaveBeenCalledWith(data, expect.any(Function))
     })
 
     it('sets headers when authorize runs block function', () => {
@@ -310,7 +307,7 @@ describe('auth middleware', () => {
       })
       const mockStore = configureStore([middleware])
       const data = { token: '1235' }
-      const store = mockStore({ session: { data }})
+      const store = mockStore({ session: { data } })
 
       store.dispatch(fetchAction('https://test.com'))
 
@@ -325,7 +322,7 @@ describe('auth middleware', () => {
         const middleware = configureMiddleware()
         const mockStore = configureStore([middleware])
         const data = { token: '1235' }
-        const store = mockStore({ session: { data }})
+        const store = mockStore({ session: { data } })
         const invalidateAction = invalidateSession()
 
         await store.dispatch(fetchAction('https://test.com'))
@@ -342,7 +339,7 @@ describe('auth middleware', () => {
         const middleware = configureMiddleware()
         const mockStore = configureStore([middleware])
         const data = { token: '1235' }
-        const store = mockStore({ session: { data, isAuthenticated: true }})
+        const store = mockStore({ session: { data, isAuthenticated: true } })
         const invalidateAction = invalidateSession()
 
         await store.dispatch(fetchAction('https://test.com'))
@@ -357,7 +354,7 @@ describe('auth middleware', () => {
         const middleware = configureMiddleware()
         const mockStore = configureStore([middleware])
         const data = { token: '1235' }
-        const store = mockStore({ session: { data, isAuthenticated: false }})
+        const store = mockStore({ session: { data, isAuthenticated: false } })
         const invalidateAction = invalidateSession()
 
         await store.dispatch(fetchAction('https://test.com'))
