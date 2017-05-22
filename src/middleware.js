@@ -8,13 +8,37 @@ import {
   restoreFailed
 } from './actions'
 
-export default (config = {}) => {
-  const storage = config.storage || createAdaptiveStore()
-  const authenticators = config.authenticators || []
-  const authorize = config.authorize
+export default ({
+  authenticator,
+  authenticators,
+  authorize,
+  storage = createAdaptiveStore()
+} = {}) => {
+  if (authenticator == null && authenticators == null) {
+    throw new Error(
+      'No authenticator was given. Be sure to configure an authenticator ' +
+      'by using the `authenticator` option for a single authenticator or ' +
+      'using the `authenticators` option to allow multiple authenticators'
+    )
+  }
 
-  const findAuthenticator = name =>
-    authenticators.find(authenticator => authenticator.name === name)
+  if (!Array.isArray(authenticators) && authenticator == null) {
+    throw new Error(
+      'Expected `authenticators` to be an array. If you only need a single ' +
+      'authenticator, consider using the `authenticator` option.'
+    )
+  }
+
+  if (Array.isArray(authenticator) && authenticators == null) {
+    throw new Error(
+      'Expected `authenticator` to be an object. If you need multiple ' +
+      'authenticators, consider using the `authenticators` option.'
+    )
+  }
+
+  const findAuthenticator = authenticator
+    ? () => authenticator
+    : name => authenticators.find(authenticator => authenticator.name === name)
 
   return ({ dispatch, getState }) => {
     const { authenticated = {}} = storage.restore()

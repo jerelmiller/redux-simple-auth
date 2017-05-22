@@ -33,15 +33,21 @@ afterEach(() => {
 })
 
 describe('auth middleware', () => {
-  const middleware = createAuthMiddleware({ storage })
-
   it('returns a function that handles {getState, dispatch}', () => {
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: spiedAuthenticator
+    })
     expect(middleware).toBeInstanceOf(Function)
     expect(middleware.length).toBe(1)
   })
 
   describe('store handler', () => {
     it('returns function that handles next', () => {
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: spiedAuthenticator
+      })
       const nextHandler = middleware({})
 
       expect(nextHandler).toBeInstanceOf(Function)
@@ -51,11 +57,49 @@ describe('auth middleware', () => {
 
   describe('action handler', () => {
     it('action handler returns a function that handles action', () => {
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: spiedAuthenticator
+      })
       const nextHandler = middleware({})
       const actionHandler = nextHandler()
 
       expect(actionHandler).toBeInstanceOf(Function)
       expect(actionHandler.length).toBe(1)
+    })
+  })
+
+  describe('config', () => {
+    it('throws when no authenticator is given', () => {
+      expect(() =>
+        createAuthMiddleware({
+          storage,
+          authenticator: undefined,
+          authenticators: undefined
+        })
+      ).toThrow(
+        'No authenticator was given. Be sure to configure an authenticator ' +
+        'by using the `authenticator` option for a single authenticator or ' +
+        'using the `authenticators` option to allow multiple authenticators'
+      )
+    })
+
+    it('throws when authenticators are not an array', () => {
+      expect(() =>
+        createAuthMiddleware({ storage, authenticators: spiedAuthenticator })
+      ).toThrow(
+        'Expected `authenticators` to be an array. If you only need a single ' +
+        'authenticator, consider using the `authenticator` option.'
+      )
+    })
+
+    it('throws when authenticator is an array', () => {
+      expect(() =>
+        createAuthMiddleware({ storage, authenticator: [spiedAuthenticator] })
+      ).toThrow(
+        'Expected `authenticator` to be an object. If you need multiple ' +
+        'authenticators, consider using the `authenticators` option.'
+      )
     })
   })
 
@@ -86,6 +130,23 @@ describe('auth middleware', () => {
   describe('when authenticating', () => {
     it('calls authenticators authenticate', () => {
       const middleware = configureMiddleware(spiedAuthenticator)
+      const mockStore = configureStore([middleware])
+      const store = mockStore()
+      const data = { username: 'test', password: 'password' }
+      const action = authenticate('test', data)
+
+      store.dispatch(action)
+
+      expect(spiedAuthenticator.authenticate).toHaveBeenCalledWith(data)
+
+      spiedAuthenticator.authenticate.mockClear()
+    })
+
+    it('allows single authenticator', () => {
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: spiedAuthenticator
+      })
       const mockStore = configureStore([middleware])
       const store = mockStore()
       const data = { username: 'test', password: 'password' }
@@ -220,7 +281,11 @@ describe('auth middleware', () => {
     it('calls authorize with authenticated data', () => {
       fetch.mockResponse(JSON.stringify({ ok: true }))
       const authorize = jest.fn()
-      const middleware = createAuthMiddleware({ storage, authorize })
+      const middleware = createAuthMiddleware({
+        storage,
+        authorize,
+        authenticator: spiedAuthenticator
+      })
       const mockStore = configureStore([middleware])
       const data = { token: '1235' }
       const store = mockStore({ session: { data }})
@@ -238,7 +303,11 @@ describe('auth middleware', () => {
       const authorize = (data, block) => {
         block('Authorization', data.token)
       }
-      const middleware = createAuthMiddleware({ storage, authorize })
+      const middleware = createAuthMiddleware({
+        storage,
+        authorize,
+        authenticator: spiedAuthenticator
+      })
       const mockStore = configureStore([middleware])
       const data = { token: '1235' }
       const store = mockStore({ session: { data }})
