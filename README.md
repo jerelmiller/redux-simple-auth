@@ -139,7 +139,7 @@ const credentialsAuthenticator = createAuthenticator({
 })
 ```
 
-**Usage:**
+**Options:**
 
 * `name` (_string_): The name of the authenticator. This is used by the
   middleware to identify the authenticator used during the lifecycle of the
