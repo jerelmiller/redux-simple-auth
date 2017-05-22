@@ -119,9 +119,9 @@ const authMiddleware = createAuthMiddleware({
 
 Authenticators implement the business logic responsible for authenticating the
 session. An application may have one or many authenticators such as
-authenticating credentials with one's own backend server, Facebook login, Github
-login, etc. The authentication strategy chosen is dependent on the action
-dispatched with the authentication payload.
+authenticating credentials with one's own server, Facebook login, Github login,
+etc. The authentication strategy chosen is dependent on the action dispatched
+with the authentication payload.
 
 ```javascript
 store.dispatch(authenticate('credentials', { email, password }))
