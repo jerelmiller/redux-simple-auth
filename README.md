@@ -59,7 +59,7 @@ export default combineReducers({
 })
 ```
 
-## Configuring the middleware
+## How does it work?
 
 Redux Simple Auth aims to make authentication and authorization within your
 application as flexible as possible. To get familiar with how to build
@@ -83,7 +83,7 @@ reload.
 Authorizers are responsible for using the data stored in a session to generate
 authorization data that can be injected into outgoing requests.
 
----
+## Configuration
 
 To configure the middleware, simply pass the `createAuthMiddleware` function the
 configuration needed for your application. You may find more documentation on
@@ -92,6 +92,8 @@ each of these options below.
 ```javascript
 const authMiddleware = createAuthMiddleware({
   authenticator: credentialsAuthenticator,
+  // or
+  authenticators: [facebookAuthenticator, githubAuthenticator],
   authorize: jwtAuthorizer,
   storage: localStorageStore
 })
@@ -101,7 +103,7 @@ const authMiddleware = createAuthMiddleware({
 
 * `authenticator` (_object_): An authenticator used to authenticate the session.
   This option is typically used if you only need a single method of
-  authentication.
+  authentication. This should not be used in conjunction with `authenticators`.
 
 * `authenticators` (_array_): An array of authenticators. If your application
   offers more than one method of authentication (Facebook Login, Github login,
