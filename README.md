@@ -22,26 +22,39 @@ yarn add redux-simple-auth
 
 ## Usage
 
-**configureStore.js**
+#### Setup
+
+This library ships with middleware and a reducer. You will need to do the
+following:
+
+**Apply the middleware**
+
 ```javascript
 import { createStore, applyMiddleware } from 'redux'
 import { createAuthMiddleware } from 'redux-simple-auth'
 import rootReducer from './reducers'
 
-const authMiddleware = createAuthMiddleware()
+// Authenticators and configuration options are discussed below
+const authMiddleware = createAuthMiddleware({ authenticator: myAuthenticator })
 
 const store = createStore(
   rootReducer,
+  /* initialState, */
   applyMiddleware(authMiddleware)
 )
 ```
 
-**reducers/index.js**
+**Add the reducer**
+
+You will need to apply the reducer as `session`. Redux Simple Auth does not
+support custom names for the reducer key.
+
 ```javascript
 import { combineReducers } from 'redux'
 import { reducer as session } from 'redux-simple-auth'
 
 export default combineReducers({
+  // ...reducers
   session
 })
 ```
