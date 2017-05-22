@@ -83,6 +83,51 @@ reload.
 Authorizers are responsible for using the data stored in a session to generate
 authorization data that can be injected into outgoing requests.
 
+#### Authenticators
+
+Authenticators implement the business logic responsible for authenticating the
+session. An application may have one or many authenticators such as
+authenticating credentials with one's own backend server, Facebook login, Github
+login, etc. The authentication strategy chosen is dependent on the action
+dispatched with the authentication payload.
+
+```javascript
+store.dispatch(authenticate('credentials', { email, password }))
+```
+
+Redux Simple Auth does not currently ship with any built-in authenticators out
+of the box. There are plans to implement authenticators as this library matures.
+For now, refer to the [custom
+authenticators](#implementing-a-custom-authenticators) documentation to build
+your own.
+
+##### Implementing a custom authenticator
+
+```javascript
+import { createAuthMiddleware, createAuthenticator } from 'redux-simple-auth'
+
+const credentialsAuthenticator = createAuthenticator({
+  name: 'credentials',
+  authenticate(credentials) {
+    return fetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify(credentials)
+    }).then(({ token }) => ({ token }))
+  },
+  restore(data) {
+    if (data.token) {
+      return Promise.resolve(data)
+    }
+
+    return Promise.reject()
+  }
+})
+
+const authMiddleware = createAuthMiddleware({
+  authenticators: [credentialsAuthenticator]
+})
+```
+
 
 **Changing the session storage**
 ```javascript
@@ -108,31 +153,6 @@ const authMiddleware = createAuthMiddleware({
 })
 ```
 
-**Defining authenticators**
-```javascript
-import { createAuthMiddleware, createAuthenticator } from 'redux-simple-auth'
-
-const credentialsAuthenticator = createAuthenticator({
-  name: 'credentials',
-  authenticate(credentials) {
-    return fetch('/api/login', {
-      method: 'POST',
-      body: JSON.stringify(credentials)
-    }).then(({ token }) => ({ token }))
-  },
-  restore(data) {
-    if (data.token) {
-      return Promise.resolve(data)
-    }
-
-    return Promise.reject()
-  }
-})
-
-const authMiddleware = createAuthMiddleware({
-  authenticators: [credentialsAuthenticator]
-})
-```
 
 **Define an authorizer**
 ```javascript
