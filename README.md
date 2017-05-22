@@ -61,6 +61,29 @@ export default combineReducers({
 
 ### Configuring the middleware
 
+Redux Simple Auth aims to make authentication and authorization within your
+application as flexible as possible. To get familiar with how to build
+authentication into your application, you will need to get familiar with a few
+terms.
+
+**Authenticator**
+
+An authenticator defines how your application authenticates a user and creates a
+session. An application may have one or many authenticators. The data returned
+from an authenticator will be saved using the specified session storage
+mechanism.
+
+**Session Storage**
+
+The session store persists the session state so that it may survive a page
+reload.
+
+**Authorizer**
+
+Authorizers are responsible for using the data stored in a session to generate
+authorization data that can be injected into outgoing requests.
+
+
 **Changing the session storage**
 ```javascript
 import { createAuthMiddleware } from 'redux-simple-auth'
