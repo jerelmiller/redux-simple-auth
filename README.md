@@ -271,7 +271,7 @@ If `localStorage` is available the adaptive store will use the local storage
 store. If not, it will fallback to using the cookie store. This is the default
 store.
 
-#### Customizing a built-in store
+### Customizing a built-in store
 
 It is easy to customize a store. To do so, just import its respective `create*`
 function to define it.
