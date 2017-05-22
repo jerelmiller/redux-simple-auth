@@ -9,11 +9,6 @@ import {
 } from './actions'
 
 export default (config = {}) => {
-  const storage = config.storage || createAdaptiveStore()
-  const authorize = config.authorize
-  const authenticator = config.authenticator || config.authenticators || []
-  const authenticators = [].concat(authenticator)
-
   if (config.authenticator == null && config.authenticators == null) {
     throw new Error(
       'No authenticator was given. Be sure to configure an authenticator ' +
@@ -35,6 +30,11 @@ export default (config = {}) => {
       'authenticators, consider using the `authenticators` option.'
     )
   }
+
+  const storage = config.storage || createAdaptiveStore()
+  const authorize = config.authorize
+  const authenticator = config.authenticator || config.authenticators || []
+  const authenticators = [].concat(authenticator)
 
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
