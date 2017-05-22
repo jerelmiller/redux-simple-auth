@@ -226,6 +226,17 @@ Session storage is responsible for persisting the session state so that it may
 survive a page refresh. Only one session store can be defined per application.
 Redux Simple Auth makes it easy to swap the session storage to meet your needs.
 
+```javascript
+import { createAuthMiddleware } from 'redux-simple-auth'
+import { createLocalStorageStore } from 'redux-simple-auth/storage'
+
+const localStorageStore = createLocalStorageStore()
+
+const authMiddleware = createAuthMiddleware({
+  storage: localStorageStore
+})
+```
+
 ### Built-in session stores
 
 Redux Simple Auth ships with 3 session stores.
@@ -244,32 +255,101 @@ If `localStorage` is available the adaptive store will use the local storage
 store. If not, it will fallback to using the cookie store. This is the default
 store.
 
-**Changing the session storage**
+#### Customizing a built-in store
+
+It is easy to customize a store. To do so, just import its respective `create*`
+function to define it.
+
+**`localStorage` store**
+
 ```javascript
 import { createAuthMiddleware } from 'redux-simple-auth'
 import { createLocalStorageStore } from 'redux-simple-auth/storage'
 
-const localStorageStore = createLocalStorageStore()
+const localStorageStore = createLocalStorageStore({
+  key: 'my-custom-app-key'
+})
 
 const authMiddleware = createAuthMiddleware({
   storage: localStorageStore
 })
 ```
 
-**Using a cookie store**
+**Options:**
+
+* `key` (_string_): The `localStorage` key used to persist the session.
+  * _Default_: `'redux-simple-auth-session'`
+
+**Cookie store**
+
 ```javascript
 import { createAuthMiddleware } from 'redux-simple-auth'
 import { createCookieStore } from 'redux-simple-auth/storage'
 
-const cookieStore = createCookieStore()
+const cookieStore = createCookieStore({
+  name: 'my-custom-app-cookie',
+  path: '/',
+  domain: 'example.com',
+  secure: true,
+  expires: 120
+})
 
 const authMiddleware = createAuthMiddleware({
   storage: cookieStore
 })
 ```
 
+**Options:**
 
-**Define an authorizer**
+* `name` (_string_): The name of the cookie used to persist the session
+  * _Default_: `'redux-simple-auth-session'`
+
+* `path` (_string_): A custom path used for the cookie (e.g. `'/something'`)
+  * _Default_: `'/'`
+
+* `domain` (_string_): The domain to use for the cookie (e.g. `'example.com'`,
+  `.example.com` to include all subdomains, or `'subdomain.example.com'`). If
+  not explicitly set, the cookie domain will default to the domain the session
+  was authenticated on.
+  * _Default_: `null`
+
+* `secure` (_boolean_): Determines how the cookie should set the secure flag.
+  * _Default_: `false`
+
+* `expires` (_number_): The expiration time for the cookie in seconds. A value
+  of `null` will make the cookie expire and get deleted when the browser is
+  closed.
+  * _Default_: `null`
+
+**Adaptive Store**
+
+```javascript
+import { createAuthMiddleware } from 'redux-simple-auth'
+import { createAdaptiveStore } from 'redux-simple-auth/storage'
+
+const adaptiveStore = createAdaptiveStore({
+  localStorageKey: 'my-custom-app-key',
+  cookieName: 'my-custom-app-name',
+  cookiePath: '/',
+  cookieDomain: 'example.com',
+  cookieSecure: true,
+  cookieExpires: 120
+})
+
+const authMiddleware = createAuthMiddleware({
+  storage: adaptiveStore
+})
+```
+
+**Options:**
+
+See the options for each store to for usage and defaults. If local storage is
+available, the local storage store will get created using the local storage
+options. If not, the cookie options will be passed to the cookie store upon
+creation.
+
+## Authorizer
+
 ```javascript
 const authMiddleware = createAuthMiddleware({
   authorize(data, block) {
