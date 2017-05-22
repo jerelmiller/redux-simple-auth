@@ -92,6 +92,15 @@ describe('auth middleware', () => {
         'authenticator, consider using the `authenticator` option.'
       )
     })
+
+    it('throws when authenticator is an array', () =>{
+      expect(() =>
+        createAuthMiddleware({ storage, authenticator: [spiedAuthenticator] })
+      ).toThrow(
+        'Expected `authenticator` to be an object. If you need multiple ' +
+        'authenticators, consider using the `authenticators` option.'
+      )
+    })
   })
 
   describe('when authenticated data changes', () => {

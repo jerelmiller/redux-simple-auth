@@ -29,6 +29,13 @@ export default (config = {}) => {
     )
   }
 
+  if (Array.isArray(config.authenticator) && config.authenticators == null) {
+    throw new Error(
+      'Expected `authenticator` to be an object. If you need multiple ' +
+      'authenticators, consider using the `authenticators` option.'
+    )
+  }
+
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
 
