@@ -83,6 +83,15 @@ describe('auth middleware', () => {
         'using the `authenticators` option to allow multiple authenticators'
       )
     })
+
+    it('throws when authenticators are not an array', () => {
+      expect(() =>
+        createAuthMiddleware({ storage, authenticators: spiedAuthenticator })
+      ).toThrow(
+        'Expected `authenticators` to be an array. If you only need a single ' +
+        'authenticator, consider using the `authenticator` option.'
+      )
+    })
   })
 
   describe('when authenticated data changes', () => {

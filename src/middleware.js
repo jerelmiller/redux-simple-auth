@@ -22,6 +22,13 @@ export default (config = {}) => {
     )
   }
 
+  if (!Array.isArray(config.authenticators) && config.authenticator == null) {
+    throw new Error(
+      'Expected `authenticators` to be an array. If you only need a single ' +
+      'authenticator, consider using the `authenticator` option.'
+    )
+  }
+
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
 
