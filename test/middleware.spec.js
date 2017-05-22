@@ -98,6 +98,23 @@ describe('auth middleware', () => {
       spiedAuthenticator.authenticate.mockClear()
     })
 
+    it('allows single authenticator', () => {
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: spiedAuthenticator
+      })
+      const mockStore = configureStore([middleware])
+      const store = mockStore()
+      const data = { username: 'test', password: 'password' }
+      const action = authenticate('test', data)
+
+      store.dispatch(action)
+
+      expect(spiedAuthenticator.authenticate).toHaveBeenCalledWith(data)
+
+      spiedAuthenticator.authenticate.mockClear()
+    })
+
     describe('when authenticator is not found', () => {
       it('throws error', () => {
         const authenticator = createAuthenticator({

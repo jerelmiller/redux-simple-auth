@@ -10,8 +10,9 @@ import {
 
 export default (config = {}) => {
   const storage = config.storage || createAdaptiveStore()
-  const authenticators = config.authenticators || []
   const authorize = config.authorize
+  const authenticator = config.authenticator || config.authenticators || []
+  const authenticators = [].concat(authenticator)
 
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
