@@ -93,7 +93,7 @@ describe('auth middleware', () => {
       )
     })
 
-    it('throws when authenticator is an array', () =>{
+    it('throws when authenticator is an array', () => {
       expect(() =>
         createAuthMiddleware({ storage, authenticator: [spiedAuthenticator] })
       ).toThrow(
