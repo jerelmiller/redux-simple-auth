@@ -3,14 +3,10 @@
 
 # Redux Simple Auth
 
-Redux middleware inspired by the wonderful [Ember Simple
-Auth](http://ember-simple-auth.com/) library
-
-### DISCLAIMER: This package is still in active development
-
-Documentation is still very spotty and the API is very likely to change between
-now and completion. I plan to fully document usage as the API is more
-solidified.
+Redux Simple Auth is redux middleware for implementing authentication and
+authorization within redux applications. Inspired by the wonderful [Ember Simple
+Auth](http://ember-simple-auth.com/) library, its aim is to make authentication
+/ authorization simple and flexible for any application.
 
 ## Installation
 
