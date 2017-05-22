@@ -394,15 +394,42 @@ const authMiddleware = createAuthMiddleware({
 
 ## Authorizer
 
+An authorizer is responsible for setting up any needed data for outgoing network
+requests. This function is invoked by the middleware when a `fetch` action is
+dispatched.
+
+### Built-in authorizers
+
+Redux Simple Auth does not currently ship with any built-in authorizers. As this
+library matures, there are plans to implement some built-in authorizers. Refer
+to the [custom authorizers](#implementing-a-custom-authorizer) section to build
+your own.
+
+### Implementing a custom authorizer
+
+To implement a custom authorizer, simply define a function that accepts two
+arguments: the session data, and a callback function.
+
 ```javascript
-const authMiddleware = createAuthMiddleware({
-  authorize(data, block) {
-    if (data.token) {
-      block('Authorization', `Bearer ${token}`)
-    }
+
+const bearerAuthorizer = (data, block) => {
+  if (data.token) {
+    block('Authorization', `Bearer ${token}`)
   }
+}
+
+const authMiddleware = createAuthMiddleware({
+  authorizer: bearerAuthorizer
 })
 ```
+
+**Arguments:**
+
+* `data` (_object_): The session data
+
+* `block` (_function_): A callback function responsible for defining any headers
+  needed for authorization. It accepts a header name for its first argument and
+  that header's value as its second argument.
 
 ### Actions
 
