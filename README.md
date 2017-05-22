@@ -162,15 +162,15 @@ const credentialsAuthenticator = createAuthenticator({
 
 * `authenticate(data)` (_function_): A function responsible for implementing the
   logic responsible for authentication. This function will be invoked when the
-  `authenticate` action is dispatched. It accepts a single argument of data
-  given to the `authenticate` action and must return a promise. A resolved
-  promise will indicate that the session is successfully authenticated. Any data
-  resolved with the promise will be stored and accessible via the `session`
-  state. A rejected promise will indicate authentication failed and will result
-  in an unauthenticated session. Note that a default implementation of this
-  function is defined if none is given and always returns a rejected promise
-  resulting in an unauthenticated session. It is important that this function is
-  defined when creating your authenticator.
+  [`authenticate`](#authenticateauthenticator-payload) action is dispatched. It
+  accepts a single argument of data given to the `authenticate` action and must
+  return a promise. A resolved promise will indicate that the session is
+  successfully authenticated. Any data resolved with the promise will be stored
+  and accessible via the `session` state. A rejected promise will indicate
+  authentication failed and will result in an unauthenticated session. Note that
+  a default implementation of this function is defined if none is given and
+  always returns a rejected promise resulting in an unauthenticated session. It
+  is important that this function is defined when creating your authenticator.
 
 * `restore(data)` (_function_): A function used to restore the session,
   typically after a page refresh. This function will be invoked when the
