@@ -2,8 +2,7 @@ export default (
   {
     name,
     restore = () => Promise.reject(),
-    authenticate = () => Promise.reject(),
-    invalidate = () => Promise.resolve()
+    authenticate = () => Promise.reject()
   } = {}
 ) => {
   if (name == null) {
@@ -19,7 +18,6 @@ export default (
   return {
     name,
     restore,
-    authenticate,
-    invalidate
+    authenticate
   }
 }
