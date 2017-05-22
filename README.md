@@ -403,7 +403,7 @@ arguments: the session data, and a callback function.
 
 const bearerAuthorizer = (data, block) => {
   if (data.token) {
-    block('Authorization', `Bearer ${token}`)
+    block('Authorization', `Bearer ${data.token}`)
   }
 }
 
