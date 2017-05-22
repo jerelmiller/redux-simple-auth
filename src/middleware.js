@@ -36,9 +36,9 @@ export default ({
     )
   }
 
-  const findAuthenticator = authenticator ?
-    () => authenticator :
-    name => authenticators.find(authenticator => authenticator.name === name)
+  const findAuthenticator = authenticator
+    ? () => authenticator
+    : name => authenticators.find(authenticator => authenticator.name === name)
 
   return ({ dispatch, getState }) => {
     const { authenticated = {}} = storage.restore()
