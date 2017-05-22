@@ -1,4 +1,5 @@
 import createAdaptiveStore from './storage/adaptive'
+import isPlainObject from 'lodash.isplainobject'
 import { AUTHENTICATE, FETCH } from './actionTypes'
 import {
   authenticateFailed,
@@ -8,14 +9,7 @@ import {
   restoreFailed
 } from './actions'
 
-export default (
-  {
-    authenticator,
-    authenticators,
-    authorize,
-    storage = createAdaptiveStore()
-  } = {}
-) => {
+const validateAuthenticatorsPresence = ({ authenticator, authenticators }) => {
   if (authenticator == null && authenticators == null) {
     throw new Error(
       'No authenticator was given. Be sure to configure an authenticator ' +
@@ -23,20 +17,43 @@ export default (
         'using the `authenticators` option to allow multiple authenticators'
     )
   }
+}
 
-  if (!Array.isArray(authenticators) && authenticator == null) {
+const validateAuthenticatorsIsArray = authenticators => {
+  if (!Array.isArray(authenticators)) {
     throw new Error(
       'Expected `authenticators` to be an array. If you only need a single ' +
         'authenticator, consider using the `authenticator` option.'
     )
   }
+}
 
-  if (Array.isArray(authenticator) && authenticators == null) {
+const validateAuthenticatorIsObject = authenticator => {
+  if (!isPlainObject(authenticator)) {
     throw new Error(
       'Expected `authenticator` to be an object. If you need multiple ' +
         'authenticators, consider using the `authenticators` option.'
     )
   }
+}
+
+const validateConfig = config => {
+  const { authenticator, authenticators } = config
+
+  validateAuthenticatorsPresence(config)
+  authenticator == null && validateAuthenticatorsIsArray(authenticators)
+  authenticators == null && validateAuthenticatorIsObject(authenticator)
+}
+
+export default (config = {}) => {
+  validateConfig(config)
+
+  const {
+    authenticator,
+    authenticators,
+    authorize,
+    storage = createAdaptiveStore()
+  } = config
 
   const findAuthenticator = authenticator
     ? () => authenticator

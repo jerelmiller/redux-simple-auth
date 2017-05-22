@@ -62,7 +62,8 @@
     "whatwg-fetch": "^2.0.3"
   },
   "dependencies": {
-    "js-cookie": "^2.1.4"
+    "js-cookie": "^2.1.4",
+    "lodash.isplainobject": "^4.0.6"
   },
   "jest": {
     "setupFiles": [
