@@ -364,6 +364,34 @@ available, the local storage store will get created using the local storage
 options. If not, the cookie options will be passed to the cookie store upon
 creation.
 
+### Implementing a custom session store
+
+To implement your own session store, simply define an object that handles the
+serialization and deserialization of data.
+
+```javascript
+const mySessionStorage = {
+  persist(data) {
+    doSomethingWithData(JSON.stringify(data))
+  },
+  restore() {
+    return JSON.parse(getMyDataBack()) || {}
+  }
+}
+
+const authMiddleware = createAuthMiddleware({
+  storage: mySessionStorage
+})
+```
+
+**Options:**
+
+* `persist` (_function_): A serialization function that persists the session
+  data.
+
+* `restore` (_function_): A deserialization function that restores session data.
+
+
 ## Authorizer
 
 ```javascript
