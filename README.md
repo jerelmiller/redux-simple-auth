@@ -384,8 +384,8 @@ const authMiddleware = createAuthMiddleware({
 ## Authorizer
 
 An authorizer is responsible for setting up any needed data for outgoing network
-requests. This function is invoked by the middleware when a `fetch` action is
-dispatched.
+requests. This function is invoked by the middleware when a
+[`fetch`](#fetchurl-options) action is dispatched.
 
 ### Built-in authorizers
 
