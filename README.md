@@ -361,7 +361,7 @@ serialization and deserialization of data.
 ```javascript
 const mySessionStorage = {
   persist(data) {
-    doSomethingWithData(JSON.stringify(data))
+    saveMyData(JSON.stringify(data))
   },
   restore() {
     return JSON.parse(getMyDataBack()) || {}
