@@ -111,22 +111,93 @@ store.dispatch(authenticate('credentials', { email, password }))
 
 ### Built-in authenticators
 
-Redux Simple Auth does not currently ship with any built-in authenticators out
-of the box. There are plans to implement authenticators as this library matures.
-For now, refer to the [custom
-authenticators](#implementing-a-custom-authenticator) documentation to build
-your own.
+Redux Simple Auth does not currently ship with any built-in authenticators.
+There are plans to implement authenticators as this library matures. For now,
+refer to the [custom authenticators](#implementing-a-custom-authenticator)
+documentation to build your own.
 
 ### Implementing a custom authenticator
 
+To implement your own custom authenticator, you will need to import the
+`createAuthenticator` function from Redux Simple Auth. To create the
+authenticator, simply call the function with a configuration object.
+
+```javascript
+import { createAuthenticator } from 'redux-simple-auth'
+
+const credentialsAuthenticator = createAuthenticator({
+  name: 'credentials',
+  authenticate(data) {
+    // ...
+  },
+  restore(data) {
+    // ...
+  },
+  invalidate(data) {
+    // ...
+  }
+})
+```
+
+**Usage:**
+
+* `name` (_string_): The name of the authenticator. This is used by the
+  middleware to identify the authenticator used during the lifecycle of the
+  session.
+
+* `authenticate(data)` (_function_): A function responsible for implementing the
+  logic responsible for authentication. This function will be invoked when the
+  `authenticate` action is dispatched. It accepts a single argument of data
+  given to the `authenticate` action and must return a promise. A resolved
+  promise will indicate that the session is successfully authenticated. Any data
+  resolved with the promise will be stored and accessible via the `session`
+  state. A rejected promise will indicate authentication failed and will result
+  in an unauthenticated session. Note that a default implementation of this
+  function is defined if none is given and always returns a rejected promise
+  resulting in an unauthenticated session. It is important that this function is
+  defined when creating your authenticator.
+
+* `restore(data)` (_function_): A function used to restore the session,
+  typically after a page refresh. This function will be invoked when the
+  middleware is first created. It accepts an argument with the data persisted to
+  the session and must return a promise. A resolved promise indicates the
+  session restore was successful and will result in the session successfully
+  authenticated. A rejected promise indicates the session restore was
+  unsuccessful and will result in an unauthenticated session. Note that a
+  default implementation of this function is defined if none is given and always
+  returns a rejected promise resulting in an unauthenticated session. It is
+  important that you define this function when creating your authenticator.
+
+* `invalidate(data)` (_function_): A function used to implement any cleanup
+  logic when the session is invalidated. While the middleware and reducer will
+  be responsible for clearing out the session data, you may need to perform some
+  additional tasks such as invalidating an access token with your server. This
+  function accepts an argument of the session data and must return a promise. A
+  resolved promise indicates success and will result in a session becoming
+  unauthenticated. A rejected promise will indicate failure and will result in a
+  session remaining authenticated. Note that a default implementation of this
+  function is defined if none is given which always returns a resolved promise.
+
+**Example:**
+
+Let's create a basic credentials authenticator that accepts an email and
+password. The authenticator will use the credentials, authenticate with the
+server, and return a token given by the server upon successful authentication.
+
+`configureStore.js`
+
 ```javascript
 import { createAuthMiddleware, createAuthenticator } from 'redux-simple-auth'
+import { createStore, applyMiddleware } from 'redux'
 
 const credentialsAuthenticator = createAuthenticator({
   name: 'credentials',
   authenticate(credentials) {
     return fetch('/api/login', {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify(credentials)
     }).then(({ token }) => ({ token }))
   },
@@ -140,10 +211,14 @@ const credentialsAuthenticator = createAuthenticator({
 })
 
 const authMiddleware = createAuthMiddleware({
-  authenticators: [credentialsAuthenticator]
+  authenticator: credentialsAuthenticator
+})
+
+// if combined with other authenticators
+const authMiddleware = createAuthMiddleware({
+  authenticators: [...authenticators, credentialsAuthenticator]
 })
 ```
-
 
 **Changing the session storage**
 ```javascript
