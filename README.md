@@ -97,6 +97,22 @@ const authMiddleware = createAuthMiddleware({
 })
 ```
 
+**Options:**
+
+* `authenticator` (_object_): An authenticator used to authenticate the session.
+  This option is typically used if you only need a single method of
+  authentication.
+
+* `authenticators` (_array_): An array of authenticators. If your application
+  offers more than one method of authentication (Facebook Login, Github login,
+  etc), you will pass the array of authenticators here. This option will be
+  ignored if you use the `authenticator` option.
+
+* `storage` (_object_): The storage mechanism used to persist the session.
+
+* `authorize` (_function_): An authorization function used to attach header
+  information to outgoing network requests.
+
 ## Authenticators
 
 Authenticators implement the business logic responsible for authenticating the
