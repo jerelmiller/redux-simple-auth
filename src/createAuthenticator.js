@@ -3,9 +3,15 @@ export default ({
   restore = () => Promise.reject(),
   authenticate = () => Promise.reject(),
   invalidate = () => Promise.resolve()
-} = {}) => ({
-  name,
-  restore,
-  authenticate,
-  invalidate
-})
+} = {}) => {
+  if (name == null) {
+    throw new Error('Authenticators must define a `name` property')
+  }
+
+  return {
+    name,
+    restore,
+    authenticate,
+    invalidate
+  }
+}

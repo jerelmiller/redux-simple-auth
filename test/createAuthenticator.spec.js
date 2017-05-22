@@ -2,9 +2,17 @@
 import { createAuthenticator } from '../src'
 
 describe('createAuthenticator', () => {
+  describe('config', () => {
+    it('throws when no name is given', () => {
+      expect(() => createAuthenticator()).toThrow(
+        'Authenticators must define a `name` property'
+      )
+    })
+  })
+
   describe('#restore', () => {
     it('defaults to return a rejected promise', () => {
-      const authenticator = createAuthenticator()
+      const authenticator = createAuthenticator({ name: 'test' })
 
       const promise = authenticator.restore()
 
@@ -14,7 +22,7 @@ describe('createAuthenticator', () => {
 
   describe('#authenticate', () => {
     it('defaults to return a rejected promise', () => {
-      const authenticator = createAuthenticator()
+      const authenticator = createAuthenticator({ name: 'test' })
 
       const promise = authenticator.authenticate()
 
@@ -24,7 +32,7 @@ describe('createAuthenticator', () => {
 
   describe('#invalidate', () => {
     it('defaults to return a resolved promise', () => {
-      const authenticator = createAuthenticator()
+      const authenticator = createAuthenticator({ name: 'test' })
 
       const promise = authenticator.invalidate()
 
