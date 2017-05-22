@@ -83,6 +83,20 @@ reload.
 Authorizers are responsible for using the data stored in a session to generate
 authorization data that can be injected into outgoing requests.
 
+---
+
+To configure the middleware, simply pass the `createAuthMiddleware` function the
+configuration needed for your application. You may find more documentation on
+each of these options below.
+
+```javascript
+const middleware = createAuthMiddleware({
+  authenticator: credentialsAuthenticator,
+  authorize: jwtAuthorizer,
+  storage: localStorageStore
+})
+```
+
 #### Authenticators
 
 Authenticators implement the business logic responsible for authenticating the
