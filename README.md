@@ -59,7 +59,7 @@ export default combineReducers({
 })
 ```
 
-### Configuring the middleware
+## Configuring the middleware
 
 Redux Simple Auth aims to make authentication and authorization within your
 application as flexible as possible. To get familiar with how to build
@@ -97,7 +97,7 @@ const authMiddleware = createAuthMiddleware({
 })
 ```
 
-#### Authenticators
+## Authenticators
 
 Authenticators implement the business logic responsible for authenticating the
 session. An application may have one or many authenticators such as
@@ -109,13 +109,15 @@ dispatched with the authentication payload.
 store.dispatch(authenticate('credentials', { email, password }))
 ```
 
+### Built-in authenticators
+
 Redux Simple Auth does not currently ship with any built-in authenticators out
 of the box. There are plans to implement authenticators as this library matures.
 For now, refer to the [custom
-authenticators](#implementing-a-custom-authenticators) documentation to build
+authenticators](#implementing-a-custom-authenticator) documentation to build
 your own.
 
-##### Implementing a custom authenticator
+### Implementing a custom authenticator
 
 ```javascript
 import { createAuthMiddleware, createAuthenticator } from 'redux-simple-auth'
