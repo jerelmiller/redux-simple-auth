@@ -220,6 +220,30 @@ const authMiddleware = createAuthMiddleware({
 })
 ```
 
+## Session Storage
+
+Session storage is responsible for persisting the session state so that it may
+survive a page refresh. Only one session store can be defined per application.
+Redux Simple Auth makes it easy to swap the session storage to meet your needs.
+
+### Built-in session stores
+
+Redux Simple Auth ships with 3 session stores.
+
+**`localStorage` Store**
+
+The local storage store stores its data in the browser's `localStorage`.
+
+**Cookie Store**
+
+The cookie store stores its data in a cookie.
+
+**Adaptive Store**
+
+If `localStorage` is available the adaptive store will use the local storage
+store. If not, it will fallback to using the cookie store. This is the default
+store.
+
 **Changing the session storage**
 ```javascript
 import { createAuthMiddleware } from 'redux-simple-auth'
