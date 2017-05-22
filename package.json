@@ -10,7 +10,14 @@
     "test:watch": "yarn test -- --watch",
     "build:commonjs": "BABEL_ENV=commonjs babel src --out-dir lib",
     "build": "yarn run build:commonjs",
+    "precommit": "lint-staged",
     "prepublish": "yarn run clean && yarn run lint && yarn run test && yarn run build"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --stdin --single-quote --no-semi --write",
+      "git add"
+    ]
   },
   "files": [
     "lib",
