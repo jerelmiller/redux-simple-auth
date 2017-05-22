@@ -90,7 +90,7 @@ configuration needed for your application. You may find more documentation on
 each of these options below.
 
 ```javascript
-const middleware = createAuthMiddleware({
+const authMiddleware = createAuthMiddleware({
   authenticator: credentialsAuthenticator,
   authorize: jwtAuthorizer,
   storage: localStorageStore
