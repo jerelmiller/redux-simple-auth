@@ -14,6 +14,14 @@ export default (config = {}) => {
   const authenticator = config.authenticator || config.authenticators || []
   const authenticators = [].concat(authenticator)
 
+  if (config.authenticator == null && config.authenticators == null) {
+    throw new Error(
+      'No authenticator was given. Be sure to configure an authenticator ' +
+      'by using the `authenticator` option for a single authenticator or ' +
+      'using the `authenticators` option to allow multiple authenticators'
+    )
+  }
+
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
 

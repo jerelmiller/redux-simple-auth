@@ -33,15 +33,21 @@ afterEach(() => {
 })
 
 describe('auth middleware', () => {
-  const middleware = createAuthMiddleware({ storage })
-
   it('returns a function that handles {getState, dispatch}', () => {
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: spiedAuthenticator
+    })
     expect(middleware).toBeInstanceOf(Function)
     expect(middleware.length).toBe(1)
   })
 
   describe('store handler', () => {
     it('returns function that handles next', () => {
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: spiedAuthenticator
+      })
       const nextHandler = middleware({})
 
       expect(nextHandler).toBeInstanceOf(Function)
@@ -51,11 +57,31 @@ describe('auth middleware', () => {
 
   describe('action handler', () => {
     it('action handler returns a function that handles action', () => {
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: spiedAuthenticator
+      })
       const nextHandler = middleware({})
       const actionHandler = nextHandler()
 
       expect(actionHandler).toBeInstanceOf(Function)
       expect(actionHandler.length).toBe(1)
+    })
+  })
+
+  describe('config', () => {
+    it('throws when no authenticator is given', () => {
+      expect(() =>
+        createAuthMiddleware({
+          storage,
+          authenticator: undefined,
+          authenticators: undefined
+        })
+      ).toThrow(
+        'No authenticator was given. Be sure to configure an authenticator ' +
+        'by using the `authenticator` option for a single authenticator or ' +
+        'using the `authenticators` option to allow multiple authenticators'
+      )
     })
   })
 
@@ -237,7 +263,11 @@ describe('auth middleware', () => {
     it('calls authorize with authenticated data', () => {
       fetch.mockResponse(JSON.stringify({ ok: true }))
       const authorize = jest.fn()
-      const middleware = createAuthMiddleware({ storage, authorize })
+      const middleware = createAuthMiddleware({
+        storage,
+        authorize,
+        authenticator: spiedAuthenticator
+      })
       const mockStore = configureStore([middleware])
       const data = { token: '1235' }
       const store = mockStore({ session: { data }})
@@ -255,7 +285,11 @@ describe('auth middleware', () => {
       const authorize = (data, block) => {
         block('Authorization', data.token)
       }
-      const middleware = createAuthMiddleware({ storage, authorize })
+      const middleware = createAuthMiddleware({
+        storage,
+        authorize,
+        authenticator: spiedAuthenticator
+      })
       const mockStore = configureStore([middleware])
       const data = { token: '1235' }
       const store = mockStore({ session: { data }})
