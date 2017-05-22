@@ -462,7 +462,7 @@ store.dispatch(
   The middleware will pass this payload as an argument directly to the
   `authenticate` function.
 
-### `fetch`
+### `fetch(url, [options])`
 
 Fetch an endpoint that requires authentication. If an authorizer is configured
 with the the middleware, the middleware will invoke the authorizer to attach any
@@ -489,7 +489,7 @@ store.dispatch(
 // etc
 ```
 
-### `invalidateSession`
+### `invalidateSession()`
 
 Invalidate the session. This will clear the authenticated session data and
 result in an unauthenticated session.
