@@ -431,9 +431,16 @@ const authMiddleware = createAuthMiddleware({
   needed for authorization. It accepts a header name for its first argument and
   that header's value as its second argument.
 
-### Actions
+## Actions
 
-Authenticate with a named authenticator:
+Redux Simple Auth ships with several actions to aide in authentication for your
+app. Simply import them and dispatch them as necessary.
+
+### `authenticate(authenticator, payload)`
+
+To authenticate the session, use the authenticate action. The middleware will
+look up the corresponding authenticator and invoke its `authenticate` function.
+
 ```javascript
 import { authenticate } from 'redux-simple-auth'
 
@@ -445,22 +452,54 @@ store.dispatch(
 )
 ```
 
-Invalidate the session:
+**Arguments:**
+
+* `authenticator` (_string_): The name of the authenticator used for
+  authentication. The middleware will invoke this authenticator's `authenticate`
+  function.
+
+* `payload` (_any_): The payload given to the authenticator when authenticating.
+  The middleware will pass this payload as an argument directly to the
+  `authenticate` function.
+
+### `fetch`
+
+Fetch an endpoint that requires authentication. If an authorizer is configured
+with the the middleware, the middleware will invoke the authorizer to attach any
+headers needed for authentication.
+
+It is important that you use this action and forego using `window.fetch` when
+interacting with a server that requires authentication using data defined in the
+session. This will invoke `window.fetch` under the hood after attaching any
+authorization specific information from the authorizer. The API is the same API
+used for `window.fetch` so you may use it interchangeably.
+
+```javascript
+import { fetch } from 'redux-simple-auth'
+
+store.dispatch(
+  fetch('https://www.example.com/me', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name: 'Bob' })
+  })
+).then(res => res.json())
+// etc
+```
+
+### `invalidateSession`
+
+Invalidate the session. This will clear the authenticated session data and
+result in an unauthenticated session.
+
 ```javascript
 import { invalidateSession } from 'redux-simple-auth'
 
 store.dispatch(invalidateSession())
 ```
 
-Fetch an endpoint that requires authentication. Uses authorize function passed
-to middleware.
-```javascript
-import { fetch } from 'redux-simple-auth'
-
-store.dispatch(
-  fetch('https://www.example.com/me')
-)
-```
 
 ## License
 
