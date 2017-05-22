@@ -8,8 +8,13 @@ import {
   restoreFailed
 } from './actions'
 
-export default (config = {}) => {
-  if (config.authenticator == null && config.authenticators == null) {
+export default ({
+  authenticator,
+  authenticators,
+  authorize,
+  storage = createAdaptiveStore()
+} = {}) => {
+  if (authenticator == null && authenticators == null) {
     throw new Error(
       'No authenticator was given. Be sure to configure an authenticator ' +
       'by using the `authenticator` option for a single authenticator or ' +
@@ -17,24 +22,21 @@ export default (config = {}) => {
     )
   }
 
-  if (!Array.isArray(config.authenticators) && config.authenticator == null) {
+  if (!Array.isArray(authenticators) && authenticator == null) {
     throw new Error(
       'Expected `authenticators` to be an array. If you only need a single ' +
       'authenticator, consider using the `authenticator` option.'
     )
   }
 
-  if (Array.isArray(config.authenticator) && config.authenticators == null) {
+  if (Array.isArray(authenticator) && authenticators == null) {
     throw new Error(
       'Expected `authenticator` to be an object. If you need multiple ' +
       'authenticators, consider using the `authenticators` option.'
     )
   }
 
-  const storage = config.storage || createAdaptiveStore()
-  const authorize = config.authorize
-  const authenticator = config.authenticator || config.authenticators || []
-  const authenticators = [].concat(authenticator)
+  authenticators = authenticators || [].concat(authenticator)
 
   const findAuthenticator = name =>
     authenticators.find(authenticator => authenticator.name === name)
