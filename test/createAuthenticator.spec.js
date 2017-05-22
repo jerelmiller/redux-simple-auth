@@ -2,7 +2,7 @@
 import { createAuthenticator } from '../src'
 
 describe('createAuthenticator', () => {
-  describe('restore', () => {
+  describe('#restore', () => {
     it('defaults to return a rejected promise', () => {
       const authenticator = createAuthenticator()
 
@@ -12,7 +12,7 @@ describe('createAuthenticator', () => {
     })
   })
 
-  describe('authenticate', () => {
+  describe('#authenticate', () => {
     it('defaults to return a rejected promise', () => {
       const authenticator = createAuthenticator()
 
@@ -22,7 +22,7 @@ describe('createAuthenticator', () => {
     })
   })
 
-  describe('invalidate', () => {
+  describe('#invalidate', () => {
     it('defaults to return a resolved promise', () => {
       const authenticator = createAuthenticator()
 
