@@ -150,9 +150,6 @@ const credentialsAuthenticator = createAuthenticator({
   },
   restore(data) {
     // ...
-  },
-  invalidate(data) {
-    // ...
   }
 })
 ```
@@ -185,16 +182,6 @@ const credentialsAuthenticator = createAuthenticator({
   default implementation of this function is defined if none is given and always
   returns a rejected promise resulting in an unauthenticated session. It is
   important that you define this function when creating your authenticator.
-
-* `invalidate(data)` (_function_): A function used to implement any cleanup
-  logic when the session is invalidated. While the middleware and reducer will
-  be responsible for clearing out the session data, you may need to perform some
-  additional tasks such as invalidating an access token with your server. This
-  function accepts an argument of the session data and must return a promise. A
-  resolved promise indicates success and will result in a session becoming
-  unauthenticated. A rejected promise will indicate failure and will result in a
-  session remaining authenticated. Note that a default implementation of this
-  function is defined if none is given which always returns a resolved promise.
 
 **Example:**
 

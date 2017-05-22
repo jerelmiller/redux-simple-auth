@@ -35,14 +35,4 @@ describe('createAuthenticator', () => {
       expect(promise).rejects
     })
   })
-
-  describe('#invalidate', () => {
-    it('defaults to return a resolved promise', () => {
-      const authenticator = createAuthenticator({ name: 'test' })
-
-      const promise = authenticator.invalidate()
-
-      expect(promise).resolves
-    })
-  })
 })
