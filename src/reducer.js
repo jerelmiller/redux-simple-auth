@@ -55,3 +55,7 @@ const reducer = (state = initialState, action) => {
 }
 
 export default reducer
+
+export const getData = state => state.data
+export const getIsAuthenticated = state => state.isAuthenticated
+export const getAuthenticator = state => state.authenticator
