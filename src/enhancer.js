@@ -11,19 +11,17 @@ const validateStorage = storage => {
   }
 }
 
-const enhancer = ({ storage } = {}) => createStore => (
-  rootReducer,
-  preloadedState,
-  enhancer
-) => {
+const enhancer = ({ storage } = {}) => {
   validateStorage(storage)
 
-  const initialState = {
-    session: reducer(null, initialize(storage.restore())),
-    ...preloadedState
-  }
+  return createStore => (rootReducer, preloadedState, enhancer) => {
+    const initialState = {
+      session: reducer(null, initialize(storage.restore())),
+      ...preloadedState
+    }
 
-  return createStore(rootReducer, initialState, enhancer)
+    return createStore(rootReducer, initialState, enhancer)
+  }
 }
 
 export default enhancer
