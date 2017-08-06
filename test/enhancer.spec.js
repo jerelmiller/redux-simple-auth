@@ -3,7 +3,7 @@ import createMockStorage from './utils/testStorage'
 
 describe('enhancer', () => {
   it('returns enhanced store with initial storage state', () => {
-    const enhancedCreateStore = enhancer()
+    const enhancedCreateStore = enhancer({ storage: createMockStorage() })
 
     expect(enhancedCreateStore).toBeInstanceOf(Function)
   })
@@ -35,6 +35,13 @@ describe('enhancer', () => {
         }
       },
       mock
+    )
+  })
+
+  it('throws when no storage given', () => {
+    expect(() => enhancer({ storage: null })).toThrow(
+      'Expected `storage` to be a valid storage. You either forgot to ' +
+        'include it or you passed an invalid storage object'
     )
   })
 })
