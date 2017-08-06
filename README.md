@@ -60,7 +60,7 @@ export default combineReducers({
 })
 ```
 
-##### Optionally add the store enhancer (see below for details)
+##### Optionally add the store enhancer
 
 In order to use the enhancer, you will need to provide it with the storage used.
 If you do not need a custom storage adapter, you may import the default storage.
@@ -454,6 +454,21 @@ const authMiddleware = createAuthMiddleware({
 * `block` (_function_): A callback function responsible for defining any headers
   needed for authorization. It accepts a header name for its first argument and
   that header's value as its second argument.
+
+### Store Enhancer
+
+There may be cases where you may want the redux store initialized with the
+sesion data from the storage device. The store enhancer does just that. On store
+initialization, it will ask the storage device for the session data.
+
+```javascript
+const enhancer = getInitialAuthState({ storage })
+```
+
+**Options:**
+
+* `storage` (_object_): The storage mechanism used to store the session. **This
+  must** be the same storage device configured with the middleware.
 
 ## Actions
 
