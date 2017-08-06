@@ -185,6 +185,8 @@ describe('auth middleware', () => {
         const initialState = reducer(undefined, {})
         const getState = jest
           .fn()
+          .mockReturnValueOnce({ session: {} }) // restore
+          .mockReturnValueOnce({ session: {} }) // restore
           .mockReturnValueOnce({ session: initialState })
           .mockReturnValueOnce({
             session: reducer(
