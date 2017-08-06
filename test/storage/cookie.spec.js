@@ -1,4 +1,4 @@
-import { createCookieStore } from '../../src/storage'
+import createCookieStore from '../../src/storage/cookie'
 import Cookie from 'js-cookie'
 
 describe('cookie store', () => {

@@ -1,4 +1,4 @@
-import { createLocalStorageStore } from '../../src/storage'
+import createLocalStorageStore from '../../src/storage/localStorage'
 
 const defaultKey = 'redux-simple-auth-session'
 
