@@ -542,7 +542,7 @@ store.dispatch(invalidateSession())
 ## Selectors
 
 To aid in selecting specific session state, redux simple auth ships with a few
-selectors for you convenience. All selectors take the store `state` as an
+selectors for your convenience. All selectors take the store `state` as an
 argument. Note this is the entire store state, not just the session state.
 
 ### `getSessionData(state)`
