@@ -2,6 +2,7 @@ import { reducer } from '../src'
 import {
   authenticateSucceeded,
   authenticateFailed,
+  initialize,
   invalidateSession,
   restore,
   restoreFailed
@@ -15,6 +16,24 @@ describe('session reducer', () => {
       data: {}
     }
     const state = reducer(undefined, {})
+
+    expect(state).toEqual(expected)
+  })
+
+  it('handles INITIALIZE', () => {
+    const sessionData = {
+      authenticated: {
+        authenticator: 'credentials',
+        token: 'abcde'
+      }
+    }
+    const expected = {
+      authenticator: 'credentials',
+      isAuthenticated: false,
+      data: { token: 'abcde' }
+    }
+
+    const state = reducer(null, initialize(sessionData))
 
     expect(state).toEqual(expected)
   })
