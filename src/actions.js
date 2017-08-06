@@ -3,6 +3,7 @@ import {
   AUTHENTICATE_FAILED,
   AUTHENTICATE_SUCCEEDED,
   FETCH,
+  INITIALIZE,
   INVALIDATE_SESSION,
   RESTORE,
   RESTORE_FAILED
@@ -40,4 +41,9 @@ export const restore = payload => ({
 
 export const restoreFailed = () => ({
   type: RESTORE_FAILED
+})
+
+export const initialize = payload => ({
+  type: INITIALIZE,
+  payload
 })
