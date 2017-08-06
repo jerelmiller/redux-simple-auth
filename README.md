@@ -233,8 +233,10 @@ survive a page refresh. Only one session store can be defined per application.
 Redux Simple Auth makes it easy to swap the session storage to meet your needs.
 
 ```javascript
-import { createAuthMiddleware } from 'redux-simple-auth'
-import { createLocalStorageStore } from 'redux-simple-auth/storage'
+import {
+  createAuthMiddleware,
+  createLocalStorageStore
+} from 'redux-simple-auth'
 
 const localStorageStore = createLocalStorageStore()
 
@@ -269,8 +271,10 @@ function to define it.
 **`localStorage` store**
 
 ```javascript
-import { createAuthMiddleware } from 'redux-simple-auth'
-import { createLocalStorageStore } from 'redux-simple-auth/storage'
+import {
+  createAuthMiddleware,
+  createLocalStorageStore
+} from 'redux-simple-auth'
 
 const localStorageStore = createLocalStorageStore({
   key: 'my-custom-app-key'
@@ -289,8 +293,10 @@ const authMiddleware = createAuthMiddleware({
 **Cookie store**
 
 ```javascript
-import { createAuthMiddleware } from 'redux-simple-auth'
-import { createCookieStore } from 'redux-simple-auth/storage'
+import {
+  createAuthMiddleware,
+  createCookieStore
+} from 'redux-simple-auth'
 
 const cookieStore = createCookieStore({
   name: 'my-custom-app-cookie',
@@ -330,8 +336,10 @@ const authMiddleware = createAuthMiddleware({
 **Adaptive Store**
 
 ```javascript
-import { createAuthMiddleware } from 'redux-simple-auth'
-import { createAdaptiveStore } from 'redux-simple-auth/storage'
+import {
+  createAuthMiddleware,
+  createAdaptiveStore
+} from 'redux-simple-auth'
 
 const adaptiveStore = createAdaptiveStore({
   localStorageKey: 'my-custom-app-key',
