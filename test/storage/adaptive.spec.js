@@ -1,4 +1,4 @@
-import { createAdaptiveStore } from '../../src/storage'
+import createAdaptiveStore from '../../src/storage/adaptive'
 import Cookie from 'js-cookie'
 
 describe('Adaptive store', () => {
