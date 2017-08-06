@@ -1,6 +1,10 @@
-export default () => ({
-  persist: jest.fn(data => Promise.resolve(data)),
-  restore: jest.fn(() =>
-    Promise.resolve({ authenticated: { authenticator: 'test' } })
-  )
+const dummyData = {
+  authenticated: {
+    authenticator: 'test'
+  }
+}
+
+export default (data = dummyData) => ({
+  persist: jest.fn(),
+  restore: jest.fn(() => data)
 })

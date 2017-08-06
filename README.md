@@ -25,8 +25,8 @@ yarn add redux-simple-auth
 
 ### Setup
 
-This library ships with middleware and a reducer. You will need to do the
-following:
+This library ships with middleware, a reducer, and an optional store enhancer.
+You will need to do the following:
 
 ##### Apply the middleware
 
@@ -58,6 +58,32 @@ export default combineReducers({
   // ...reducers
   session
 })
+```
+
+##### Optionally add the store enhancer
+
+In order to use the enhancer, you will need to provide it with the storage used.
+If you do not need a custom storage adapter, you may import the default storage.
+
+```javascript
+// ...
+import {
+  createAuthMiddleware,
+  getInitialAuthState,
+  storage // or custom storage creator
+} from 'redux-simple-auth'
+import { createStore, compose, applyMiddleware } from 'redux'
+
+const authMiddleware = createAuthMiddleware(/*...*/)
+
+const store = createStore(
+  rootReducer,
+  /* initialState, */
+  compose(
+    applyMiddleware(authMiddleware),
+    getInitialAuthState({ storage })
+  )
+)
 ```
 
 ## How does it work?
@@ -429,6 +455,21 @@ const authMiddleware = createAuthMiddleware({
   needed for authorization. It accepts a header name for its first argument and
   that header's value as its second argument.
 
+### Store Enhancer
+
+There may be cases where you may want the redux store initialized with the
+sesion data from the storage device. The store enhancer does just that. On store
+initialization, it will ask the storage device for the session data.
+
+```javascript
+const enhancer = getInitialAuthState({ storage })
+```
+
+**Options:**
+
+* `storage` (_object_): The storage mechanism used to store the session. **This
+  must** be the same storage device configured with the middleware.
+
 ## Actions
 
 Redux Simple Auth ships with several actions to aide in authentication for your
@@ -498,6 +539,49 @@ import { invalidateSession } from 'redux-simple-auth'
 store.dispatch(invalidateSession())
 ```
 
+## Selectors
+
+To aid in selecting specific session state, redux simple auth ships with a few
+selectors for your convenience. All selectors take the store `state` as an
+argument. Note this is the entire store state, not just the session state.
+
+### `getSessionData(state)`
+
+(_object_) Returns the session data set when user was authenticated. If not yet
+authenticated, this returns an empty object.
+
+```javascript
+import { getSessionData } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  session: getSessionData(state)
+})
+```
+
+### `getIsAuthenticated(state)`
+
+(_boolean_) Returns whether the user is authenticated.
+
+```javascript
+import { getIsAuthenticated } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  isAuthenticated: getIsAuthenticated(state)
+})
+```
+
+### `getAuthenticator(state)`
+
+(_string_) Returns the `authenticator` used when authenticating. If not yet
+authenticated, this is set to `null`.
+
+```javascript
+import { getAuthenticator } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  authenticator: getAuthenticator(state)
+})
+```
 
 ## License
 

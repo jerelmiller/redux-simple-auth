@@ -1,4 +1,4 @@
-import createAdaptiveStore from './storage/adaptive'
+import defaultStorage from './storage/default'
 import isPlainObject from 'lodash.isplainobject'
 import { AUTHENTICATE, FETCH } from './actionTypes'
 import {
@@ -52,7 +52,7 @@ export default (config = {}) => {
     authenticator,
     authenticators,
     authorize,
-    storage = createAdaptiveStore()
+    storage = defaultStorage
   } = config
 
   const findAuthenticator = authenticator

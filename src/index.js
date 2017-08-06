@@ -5,3 +5,10 @@ export { authenticate, fetch, invalidateSession } from './actions'
 export { default as createAdaptiveStore } from './storage/adaptive'
 export { default as createLocalStorageStore } from './storage/localStorage'
 export { default as createCookieStore } from './storage/cookie'
+export { default as getInitialAuthState } from './enhancer'
+export { default as storage } from './storage/default'
+export {
+  getSessionData,
+  getIsAuthenticated,
+  getAuthenticator
+} from './selectors'
