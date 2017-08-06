@@ -409,7 +409,7 @@ const bearerAuthorizer = (data, block) => {
 }
 
 const authMiddleware = createAuthMiddleware({
-  authorizer: bearerAuthorizer
+  authorize: bearerAuthorizer
 })
 ```
 
