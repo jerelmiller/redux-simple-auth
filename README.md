@@ -570,16 +570,16 @@ const mapStateToProps = state => ({
 })
 ```
 
-### `getAuthentictor(state)`
+### `getAuthenticator(state)`
 
 (_string_) Returns the `authenticator` used when authenticating. If not yet
 authenticated, this is set to `null`.
 
 ```javascript
-import { getAuthentictor } from 'redux-simple-auth'
+import { getAuthenticator } from 'redux-simple-auth'
 
 const mapStateToProps = state => ({
-  authenticator: getAuthentictor(state)
+  authenticator: getAuthenticator(state)
 })
 ```
 
