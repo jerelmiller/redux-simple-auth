@@ -539,6 +539,49 @@ import { invalidateSession } from 'redux-simple-auth'
 store.dispatch(invalidateSession())
 ```
 
+## Selectors
+
+To aid in selecting specific session state, redux simple auth ships with a few
+selectors for you convenience. All selectors take the store `state` as an
+argument. Note this is the entire store state, not just the session state.
+
+### `getSessionData(state)`
+
+(_object_) Returns the session data set when user was authenticated. If not yet
+authenticated, this returns an empty object.
+
+```javascript
+import { getSessionData } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  session: getSessionData(state)
+})
+```
+
+### `getIsAuthenticated(state)`
+
+(_boolean_) Returns whether the user is authenticated.
+
+```javascript
+import { getIsAuthenticated } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  isAuthenticated: getIsAuthenticated(state)
+})
+```
+
+### `getAuthentictor(state)`
+
+(_string_) Returns the `authenticator` used when authenticating. If not yet
+authenticated, this is set to `null`.
+
+```javascript
+import { getAuthentictor } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  authenticator: getAuthentictor(state)
+})
+```
 
 ## License
 
