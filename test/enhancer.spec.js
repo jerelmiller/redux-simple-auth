@@ -19,11 +19,7 @@ describe('enhancer', () => {
     const storage = createMockStorage(dummyData)
     const createStore = jest.fn()
 
-    const enhancedCreateStore = enhancer({ storage })(createStore)(
-      mock,
-      null,
-      mock
-    )
+    enhancer({ storage })(createStore)(mock, null, mock)
 
     expect(createStore).toHaveBeenCalledWith(
       mock,
