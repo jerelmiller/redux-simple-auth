@@ -25,8 +25,8 @@ yarn add redux-simple-auth
 
 ### Setup
 
-This library ships with middleware and a reducer. You will need to do the
-following:
+This library ships with middleware, a reducer, and an optional store enhancer.
+You will need to do the following:
 
 ##### Apply the middleware
 
@@ -58,6 +58,32 @@ export default combineReducers({
   // ...reducers
   session
 })
+```
+
+##### Optionally add the store enhancer (see below for details)
+
+In order to use the enhancer, you will need to provide it with the storage used.
+If you do not need a custom storage adapter, you may import the default storage.
+
+```javascript
+// ...
+import {
+  createAuthMiddleware,
+  getInitialAuthState,
+  storage // or custom storage creator
+} from 'redux-simple-auth'
+import { createStore, compose, applyMiddleware } from 'redux'
+
+const authMiddleware = createAuthMiddleware(/*...*/)
+
+const store = createStore(
+  rootReducer,
+  /* initialState, */
+  compose(
+    applyMiddleware(authMiddleware),
+    getInitialAuthState({ storage })
+  )
+)
 ```
 
 ## How does it work?
