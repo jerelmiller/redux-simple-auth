@@ -583,6 +583,23 @@ const mapStateToProps = state => ({
 })
 ```
 
+## TODO
+
+- [ ] Built-in authenticators for common scenarios
+  - [ ] Credentials
+  - [ ] Devise
+  - [ ] OAuth
+  - [ ] Facebook Login
+  - [ ] Github Login
+  - [ ] Google login
+- [ ] Built-in authorizers
+  - [ ] Devise
+  - [ ] OAuth2 Bearer
+- [ ] Integration with React Router v3
+- [ ] Integration with React Router v4
+- [ ] Typescript/Flow support
+- [ ] Create example applications
+
 ## License
 
 MIT
