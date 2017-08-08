@@ -20,5 +20,5 @@ export default (
       expires: expires && secondsFromNow(expires)
     })
   },
-  restore: () => Cookie.getJSON(name)
+  restore: () => Cookie.getJSON(name) || {}
 })
