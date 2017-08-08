@@ -106,5 +106,13 @@ describe('cookie store', () => {
 
       expect(result).toEqual({ key: 'value' })
     })
+
+    it('returns empty object if cookie is yet initialized', () => {
+      const cookieStore = createCookieStore({ name: 'not-persisted' })
+
+      const result = cookieStore.restore()
+
+      expect(result).toEqual({})
+    })
   })
 })
