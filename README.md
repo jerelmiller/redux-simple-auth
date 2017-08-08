@@ -599,6 +599,7 @@ const mapStateToProps = state => ({
 - [ ] Integration with React Router v4
 - [ ] Typescript/Flow support
 - [ ] Create example applications
+- [ ] Solutions for server-side rendering
 
 ## License
 
