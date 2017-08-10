@@ -583,6 +583,32 @@ const mapStateToProps = state => ({
 })
 ```
 
+## Action Types
+
+If you just plain need to hook into actions dispatched from `redux-simple-auth`,
+you may import the action types themselves for use within your own reducers.
+
+```javascript
+import { actionTypes } from 'redux-simple-auth'
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case actionTypes.AUTHENTICATE_FAILED:
+      // do something
+  }
+}
+```
+
+The following actions are available action types
+
+* `AUTHENTICATE`
+* `AUTHENTICATE_FAILED`
+* `AUTHENTICATE_SUCCEEDED`
+* `FETCH`
+* `INVALIDATE_SESSION`
+* `RESTORE`
+* `RESTORE_FAILED`
+
 ## TODO
 
 - [ ] Built-in authenticators for common scenarios
