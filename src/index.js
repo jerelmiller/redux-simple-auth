@@ -1,3 +1,5 @@
+import * as _actionTypes from './actionTypes'
+
 export { default as createAuthMiddleware } from './middleware'
 export { default as reducer } from './reducer'
 export { default as createAuthenticator } from './createAuthenticator'
@@ -12,3 +14,5 @@ export {
   getIsAuthenticated,
   getAuthenticator
 } from './selectors'
+
+export const actionTypes = _actionTypes
