@@ -9,6 +9,33 @@ within redux applications. Inspired by the wonderful [Ember Simple
 Auth](http://ember-simple-auth.com/) library, its aim is to make authentication
 / authorization simple and flexible for any application.
 
+## Table of Contents
+
+* [Installation](#installation)
+* [Usage](#usage)
+  * [Setup](#setup)
+    * [Middleware](#apply-the-middleware)
+    * [Reducer](#add-the-reducer)
+    * [Store enhancer](#optionally-add-the-store-enhancer)
+* [How does it work?](#how-does-it-work)
+* [Configuration](#configuration)
+* [Authenticators](#authenticators)
+  * [Built-in Authenticators](#built-in-authenticators)
+  * [Custom Authenticators](#implementing-a-custom-authenticator)
+* [Session Storage](#session-storage)
+  * [Built-in Session Stores](#built-in-session-stores)
+  * [Customize a Store](#customizing-a-built-in-store)
+  * [Custom Stores](#implementing-a-custom-session-store)
+* [Authorizer](#authorizer)
+  * [Built-in Authorizers](#built-in-authorizers)
+  * [Custom Authorizers](#implementing-a-custom-authorizer)
+  * [Store enhancer](#store-enhancer)
+* [Actions](#actions)
+* [Selectors](#selectors)
+* [Action Types](#action-types)
+* [TODO](#todo)
+* [License](#license)
+
 ## Installation
 
 npm:
