@@ -300,7 +300,7 @@ const authMiddleware = createAuthMiddleware({
 
 ### Built-in session stores
 
-Redux Simple Auth ships with 3 session stores.
+Redux Simple Auth ships with 4 session stores.
 
 **`localStorage` Store**
 
