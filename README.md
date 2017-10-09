@@ -300,11 +300,15 @@ const authMiddleware = createAuthMiddleware({
 
 ### Built-in session stores
 
-Redux Simple Auth ships with 3 session stores.
+Redux Simple Auth ships with 4 session stores.
 
 **`localStorage` Store**
 
 The local storage store stores its data in the browser's `localStorage`.
+
+**`sessionStorage` Store**
+
+The session storage store stores its data in the browser's `sessionStorage`.
 
 **Cookie Store**
 
@@ -341,6 +345,28 @@ const authMiddleware = createAuthMiddleware({
 **Options:**
 
 * `key` (_string_): The `localStorage` key used to persist the session.
+  * _Default_: `'redux-simple-auth-session'`
+
+**`sessionStorage` store**
+
+```javascript
+import {
+  createAuthMiddleware,
+  createSessionStorageStore
+} from 'redux-simple-auth'
+
+const sessionStorageStore = createSessionStorageStore({
+  key: 'my-custom-app-key'
+})
+
+const authMiddleware = createAuthMiddleware({
+  storage: sessionStorageStore
+})
+```
+
+**Options:**
+
+* `key` (_string_): The `sessionStorage` key used to persist the session.
   * _Default_: `'redux-simple-auth-session'`
 
 **Cookie store**
