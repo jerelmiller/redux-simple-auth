@@ -31,9 +31,18 @@ const reducer = (state = initialState, action) => {
         ...state,
         authenticator: action.meta.authenticator,
         isAuthenticated: true,
-        data: action.payload
+        data: action.payload,
+        lastError: null
       }
     case AUTHENTICATE_FAILED:
+      return {
+        ...state,
+        authenticator: null,
+        isAuthenticated: false,
+        isRestored: true,
+        lastError: action.payload,
+        data: {}
+      }
     case INVALIDATE_SESSION:
     case RESTORE_FAILED:
       return {
@@ -41,6 +50,7 @@ const reducer = (state = initialState, action) => {
         authenticator: null,
         isAuthenticated: false,
         isRestored: true,
+        lastError: null,
         data: {}
       }
     case RESTORE: {
@@ -51,7 +61,8 @@ const reducer = (state = initialState, action) => {
         authenticator,
         data,
         isAuthenticated: true,
-        isRestored: true
+        isRestored: true,
+        lastError: null
       }
     }
     default:
