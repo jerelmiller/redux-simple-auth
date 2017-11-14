@@ -649,6 +649,20 @@ const mapStateToProps = state => ({
 })
 ```
 
+### `getLastError(state)`
+
+(_boolean_) Returns the last authentication error received if authentication has
+failed. This value is the same value passed to the rejected promise in the
+authenticator's `authenticate` function.
+
+```javascript
+import { getLastError } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  lastError: getLastError(state)
+})
+```
+
 ## Action Types
 
 If you just plain need to hook into actions dispatched from `redux-simple-auth`,
