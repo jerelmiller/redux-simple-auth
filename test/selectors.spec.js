@@ -48,4 +48,28 @@ describe('selectors', () => {
 
     expect(result).toEqual(false)
   })
+
+  it('includes selector to get lastError', () => {
+    const state = {
+      session: {
+        lastError: 'You shall not pass'
+      }
+    }
+
+    const result = selectors.getLastError(state)
+
+    expect(result).toEqual('You shall not pass')
+  })
+
+  it('includes selector to get hasFailedAuth', () => {
+    const state = {
+      session: {
+        hasFailedAuth: true
+      }
+    }
+
+    const result = selectors.getHasFailedAuth(state)
+
+    expect(result).toEqual(true)
+  })
 })

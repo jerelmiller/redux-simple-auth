@@ -27,7 +27,10 @@ describe('enhancer', () => {
         session: {
           authenticator: 'dummy',
           data: { token: 'abcde' },
-          isAuthenticated: false
+          isAuthenticated: false,
+          isRestored: false,
+          hasFailedAuth: false,
+          lastError: null
         }
       },
       mock

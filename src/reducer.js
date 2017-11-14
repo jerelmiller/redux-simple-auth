@@ -9,8 +9,10 @@ import {
 
 const initialState = {
   authenticator: null,
+  hasFailedAuth: false,
   isAuthenticated: false,
   isRestored: false,
+  lastError: null,
   data: {}
 }
 
@@ -20,18 +22,29 @@ const reducer = (state = initialState, action) => {
       const { authenticated: { authenticator, ...data } = {} } = action.payload
 
       return {
+        ...initialState,
         authenticator,
-        data,
-        isAuthenticated: false
+        data
       }
     case AUTHENTICATE_SUCCEEDED:
       return {
         ...state,
+        hasFailedAuth: false,
         authenticator: action.meta.authenticator,
         isAuthenticated: true,
-        data: action.payload
+        data: action.payload,
+        lastError: null
       }
     case AUTHENTICATE_FAILED:
+      return {
+        ...state,
+        authenticator: null,
+        hasFailedAuth: true,
+        isAuthenticated: false,
+        isRestored: true,
+        lastError: action.payload,
+        data: {}
+      }
     case INVALIDATE_SESSION:
     case RESTORE_FAILED:
       return {
@@ -39,6 +52,7 @@ const reducer = (state = initialState, action) => {
         authenticator: null,
         isAuthenticated: false,
         isRestored: true,
+        lastError: null,
         data: {}
       }
     case RESTORE: {
@@ -49,7 +63,8 @@ const reducer = (state = initialState, action) => {
         authenticator,
         data,
         isAuthenticated: true,
-        isRestored: true
+        isRestored: true,
+        lastError: null
       }
     }
     default:
@@ -63,3 +78,5 @@ export const getData = state => state.data
 export const getIsAuthenticated = state => state.isAuthenticated
 export const getAuthenticator = state => state.authenticator
 export const getIsRestored = state => state.isRestored
+export const getLastError = state => state.lastError
+export const getHasFailedAuth = state => state.hasFailedAuth

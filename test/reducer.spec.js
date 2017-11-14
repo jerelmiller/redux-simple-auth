@@ -12,8 +12,10 @@ describe('session reducer', () => {
   it('returns default state when initialized', () => {
     const expected = {
       authenticator: null,
+      hasFailedAuth: false,
       isAuthenticated: false,
       isRestored: false,
+      lastError: null,
       data: {}
     }
     const state = reducer(undefined, {})
@@ -30,7 +32,10 @@ describe('session reducer', () => {
     }
     const expected = {
       authenticator: 'credentials',
+      hasFailedAuth: false,
       isAuthenticated: false,
+      isRestored: false,
+      lastError: null,
       data: { token: 'abcde' }
     }
 
@@ -45,6 +50,7 @@ describe('session reducer', () => {
       authenticator: null,
       isAuthenticated: false,
       isRestored: true,
+      lastError: null,
       data: {}
     }
 
@@ -57,7 +63,9 @@ describe('session reducer', () => {
     const currentState = { isAuthenticated: false }
     const expected = {
       isAuthenticated: true,
+      hasFailedAuth: false,
       authenticator: 'test',
+      lastError: null,
       data: { token: 'abcdefg' }
     }
 
@@ -73,12 +81,14 @@ describe('session reducer', () => {
     const currentState = { isAuthenticated: false, data: {} }
     const expected = {
       authenticator: null,
+      hasFailedAuth: true,
       isAuthenticated: false,
       isRestored: true,
+      lastError: 'It failed',
       data: {}
     }
 
-    const state = reducer(currentState, authenticateFailed())
+    const state = reducer(currentState, authenticateFailed('It failed'))
 
     expect(state).toEqual(expected)
   })
@@ -87,8 +97,10 @@ describe('session reducer', () => {
     const currentState = reducer(undefined, {})
     const expected = {
       authenticator: 'credentials',
+      hasFailedAuth: false,
       isAuthenticated: true,
       isRestored: true,
+      lastError: null,
       data: { token: '1234' }
     }
 
@@ -104,8 +116,10 @@ describe('session reducer', () => {
     const currentState = reducer(undefined, {})
     const expected = {
       authenticator: null,
+      hasFailedAuth: false,
       isAuthenticated: false,
       isRestored: true,
+      lastError: null,
       data: {}
     }
 

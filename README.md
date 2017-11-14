@@ -649,6 +649,33 @@ const mapStateToProps = state => ({
 })
 ```
 
+### `getLastError(state)`
+
+(_any_) Returns the last authentication error received if authentication has
+failed. This value is the same value passed to the rejected promise in the
+authenticator's `authenticate` function.
+
+```javascript
+import { getLastError } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  lastError: getLastError(state)
+})
+```
+
+### `getHasFailedAuth(state)`
+
+(_boolean_) Returns whether the user has at least one failed authentication
+attempt. Will reset back to `false` once authentication has succeeded.
+
+```javascript
+import { getHasFailedAuth } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  hasFailedAuth: getHasFailedAuth(state)
+})
+```
+
 ## Action Types
 
 If you just plain need to hook into actions dispatched from `redux-simple-auth`,
