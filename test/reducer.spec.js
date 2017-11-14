@@ -32,6 +32,7 @@ describe('session reducer', () => {
     const expected = {
       authenticator: 'credentials',
       isAuthenticated: false,
+      lastError: null,
       data: { token: 'abcde' }
     }
 

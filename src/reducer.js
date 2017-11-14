@@ -23,7 +23,8 @@ const reducer = (state = initialState, action) => {
       return {
         authenticator,
         data,
-        isAuthenticated: false
+        isAuthenticated: false,
+        lastError: null
       }
     case AUTHENTICATE_SUCCEEDED:
       return {
