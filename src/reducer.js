@@ -76,3 +76,4 @@ export const getData = state => state.data
 export const getIsAuthenticated = state => state.isAuthenticated
 export const getAuthenticator = state => state.authenticator
 export const getIsRestored = state => state.isRestored
+export const getLastError = state => state.lastError
