@@ -663,6 +663,19 @@ const mapStateToProps = state => ({
 })
 ```
 
+### `getHasFailedAuth(state)`
+
+(_boolean_) Returns whether the user has at least one failed authentication
+attempt. Will reset back to `false` once authentication has succeeded.
+
+```javascript
+import { getHasFailedAuth } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  hasFailedAuth: getHasFailedAuth(state)
+})
+```
+
 ## Action Types
 
 If you just plain need to hook into actions dispatched from `redux-simple-auth`,
