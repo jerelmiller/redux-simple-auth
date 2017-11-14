@@ -13,6 +13,7 @@ describe('session reducer', () => {
     const expected = {
       authenticator: null,
       isAuthenticated: false,
+      isRestored: false,
       data: {}
     }
     const state = reducer(undefined, {})
@@ -43,6 +44,7 @@ describe('session reducer', () => {
     const expected = {
       authenticator: null,
       isAuthenticated: false,
+      isRestored: true,
       data: {}
     }
 
@@ -69,7 +71,12 @@ describe('session reducer', () => {
 
   it('handles AUTHENTICATE_FAILED', () => {
     const currentState = { isAuthenticated: false, data: {} }
-    const expected = { authenticator: null, isAuthenticated: false, data: {} }
+    const expected = {
+      authenticator: null,
+      isAuthenticated: false,
+      isRestored: true,
+      data: {}
+    }
 
     const state = reducer(currentState, authenticateFailed())
 
@@ -81,6 +88,7 @@ describe('session reducer', () => {
     const expected = {
       authenticator: 'credentials',
       isAuthenticated: true,
+      isRestored: true,
       data: { token: '1234' }
     }
 
@@ -97,6 +105,7 @@ describe('session reducer', () => {
     const expected = {
       authenticator: null,
       isAuthenticated: false,
+      isRestored: true,
       data: {}
     }
 

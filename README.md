@@ -636,6 +636,19 @@ const mapStateToProps = state => ({
 })
 ```
 
+### `getIsRestored(state)`
+
+(_boolean_) Returns whether the session state has been restored. Useful if you
+need to block rendering until the session state has been fully initialized.
+
+```javascript
+import { getIsRestored } from 'redux-simple-auth'
+
+const mapStateToProps = state => ({
+  isRestored: getIsRestored(state)
+})
+```
+
 ## Action Types
 
 If you just plain need to hook into actions dispatched from `redux-simple-auth`,
