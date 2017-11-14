@@ -34,6 +34,7 @@ describe('session reducer', () => {
       authenticator: 'credentials',
       hasFailedAuth: false,
       isAuthenticated: false,
+      isRestored: false,
       lastError: null,
       data: { token: 'abcde' }
     }

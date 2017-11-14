@@ -22,11 +22,9 @@ const reducer = (state = initialState, action) => {
       const { authenticated: { authenticator, ...data } = {} } = action.payload
 
       return {
+        ...initialState,
         authenticator,
-        data,
-        isAuthenticated: false,
-        hasFailedAuth: false,
-        lastError: null
+        data
       }
     case AUTHENTICATE_SUCCEEDED:
       return {
