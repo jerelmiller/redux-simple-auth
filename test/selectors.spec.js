@@ -48,4 +48,16 @@ describe('selectors', () => {
 
     expect(result).toEqual(false)
   })
+
+  it('includes selector to get lastError', () => {
+    const state = {
+      session: {
+        lastError: 'You shall not pass'
+      }
+    }
+
+    const result = selectors.getLastError(state)
+
+    expect(result).toEqual('You shall not pass')
+  })
 })
