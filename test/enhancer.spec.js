@@ -28,6 +28,8 @@ describe('enhancer', () => {
           authenticator: 'dummy',
           data: { token: 'abcde' },
           isAuthenticated: false,
+          isRestored: false,
+          hasFailedAuth: false,
           lastError: null
         }
       },
