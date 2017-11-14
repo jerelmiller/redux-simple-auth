@@ -9,6 +9,7 @@ import {
 
 const initialState = {
   authenticator: null,
+  hasFailedAuth: false,
   isAuthenticated: false,
   isRestored: false,
   lastError: null,
@@ -24,11 +25,13 @@ const reducer = (state = initialState, action) => {
         authenticator,
         data,
         isAuthenticated: false,
+        hasFailedAuth: false,
         lastError: null
       }
     case AUTHENTICATE_SUCCEEDED:
       return {
         ...state,
+        hasFailedAuth: false,
         authenticator: action.meta.authenticator,
         isAuthenticated: true,
         data: action.payload,
@@ -38,6 +41,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         authenticator: null,
+        hasFailedAuth: true,
         isAuthenticated: false,
         isRestored: true,
         lastError: action.payload,
