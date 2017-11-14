@@ -7,3 +7,5 @@ export const getIsAuthenticated = state =>
 
 export const getAuthenticator = state =>
   fromSession.getAuthenticator(state.session)
+
+export const getIsRestored = state => fromSession.getIsRestored(state.session)

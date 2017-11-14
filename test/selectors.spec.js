@@ -36,4 +36,16 @@ describe('selectors', () => {
 
     expect(result).toEqual('credentials')
   })
+
+  it('includes selector to get isRestored', () => {
+    const state = {
+      session: {
+        isRestored: false
+      }
+    }
+
+    const result = selectors.getIsRestored(state)
+
+    expect(result).toEqual(false)
+  })
 })
