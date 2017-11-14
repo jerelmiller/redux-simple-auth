@@ -60,4 +60,16 @@ describe('selectors', () => {
 
     expect(result).toEqual('You shall not pass')
   })
+
+  it('includes selector to get hasFailedAuth', () => {
+    const state = {
+      session: {
+        hasFailedAuth: true
+      }
+    }
+
+    const result = selectors.getHasFailedAuth(state)
+
+    expect(result).toEqual(true)
+  })
 })
