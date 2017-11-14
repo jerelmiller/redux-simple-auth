@@ -13,7 +13,8 @@ export { default as storage } from './storage/default'
 export {
   getSessionData,
   getIsAuthenticated,
-  getAuthenticator
+  getAuthenticator,
+  getIsRestored
 } from './selectors'
 
 export const actionTypes = _actionTypes
