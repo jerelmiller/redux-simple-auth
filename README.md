@@ -644,7 +644,7 @@ const mapStateToProps = state => ({
 import { getIsRestored } from 'redux-simple-auth'
 
 const mapStateToProps = state => ({
-  authenticator: getIsRestored(state)
+  isRestored: getIsRestored(state)
 })
 ```
 
