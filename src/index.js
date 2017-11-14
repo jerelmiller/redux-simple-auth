@@ -14,7 +14,9 @@ export {
   getSessionData,
   getIsAuthenticated,
   getAuthenticator,
-  getIsRestored
+  getIsRestored,
+  getLastError,
+  getHasFailedAuth
 } from './selectors'
 
 export const actionTypes = _actionTypes
