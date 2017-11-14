@@ -11,3 +11,6 @@ export const getAuthenticator = state =>
 export const getIsRestored = state => fromSession.getIsRestored(state.session)
 
 export const getLastError = state => fromSession.getLastError(state.session)
+
+export const getHasFailedAuth = state =>
+  fromSession.getHasFailedAuth(state.session)
