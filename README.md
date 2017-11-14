@@ -651,7 +651,7 @@ const mapStateToProps = state => ({
 
 ### `getLastError(state)`
 
-(_boolean_) Returns the last authentication error received if authentication has
+(_any_) Returns the last authentication error received if authentication has
 failed. This value is the same value passed to the rejected promise in the
 authenticator's `authenticate` function.
 
