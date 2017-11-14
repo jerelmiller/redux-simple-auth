@@ -13,7 +13,8 @@
     "build": "yarn run build:commonjs",
     "build:watch": "yarn run build:commonjs:watch",
     "precommit": "lint-staged",
-    "prepublish": "yarn run clean && yarn run lint && yarn run test && yarn run build"
+    "prepublish": "yarn run clean && yarn run lint && yarn run test && yarn run build",
+    "flow": "flow"
   },
   "lint-staged": {
     "*.js": [
