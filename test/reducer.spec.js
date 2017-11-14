@@ -14,6 +14,7 @@ describe('session reducer', () => {
       authenticator: null,
       isAuthenticated: false,
       isRestored: false,
+      lastError: null,
       data: {}
     }
     const state = reducer(undefined, {})

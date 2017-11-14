@@ -11,6 +11,7 @@ const initialState = {
   authenticator: null,
   isAuthenticated: false,
   isRestored: false,
+  lastError: null,
   data: {}
 }
 
