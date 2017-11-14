@@ -47,6 +47,7 @@ describe('session reducer', () => {
       authenticator: null,
       isAuthenticated: false,
       isRestored: true,
+      lastError: null,
       data: {}
     }
 
@@ -60,6 +61,7 @@ describe('session reducer', () => {
     const expected = {
       isAuthenticated: true,
       authenticator: 'test',
+      lastError: null,
       data: { token: 'abcdefg' }
     }
 
@@ -77,10 +79,11 @@ describe('session reducer', () => {
       authenticator: null,
       isAuthenticated: false,
       isRestored: true,
+      lastError: 'It failed',
       data: {}
     }
 
-    const state = reducer(currentState, authenticateFailed())
+    const state = reducer(currentState, authenticateFailed('It failed'))
 
     expect(state).toEqual(expected)
   })
@@ -91,6 +94,7 @@ describe('session reducer', () => {
       authenticator: 'credentials',
       isAuthenticated: true,
       isRestored: true,
+      lastError: null,
       data: { token: '1234' }
     }
 
@@ -108,6 +112,7 @@ describe('session reducer', () => {
       authenticator: null,
       isAuthenticated: false,
       isRestored: true,
+      lastError: null,
       data: {}
     }
 
