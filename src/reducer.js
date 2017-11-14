@@ -10,6 +10,7 @@ import {
 const initialState = {
   authenticator: null,
   isAuthenticated: false,
+  isRestored: false,
   data: {}
 }
 
@@ -37,6 +38,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         authenticator: null,
         isAuthenticated: false,
+        isRestored: true,
         data: {}
       }
     case RESTORE: {
@@ -46,7 +48,8 @@ const reducer = (state = initialState, action) => {
         ...state,
         authenticator,
         data,
-        isAuthenticated: true
+        isAuthenticated: true,
+        isRestored: true
       }
     }
     default:
