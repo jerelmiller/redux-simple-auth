@@ -114,7 +114,7 @@ export default (config = {}) => {
         }
         default: {
           const { session: prevSession } = getState()
-          next(action)
+          const result = next(action)
           const { session } = getState()
 
           if (session.data !== prevSession.data) {
@@ -122,6 +122,8 @@ export default (config = {}) => {
 
             storage.persist({ authenticated: { ...data, authenticator } })
           }
+
+          return result
         }
       }
     }
