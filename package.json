@@ -57,7 +57,7 @@
     "jest": "^20.0.3",
     "jest-fetch-mock": "^1.1.1",
     "lint-staged": "^3.4.2",
-    "prettier": "^1.3.1",
+    "prettier": "1.10.2",
     "redux": "^3.6.0",
     "redux-mock-store": "^1.2.3",
     "rimraf": "^2.6.1",
@@ -66,6 +66,11 @@
   "dependencies": {
     "js-cookie": "^2.1.4",
     "lodash.isplainobject": "^4.0.6"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "bracketSpacing": true
   },
   "jest": {
     "setupFiles": [

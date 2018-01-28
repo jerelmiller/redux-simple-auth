@@ -71,6 +71,8 @@ export default (config = {}) => {
           () => dispatch(restore(authenticated)),
           () => dispatch(restoreFailed())
         )
+    } else {
+      dispatch(restoreFailed())
     }
 
     return next => action => {
