@@ -532,13 +532,11 @@ const enhancer = getInitialAuthState({ storage })
 
 There may be cases where you need to refresh the session data after each
 request. For example, you may implement sliding sessions where requests to your
-backend may give you an updated session token.
+backend give you an updated session token.
 
-### Implementing the session refresh
-
-To implement this feature, simply define a `refresh` function that accepts the
-raw response as an argument. Note, this will only get called for requests made
-through the dispatched fetch action.
+To use this feature, simply define a `refresh` function that accepts the raw
+response as an argument. Note, this will only get called for requests made
+through the dispatched [`fetch`](#fetchurl-options) action.
 
 ```javascript
 const refresh = response => ({
@@ -546,7 +544,6 @@ const refresh = response => ({
 })
 
 const authMiddleware = createAuthMiddleware({
-  // ...
   refresh
 })
 ```
