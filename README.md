@@ -30,6 +30,7 @@ Auth](http://ember-simple-auth.com/) library, its aim is to make authentication
   * [Built-in Authorizers](#built-in-authorizers)
   * [Custom Authorizers](#implementing-a-custom-authorizer)
   * [Store enhancer](#store-enhancer)
+* [Refreshing the session](#refreshing-the-session)
 * [Actions](#actions)
 * [Selectors](#selectors)
 * [Action Types](#action-types)
@@ -526,6 +527,50 @@ const enhancer = getInitialAuthState({ storage })
 
 * `storage` (_object_): The storage mechanism used to store the session. **This
   must** be the same storage device configured with the middleware.
+
+## Refreshing the session
+
+There may be cases where you need to refresh the session data after each
+request. For example, you may implement sliding sessions where requests to your
+backend may give you an updated session token.
+
+### Implementing the session refresh
+
+To implement this feature, simply define a `refresh` function that accepts the
+raw response as an argument. Note, this will only get called for requests made
+through the dispatched fetch action.
+
+```javascript
+const refresh = response => ({
+  token: response.headers.get('x-access-token')
+})
+
+const authMiddleware = createAuthMiddleware({
+  // ...
+  refresh
+})
+```
+
+There may be cases where you want to conditionally update the session. To skip
+the session update, simply return `null` from your `refresh` function.
+
+```javascript
+const refresh = response => {
+  const contentType = response.headers.get('content-type')
+
+  if (contentType === 'text/html') {
+    return null
+  }
+
+  return { token: response.headers.get('x-access-token') }
+}
+```
+
+**Arguments:**
+
+* `response`
+  ([_Response_](https://developer.mozilla.org/en-US/docs/Web/API/Response)): The
+  raw response returned from `fetch`
 
 ## Actions
 
