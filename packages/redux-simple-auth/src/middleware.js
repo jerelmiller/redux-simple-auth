@@ -6,7 +6,8 @@ import {
   authenticateSucceeded,
   invalidateSession,
   restore,
-  restoreFailed
+  restoreFailed,
+  updateSession
 } from './actions'
 
 const validateAuthenticatorsPresence = ({ authenticator, authenticators }) => {
@@ -52,6 +53,7 @@ export default (config = {}) => {
     authenticator,
     authenticators,
     authorize,
+    refresh,
     storage = defaultStorage
   } = config
 
@@ -109,6 +111,10 @@ export default (config = {}) => {
           return fetch(url, { ...options, headers }).then(response => {
             if (response.status === 401 && session.isAuthenticated) {
               dispatch(invalidateSession())
+            }
+
+            if (refresh) {
+              dispatch(updateSession(refresh(response)))
             }
 
             return response
