@@ -5,6 +5,7 @@ import {
   FETCH,
   INITIALIZE,
   INVALIDATE_SESSION,
+  UPDATE_SESSION,
   RESTORE,
   RESTORE_FAILED
 } from './actionTypes'
@@ -33,6 +34,11 @@ export const fetch = (url, options) => ({
 
 export const invalidateSession = () => ({
   type: INVALIDATE_SESSION
+})
+
+export const updateSession = payload => ({
+  type: UPDATE_SESSION,
+  payload
 })
 
 export const restore = payload => ({
