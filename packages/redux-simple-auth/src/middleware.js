@@ -111,9 +111,7 @@ export default (config = {}) => {
           return fetch(url, { ...options, headers }).then(response => {
             if (response.status === 401 && session.isAuthenticated) {
               dispatch(invalidateSession())
-            }
-
-            if (refresh) {
+            } else if (refresh) {
               const result = refresh(response)
 
               result !== null && dispatch(updateSession(result))
