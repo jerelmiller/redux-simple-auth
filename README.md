@@ -149,7 +149,8 @@ const authMiddleware = createAuthMiddleware({
   // or
   authenticators: [facebookAuthenticator, githubAuthenticator],
   authorize: jwtAuthorizer,
-  storage: localStorageStore
+  storage: localStorageStore,
+  refresh: refresher
 })
 ```
 
@@ -168,6 +169,9 @@ const authMiddleware = createAuthMiddleware({
 
 * `authorize` (_function_): An authorization function used to attach header
   information to outgoing network requests.
+
+* `refresh` (_function_): A function used to refresh the session data after each
+  request.
 
 ## Authenticators
 
@@ -592,6 +596,18 @@ import { invalidateSession } from 'redux-simple-auth'
 store.dispatch(invalidateSession())
 ```
 
+### `updateSession()`
+
+Update the session with new data. If you are using the `refresh` option for the
+middleware, this will automatically be dispatched for you. Use this only if you
+need to manually update the session data outside of the request lifecycle.
+
+```javascript
+import { updateSession } from 'redux-simple-auth'
+
+store.dispatch(updateSession({ token: 'a-new-token' }))
+```
+
 ## Selectors
 
 To aid in selecting specific session state, redux simple auth ships with a few
@@ -701,6 +717,7 @@ The following actions are available action types
 * `INVALIDATE_SESSION`
 * `RESTORE`
 * `RESTORE_FAILED`
+* `UPDATE_SESSION`
 
 ## TODO
 
