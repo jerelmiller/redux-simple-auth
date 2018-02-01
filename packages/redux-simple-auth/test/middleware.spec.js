@@ -8,7 +8,8 @@ import {
   authenticateFailed,
   authenticateSucceeded,
   fetch as fetchAction,
-  invalidateSession
+  invalidateSession,
+  updateSession
 } from '../src/actions'
 import {
   failAuthenticator,
@@ -315,6 +316,32 @@ describe('auth middleware', () => {
 
       expect(fetch).toHaveBeenCalledWith('https://test.com', {
         headers: { Authorization: '1235' }
+      })
+    })
+
+    describe('when refreshSessionHeader option is set', () => {
+      it('dispatches update session action', async () => {
+        fetch.mockResponse(
+          JSON.stringify(
+            { ok: true },
+            { headers: { 'X-Access-Token': '6789' } }
+          )
+        )
+        const middleware = createAuthMiddleware({
+          storage,
+          authenticator: successAuthenticator,
+          refreshSessionHeader: 'X-Access-Token'
+        })
+        const mockStore = configureStore([middleware])
+        const data = { token: '1235' }
+        const store = mockStore({ session: { data } })
+        const updateAction = updateSession({ token: '6789' })
+
+        await store.dispatch(fetchAction('https://test.com'))
+
+        expect(store.getActions()).toEqual(
+          expect.arrayContaining([updateAction])
+        )
       })
     })
 
