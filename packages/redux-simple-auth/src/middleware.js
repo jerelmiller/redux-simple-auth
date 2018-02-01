@@ -114,7 +114,9 @@ export default (config = {}) => {
             }
 
             if (refresh) {
-              dispatch(updateSession(refresh(response)))
+              const result = refresh(response)
+
+              result !== null && dispatch(updateSession(result))
             }
 
             return response
