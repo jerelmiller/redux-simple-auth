@@ -1,0 +1,80 @@
+{
+  "name": "redux-simple-auth",
+  "version": "0.4.2",
+  "description": "Redux middleware for implementing authentication with a redux application",
+  "main": "lib/index.js",
+  "scripts": {
+    "clean": "rimraf lib",
+    "lint": "eslint src test",
+    "test": "jest",
+    "test:watch": "yarn test -- --watch",
+    "build:commonjs": "BABEL_ENV=commonjs babel src --out-dir lib",
+    "build:commonjs:watch": "yarn run build:commonjs -- --watch",
+    "build": "yarn run build:commonjs",
+    "build:watch": "yarn run build:commonjs:watch",
+    "precommit": "lint-staged",
+    "prepublish": "yarn run clean && yarn run lint && yarn run test && yarn run build"
+  },
+  "lint-staged": {
+    "*.js": [
+      "prettier --single-quote --no-semi --write",
+      "git add"
+    ]
+  },
+  "files": [
+    "lib",
+    "src"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jerelmiller/redux-simple-auth.git"
+  },
+  "keywords": [
+    "redux",
+    "redux-middleware",
+    "middleware",
+    "authentication"
+  ],
+  "author": "Jerel Miller <jerelmiller@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jerelmiller/redux-simple-auth/issues"
+  },
+  "homepage": "https://github.com/jerelmiller/redux-simple-auth#readme",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-jest": "^20.0.3",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-env": "^1.5.0",
+    "eslint": "^3.19.0",
+    "eslint-config-react-app": "^1.0.2",
+    "eslint-plugin-flowtype": "^2.33.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-react": "^7.0.1",
+    "husky": "^0.13.3",
+    "jest": "^20.0.3",
+    "jest-fetch-mock": "^1.1.1",
+    "lint-staged": "^3.4.2",
+    "prettier": "1.10.2",
+    "redux": "^3.6.0",
+    "redux-mock-store": "^1.2.3",
+    "rimraf": "^2.6.1",
+    "whatwg-fetch": "^2.0.3"
+  },
+  "dependencies": {
+    "js-cookie": "^2.1.4",
+    "lodash.isplainobject": "^4.0.6"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "bracketSpacing": true
+  },
+  "jest": {
+    "setupFiles": [
+      "./test/setupTests.js"
+    ]
+  }
+}
