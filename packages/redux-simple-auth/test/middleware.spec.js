@@ -344,6 +344,29 @@ describe('auth middleware', () => {
           expect.arrayContaining([updateAction])
         )
       })
+
+      it('does not dispatch when returning null', async () => {
+        fetch.mockResponse(JSON.stringify({ ok: true }), {
+          headers: {
+            'x-access-token': '6789'
+          }
+        })
+        const middleware = createAuthMiddleware({
+          storage,
+          authenticator: successAuthenticator,
+          refresh: () => null
+        })
+        const mockStore = configureStore([middleware])
+        const data = { token: '1235' }
+        const store = mockStore({ session: { data } })
+        const updateAction = updateSession(null)
+
+        await store.dispatch(fetchAction('https://test.com'))
+
+        expect(store.getActions()).not.toEqual(
+          expect.arrayContaining([updateAction])
+        )
+      })
     })
 
     describe('when request succeeds', () => {
