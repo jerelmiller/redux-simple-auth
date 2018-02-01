@@ -321,16 +321,17 @@ describe('auth middleware', () => {
 
     describe('when refresh option is set', () => {
       it('dispatches update session action', async () => {
-        fetch.mockResponse(
-          JSON.stringify(
-            { ok: true },
-            { headers: { 'X-Access-Token': '6789' } }
-          )
-        )
+        fetch.mockResponse(JSON.stringify({ ok: true }), {
+          headers: {
+            'x-access-token': '6789'
+          }
+        })
         const middleware = createAuthMiddleware({
           storage,
           authenticator: successAuthenticator,
-          refresh: response => ({ token: response.headers['X-Access-Token'] })
+          refresh: response => ({
+            token: response.headers.get('x-access-token')
+          })
         })
         const mockStore = configureStore([middleware])
         const data = { token: '1235' }
