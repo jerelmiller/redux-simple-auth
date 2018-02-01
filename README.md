@@ -30,6 +30,7 @@ Auth](http://ember-simple-auth.com/) library, its aim is to make authentication
   * [Built-in Authorizers](#built-in-authorizers)
   * [Custom Authorizers](#implementing-a-custom-authorizer)
   * [Store enhancer](#store-enhancer)
+* [Refreshing the session](#refreshing-the-session)
 * [Actions](#actions)
 * [Selectors](#selectors)
 * [Action Types](#action-types)
@@ -149,7 +150,8 @@ const authMiddleware = createAuthMiddleware({
   // or
   authenticators: [facebookAuthenticator, githubAuthenticator],
   authorize: jwtAuthorizer,
-  storage: localStorageStore
+  storage: localStorageStore,
+  refresh: refresher
 })
 ```
 
@@ -168,6 +170,9 @@ const authMiddleware = createAuthMiddleware({
 
 * `authorize` (_function_): An authorization function used to attach header
   information to outgoing network requests.
+
+* `refresh` (_function_): A function used to refresh the session data after each
+  request.
 
 ## Authenticators
 
@@ -523,6 +528,47 @@ const enhancer = getInitialAuthState({ storage })
 * `storage` (_object_): The storage mechanism used to store the session. **This
   must** be the same storage device configured with the middleware.
 
+## Refreshing the session
+
+There may be cases where you need to refresh the session data after each
+request. For example, you may implement sliding sessions where requests to your
+backend give you an updated session token.
+
+To use this feature, simply define a `refresh` function that accepts the raw
+response as an argument. Note, this will only get called for requests made
+through the dispatched [`fetch`](#fetchurl-options) action.
+
+```javascript
+const refresh = response => ({
+  token: response.headers.get('x-access-token')
+})
+
+const authMiddleware = createAuthMiddleware({
+  refresh
+})
+```
+
+There may be cases where you want to conditionally update the session. To skip
+the session update, simply return `null` from your `refresh` function.
+
+```javascript
+const refresh = response => {
+  const contentType = response.headers.get('content-type')
+
+  if (contentType === 'text/html') {
+    return null
+  }
+
+  return { token: response.headers.get('x-access-token') }
+}
+```
+
+**Arguments:**
+
+* `response`
+  ([_Response_](https://developer.mozilla.org/en-US/docs/Web/API/Response)): The
+  raw response returned from `fetch`
+
 ## Actions
 
 Redux Simple Auth ships with several actions to aide in authentication for your
@@ -590,6 +636,18 @@ result in an unauthenticated session.
 import { invalidateSession } from 'redux-simple-auth'
 
 store.dispatch(invalidateSession())
+```
+
+### `updateSession()`
+
+Update the session with new data. If you are using the `refresh` option for the
+middleware, this will automatically be dispatched for you. Use this only if you
+need to manually update the session data outside of the request lifecycle.
+
+```javascript
+import { updateSession } from 'redux-simple-auth'
+
+store.dispatch(updateSession({ token: 'a-new-token' }))
 ```
 
 ## Selectors
@@ -701,6 +759,7 @@ The following actions are available action types
 * `INVALIDATE_SESSION`
 * `RESTORE`
 * `RESTORE_FAILED`
+* `UPDATE_SESSION`
 
 ## TODO
 

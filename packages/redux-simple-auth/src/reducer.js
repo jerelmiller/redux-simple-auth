@@ -4,7 +4,8 @@ import {
   INITIALIZE,
   INVALIDATE_SESSION,
   RESTORE,
-  RESTORE_FAILED
+  RESTORE_FAILED,
+  UPDATE_SESSION
 } from './actionTypes'
 
 const initialState = {
@@ -67,6 +68,11 @@ const reducer = (state = initialState, action) => {
         lastError: null
       }
     }
+    case UPDATE_SESSION:
+      return {
+        ...state,
+        data: action.payload
+      }
     default:
       return state
   }

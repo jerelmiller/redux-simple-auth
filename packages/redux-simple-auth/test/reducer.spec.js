@@ -5,7 +5,8 @@ import {
   initialize,
   invalidateSession,
   restore,
-  restoreFailed
+  restoreFailed,
+  updateSession
 } from '../src/actions'
 
 describe('session reducer', () => {
@@ -124,6 +125,27 @@ describe('session reducer', () => {
     }
 
     const state = reducer(currentState, restoreFailed())
+
+    expect(state).toEqual(expected)
+  })
+
+  it('handles UPDATE_SESSION', () => {
+    const currentState = {
+      isAuthenticated: true,
+      hasFailedAuth: false,
+      authenticator: 'test',
+      lastError: null,
+      data: { token: 'abcd' }
+    }
+    const expected = {
+      isAuthenticated: true,
+      hasFailedAuth: false,
+      authenticator: 'test',
+      lastError: null,
+      data: { token: 'efgh' }
+    }
+
+    const state = reducer(currentState, updateSession({ token: 'efgh' }))
 
     expect(state).toEqual(expected)
   })
