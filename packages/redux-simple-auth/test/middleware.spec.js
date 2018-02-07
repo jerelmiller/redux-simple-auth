@@ -238,6 +238,58 @@ describe('auth middleware', () => {
     })
   })
 
+  describe('when invalidating', () => {
+    it('calls authenticators invalidate', () => {
+      const middleware = configureMiddleware(spiedAuthenticator)
+      const mockStore = configureStore([middleware])
+      const data = { username: 'test', password: 'password' }
+      // It uses the authenticator name in the store to decide find the
+      // invalidate function.
+      const store = mockStore({ session: { authenticator: 'test', data } })
+      const invalidateAction = invalidateSession()
+
+      store.dispatch(invalidateAction)
+      expect(spiedAuthenticator.invalidate).toHaveBeenCalledWith(data)
+
+      spiedAuthenticator.authenticate.mockClear()
+      spiedAuthenticator.invalidate.mockClear()
+    })
+
+    describe('when redux store authenticator is not found', () => {
+      it('throws error', () => {
+        const authenticator = createAuthenticator({
+          name: 'fake'
+        })
+        const middleware = configureMiddleware(authenticator)
+        const mockStore = configureStore([middleware])
+        const store = mockStore()
+        const action = authenticate('not-real', {})
+
+        expect(() => store.dispatch(action)).toThrow(
+          'No authenticator with name `not-real` was found. Be sure ' +
+            'you have defined it in the authenticators config'
+        )
+      })
+    })
+
+    describe('when there is no authenticator', () => {
+      it('throws error', () => {
+        const authenticator = createAuthenticator({
+          name: 'fake'
+        })
+        const middleware = configureMiddleware(authenticator)
+        const mockStore = configureStore([middleware])
+        const store = mockStore()
+        const action = authenticate('not-real', {})
+
+        expect(() => store.dispatch(action)).toThrow(
+          'No authenticator with name `not-real` was found. Be sure ' +
+            'you have defined it in the authenticators config'
+        )
+      })
+    })
+  })
+
   describe('session restoration', () => {
     it('hydrates session data from storage', () => {
       const middleware = configureMiddleware()
@@ -387,19 +439,21 @@ describe('auth middleware', () => {
     })
 
     describe('when request returns 401 unauthorized', () => {
-      it('dispatches invalidateSession', async () => {
+      it('calls authenticators invalidate', async () => {
         fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
-        const middleware = configureMiddleware()
+        const middleware = configureMiddleware(spiedAuthenticator)
         const mockStore = configureStore([middleware])
         const data = { token: '1235' }
-        const store = mockStore({ session: { data, isAuthenticated: true } })
-        const invalidateAction = invalidateSession()
+        const store = mockStore({
+          session: { data, isAuthenticated: true, authenticator: 'test' }
+        })
 
         await store.dispatch(fetchAction('https://test.com'))
 
-        expect(store.getActions()).toEqual(
-          expect.arrayContaining([invalidateAction])
-        )
+        expect(spiedAuthenticator.invalidate).toHaveBeenCalledWith(data)
+
+        spiedAuthenticator.authenticate.mockClear()
+        spiedAuthenticator.invalidate.mockClear()
       })
 
       it('does not dispatch if not authenticated', async () => {

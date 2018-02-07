@@ -1,14 +1,20 @@
 import defaultStorage from './storage/default'
 import isPlainObject from 'lodash.isplainobject'
-import { AUTHENTICATE, FETCH } from './actionTypes'
+import { AUTHENTICATE, FETCH, INVALIDATE_SESSION } from './actionTypes'
 import {
   authenticateFailed,
   authenticateSucceeded,
   invalidateSession,
+  invalidateSessionFailed,
   restore,
   restoreFailed,
   updateSession
 } from './actions'
+import {
+  getSessionData,
+  getAuthenticator,
+  getIsAuthenticated
+} from './selectors'
 
 const validateAuthenticatorsPresence = ({ authenticator, authenticators }) => {
   if (authenticator == null && authenticators == null) {
@@ -98,18 +104,18 @@ export default (config = {}) => {
             )
         }
         case FETCH: {
-          const { session } = getState()
+          const state = getState()
           const { url, options = {} } = action.payload
           const { headers = {} } = options
 
           if (authorize) {
-            authorize(session.data, (name, value) => {
+            authorize(getSessionData(state), (name, value) => {
               headers[name] = value
             })
           }
 
           return fetch(url, { ...options, headers }).then(response => {
-            if (response.status === 401 && session.isAuthenticated) {
+            if (response.status === 401 && getIsAuthenticated(state)) {
               dispatch(invalidateSession())
             } else if (refresh) {
               const result = refresh(response)
@@ -119,6 +125,35 @@ export default (config = {}) => {
 
             return response
           })
+        }
+        case INVALIDATE_SESSION: {
+          const state = getState()
+          const authenticatorName = getAuthenticator(state)
+
+          if (authenticatorName) {
+            const authenticator = findAuthenticator(authenticatorName)
+
+            if (!authenticator) {
+              throw new Error(
+                `No authenticator with name \`${action.meta.authenticator}\` ` +
+                  'was found. Be sure you have defined it in the authenticators ' +
+                  'config.'
+              )
+            }
+
+            if (authenticator) {
+              authenticator.invalidate(getSessionData(state)).then(
+                // dispatch session invalidation to allow things outside this
+                // direct ecosystem to be updated.
+                () => next(action),
+                () => dispatch(invalidateSessionFailed())
+              )
+            } else {
+              dispatch(invalidateSessionFailed())
+            }
+          }
+          // else presumably there was no authenticated session.
+          break
         }
         default: {
           const { session: prevSession } = getState()
