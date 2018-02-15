@@ -16,6 +16,10 @@ export { default as createCookieStore } from './storage/cookie'
 export { default as getInitialAuthState } from './enhancer'
 export { default as storage } from './storage/default'
 export {
+  default as createOauth2ImplicitGrantAuthenticator
+} from './authenticators/oauth2ImplicitGrant'
+export { default as oauth2BearerAuthorizer } from './authorizers/oauth2Bearer'
+export {
   getSessionData,
   getIsAuthenticated,
   getAuthenticator,
