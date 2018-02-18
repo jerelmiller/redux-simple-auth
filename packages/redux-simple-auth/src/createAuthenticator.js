@@ -2,7 +2,7 @@ export default ({
   name,
   restore = () => Promise.reject(),
   authenticate = () => Promise.reject(),
-  invalidate = () => Promise.resolve()
+  invalidate = (data) => Promise.resolve(data)
 } = {}) => {
   if (name == null) {
     throw new Error('Authenticators must define a `name` property')

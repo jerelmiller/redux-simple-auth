@@ -263,7 +263,7 @@ describe('auth middleware', () => {
         const middleware = configureMiddleware(authenticator)
         const mockStore = configureStore([middleware])
         const store = mockStore()
-        const action = authenticate('not-real', {})
+        const action = invalidateSession('not-real', {})
 
         expect(() => store.dispatch(action)).toThrow(
           'No authenticator with name `not-real` was found. Be sure ' +
@@ -280,7 +280,7 @@ describe('auth middleware', () => {
         const middleware = configureMiddleware(authenticator)
         const mockStore = configureStore([middleware])
         const store = mockStore()
-        const action = authenticate('not-real', {})
+        const action = invalidateSession('not-real', {})
 
         expect(() => store.dispatch(action)).toThrow(
           'No authenticator with name `not-real` was found. Be sure ' +

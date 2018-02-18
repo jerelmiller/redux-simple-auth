@@ -130,30 +130,25 @@ export default (config = {}) => {
           const state = getState()
           const authenticatorName = getAuthenticator(state)
 
-          if (authenticatorName) {
-            const authenticator = findAuthenticator(authenticatorName)
-
-            if (!authenticator) {
-              throw new Error(
-                `No authenticator with name \`${action.meta.authenticator}\` ` +
-                  'was found. Be sure you have defined it in the authenticators ' +
-                  'config.'
-              )
-            }
-
-            if (authenticator) {
-              authenticator.invalidate(getSessionData(state)).then(
-                // dispatch session invalidation to allow things outside this
-                // direct ecosystem to be updated.
-                () => next(action),
-                () => dispatch(invalidateSessionFailed())
-              )
-            } else {
-              dispatch(invalidateSessionFailed())
-            }
+          if (!authenticatorName) {
+            return Promise.reject(dispatch(invalidateSessionFailed()))
           }
-          // else presumably there was no authenticated session.
-          break
+
+          const authenticator = findAuthenticator(authenticatorName)
+
+          if (!authenticator) {
+            throw new Error(
+              `No authenticator with name \`${authenticatorName}\` ` +
+                'was found. Be sure you have defined it in the authenticators ' +
+                'config.'
+            )
+          }
+          
+          return authenticator.invalidate(getSessionData(state)).then(
+            () => next(action),
+            // TODO: what happens in this block:
+            () => dispatch(invalidateSessionFailed())
+          )
         }
         default: {
           const { session: prevSession } = getState()
