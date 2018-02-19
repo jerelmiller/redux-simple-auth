@@ -9,7 +9,8 @@ import {
   authenticateSucceeded,
   fetch as fetchAction,
   invalidateSession,
-  updateSession
+  updateSession,
+  invalidateSessionFailed
 } from '../src/actions'
 import {
   failAuthenticator,
@@ -243,8 +244,6 @@ describe('auth middleware', () => {
       const middleware = configureMiddleware(spiedAuthenticator)
       const mockStore = configureStore([middleware])
       const data = { username: 'test', password: 'password' }
-      // It uses the authenticator name in the store to decide find the
-      // invalidate function.
       const store = mockStore({ session: { authenticator: 'test', data } })
       const invalidateAction = invalidateSession()
 
@@ -255,7 +254,7 @@ describe('auth middleware', () => {
       spiedAuthenticator.invalidate.mockClear()
     })
 
-    describe('when redux store authenticator is not found', () => {
+    describe('when there is no session', () => {
       it('throws error', () => {
         const authenticator = createAuthenticator({
           name: 'fake'
@@ -266,9 +265,28 @@ describe('auth middleware', () => {
         const action = invalidateSession('not-real', {})
 
         expect(() => store.dispatch(action)).toThrow(
-          'No authenticator with name `not-real` was found. Be sure ' +
-            'you have defined it in the authenticators config'
+          'No session data to invalidate. Be sure you authenticate the ' +
+          'session before you try to invalidate it'
         )
+      })
+    })
+
+    describe('when redux store authenticator is not found', () => {
+      it('returns a rejected promise and dispatches invalidate Session', async () => {
+        const authenticator = createAuthenticator({
+          name: 'unmatchable'
+        })
+        const middleware = configureMiddleware(authenticator)
+        const mockStore = configureStore([middleware])
+        const store = mockStore({ session: { } })
+        await expect(store.dispatch(invalidateSession())).rejects.toEqual(
+          new Error(
+            'No authenticated session. Be sure you authenticate the session ' +
+            'before you try to invalidate it'
+          )
+        )
+
+        expect(store.getActions()).toContainEqual(invalidateSessionFailed())
       })
     })
 
@@ -280,11 +298,11 @@ describe('auth middleware', () => {
         const middleware = configureMiddleware(authenticator)
         const mockStore = configureStore([middleware])
         const store = mockStore()
-        const action = invalidateSession('not-real', {})
+        const action = invalidateSession()
 
         expect(() => store.dispatch(action)).toThrow(
-          'No authenticator with name `not-real` was found. Be sure ' +
-            'you have defined it in the authenticators config'
+          'No session data to invalidate. Be sure you authenticate the ' +
+          'session before you try to invalidate it' 
         )
       })
     })
