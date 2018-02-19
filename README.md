@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/jerelmiller/redux-simple-auth.svg?branch=master)](https://travis-ci.org/jerelmiller/redux-simple-auth)
 [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 [![npm version](https://img.shields.io/npm/v/redux-simple-auth.svg?style=flat-square)](https://www.npmjs.com/package/redux-simple-auth)
+[![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 
 # Redux Simple Auth
 
@@ -12,6 +13,7 @@ Auth](http://ember-simple-auth.com/) library, its aim is to make authentication
 ## Table of Contents
 
 * [Installation](#installation)
+* [Development](#development)
 * [Usage](#usage)
   * [Setup](#setup)
     * [Middleware](#apply-the-middleware)
@@ -48,6 +50,11 @@ yarn:
 ```
 yarn add redux-simple-auth
 ```
+
+## Development
+
+If you're trying to develop with this package check out the [development](./DEVELOPMENT.md)
+docs for environment setup information.
 
 ## Usage
 
