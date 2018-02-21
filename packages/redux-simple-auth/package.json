@@ -12,14 +12,7 @@
     "build:commonjs:watch": "yarn run build:commonjs -- --watch",
     "build": "yarn run build:commonjs",
     "build:watch": "yarn run build:commonjs:watch",
-    "precommit": "lint-staged",
     "prepublish": "yarn run clean && yarn run lint && yarn run test && yarn run build"
-  },
-  "lint-staged": {
-    "*.js": [
-      "prettier --single-quote --no-semi --write",
-      "git add"
-    ]
   },
   "files": [
     "lib",
@@ -53,10 +46,8 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^5.0.3",
     "eslint-plugin-react": "^7.0.1",
-    "husky": "^0.13.3",
     "jest": "^22.1.4",
     "jest-fetch-mock": "^1.4.1",
-    "lint-staged": "^3.4.2",
     "redux": "^3.6.0",
     "redux-mock-store": "^1.5.1",
     "rimraf": "^2.6.1",
