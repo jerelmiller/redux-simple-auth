@@ -30,6 +30,7 @@
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "rollup": "^0.56.2",
+    "rollup-plugin-babel": "^3.0.3",
     "rollup-plugin-node-resolve": "^3.0.3"
   },
   "peerDependencies": {
