@@ -28,5 +28,9 @@
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "rollup": "^0.56.2"
+  },
+  "peerDependencies": {
+    "react": "^16.2.0",
+    "redux-simple-auth": "^0.5.0"
   }
 }
