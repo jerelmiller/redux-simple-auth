@@ -4,6 +4,7 @@
   "description": "React bindings for Redux Simple Auth",
   "main": "src/index.js",
   "scripts": {
+    "build": "rollup -c",
     "test": "jest",
     "test:watch": "yarn test --watch"
   },
