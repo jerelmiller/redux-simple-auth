@@ -1,0 +1,20 @@
+{
+  "name": "react-redux-simple-auth",
+  "version": "0.1.0",
+  "description": "React bindings for Redux Simple Auth",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jerelmiller/redux-simple-auth.git"
+  },
+  "keywords": ["react", "redux", "authentication"],
+  "author": "Jerel Miller <jerelmiller@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jerelmiller/redux-simple-auth/issues"
+  },
+  "homepage": "https://github.com/jerelmiller/redux-simple-auth#readme"
+}
