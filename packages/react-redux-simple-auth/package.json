@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "rollup -c",
+    "build:watch": "yarn build --watch",
     "test": "jest",
     "test:watch": "yarn test --watch"
   },
