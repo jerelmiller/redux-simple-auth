@@ -67,11 +67,6 @@
     "js-cookie": "^2.1.4",
     "lodash.isplainobject": "^4.0.6"
   },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "bracketSpacing": true
-  },
   "jest": {
     "setupFiles": [
       "./test/setupTests.js"
