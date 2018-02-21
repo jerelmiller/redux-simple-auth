@@ -3,5 +3,6 @@ export default {
   output: {
     file: 'lib/index.js',
     format: 'cjs'
-  }
+  },
+  external: ['react', 'redux-simple-auth', 'react-redux']
 }
