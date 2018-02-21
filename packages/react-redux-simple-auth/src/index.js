@@ -1,4 +1,5 @@
 export { default as Logout } from './components/Logout'
+export { default as LogoutRoute } from './components/LogoutRoute'
 export { default as ProtectedRoute } from './components/ProtectedRoute'
 export {
   default as RouteUnlessAuthenticated
