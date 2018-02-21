@@ -10,11 +10,19 @@
     "type": "git",
     "url": "git+https://github.com/jerelmiller/redux-simple-auth.git"
   },
-  "keywords": ["react", "redux", "authentication"],
+  "keywords": [
+    "react",
+    "redux",
+    "authentication"
+  ],
   "author": "Jerel Miller <jerelmiller@gmail.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jerelmiller/redux-simple-auth/issues"
   },
-  "homepage": "https://github.com/jerelmiller/redux-simple-auth#readme"
+  "homepage": "https://github.com/jerelmiller/redux-simple-auth#readme",
+  "devDependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0"
+  }
 }
