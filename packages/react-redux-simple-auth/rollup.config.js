@@ -9,5 +9,5 @@ export default {
     format: 'cjs'
   },
   plugins: [resolve(), babel({ exclude: 'node_modules/**' }), commonjs()],
-  external: ['react', 'redux-simple-auth', 'react-redux']
+  external: ['react', 'redux-simple-auth', 'react-redux', 'react-router-dom']
 }
