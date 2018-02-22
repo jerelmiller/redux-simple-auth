@@ -188,10 +188,30 @@ store.dispatch(authenticate('credentials', { email, password }))
 
 ### Built-in authenticators
 
-Redux Simple Auth does not currently ship with any built-in authenticators.
-There are plans to implement authenticators as this library matures. For now,
-refer to the [custom authenticators](#implementing-a-custom-authenticator)
-documentation to build your own.
+Redux Simple Auth currently ships with 1 authenticator. There are plans to
+implement more authenticators as this library matures. Refer to the [custom
+authenticators](#implementing-a-custom-authenticator) documentation if you would
+like to build your own.
+
+**OAuth2 Implicit Grant (alpha)**
+
+An authenticator to handle OAuth2 implicit grant flow. This validates that the
+data passed to `authenticate` has an `access_token` parameter.
+
+**NOTE:** This authenticator is currently in alpha. If you need
+more robust authentication/restore behavior, consider building your own [custom
+authenticator](#implementing-a-custom-authenticator).
+
+```javascript
+import { createOauth2ImplicitGrantAuthenticator } from 'redux-simple-auth'
+
+const oauth2ImplicitGrantAuthenticator = createOauth2ImplicitGrantAuthenticator()
+```
+
+**Options**
+
+There are currently no options for this authenticator. As OAuth2 support is
+built out, options will be added to better support extensibility.
 
 ### Implementing a custom authenticator
 
@@ -482,10 +502,23 @@ requests. This function is invoked by the middleware when a
 
 ### Built-in authorizers
 
-Redux Simple Auth does not currently ship with any built-in authorizers. As this
-library matures, there are plans to implement some built-in authorizers. Refer
+Redux Simple Auth currently ships with 1 authorizer. As this
+library matures, there are plans to implement more built-in authorizers. Refer
 to the [custom authorizers](#implementing-a-custom-authorizer) section to build
 your own.
+
+**OAuth2 Bearer**
+
+This authorizer is responsible for setting the `Authorization` header using the
+`Bearer` scheme.
+
+```javascript
+import { createAuthMiddleware, oauth2BearerAuthorizer } from 'redux-simple-auth'
+
+const authMiddleware = createAuthMiddleware({
+  authorize: oauth2BearerAuthorizer
+})
+```
 
 ### Implementing a custom authorizer
 
