@@ -501,10 +501,23 @@ requests. This function is invoked by the middleware when a
 
 ### Built-in authorizers
 
-Redux Simple Auth does not currently ship with any built-in authorizers. As this
-library matures, there are plans to implement some built-in authorizers. Refer
+Redux Simple Auth currently ships with 1 authorizer. As this
+library matures, there are plans to implement more built-in authorizers. Refer
 to the [custom authorizers](#implementing-a-custom-authorizer) section to build
 your own.
+
+**OAuth2 Bearer**
+
+This authorizer is responsible for setting the `Authorization` header using the
+`Bearer` scheme.
+
+```javascript
+import { createAuthMiddleware, oauth2BearerAuthorizer } from 'redux-simple-auth'
+
+const authMiddleware = createAuthMiddleware({
+  authorize: oauth2BearerAuthorizer
+})
+```
 
 ### Implementing a custom authorizer
 
