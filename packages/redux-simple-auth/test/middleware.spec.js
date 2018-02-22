@@ -9,7 +9,8 @@ import {
   authenticateSucceeded,
   fetch as fetchAction,
   invalidateSession,
-  updateSession
+  updateSession,
+  invalidateSessionFailed
 } from '../src/actions'
 import {
   failAuthenticator,
@@ -238,6 +239,75 @@ describe('auth middleware', () => {
     })
   })
 
+  describe('when invalidating', () => {
+    it('calls authenticators invalidate', () => {
+      const middleware = configureMiddleware(spiedAuthenticator)
+      const mockStore = configureStore([middleware])
+      const data = { username: 'test', password: 'password' }
+      const store = mockStore({ session: { authenticator: 'test', data } })
+      const invalidateAction = invalidateSession()
+
+      store.dispatch(invalidateAction)
+      expect(spiedAuthenticator.invalidate).toHaveBeenCalledWith(data)
+
+      spiedAuthenticator.authenticate.mockClear()
+      spiedAuthenticator.invalidate.mockClear()
+    })
+
+    describe('when there is no session', () => {
+      it('throws error', () => {
+        const authenticator = createAuthenticator({
+          name: 'fake'
+        })
+        const middleware = configureMiddleware(authenticator)
+        const mockStore = configureStore([middleware])
+        const store = mockStore()
+        const action = invalidateSession('not-real', {})
+
+        expect(() => store.dispatch(action)).toThrow(
+          'No session data to invalidate. Be sure you authenticate the ' +
+          'session before you try to invalidate it'
+        )
+      })
+    })
+
+    describe('when redux store authenticator is not found', () => {
+      it('returns a rejected promise and dispatches invalidate Session', async () => {
+        const authenticator = createAuthenticator({
+          name: 'unmatchable'
+        })
+        const middleware = configureMiddleware(authenticator)
+        const mockStore = configureStore([middleware])
+        const store = mockStore({ session: { } })
+        await expect(store.dispatch(invalidateSession())).rejects.toEqual(
+          new Error(
+            'No authenticated session. Be sure you authenticate the session ' +
+            'before you try to invalidate it'
+          )
+        )
+
+        expect(store.getActions()).toContainEqual(invalidateSessionFailed())
+      })
+    })
+
+    describe('when there is no authenticator', () => {
+      it('throws error', () => {
+        const authenticator = createAuthenticator({
+          name: 'fake'
+        })
+        const middleware = configureMiddleware(authenticator)
+        const mockStore = configureStore([middleware])
+        const store = mockStore()
+        const action = invalidateSession()
+
+        expect(() => store.dispatch(action)).toThrow(
+          'No session data to invalidate. Be sure you authenticate the ' +
+          'session before you try to invalidate it' 
+        )
+      })
+    })
+  })
+
   describe('session restoration', () => {
     it('hydrates session data from storage', () => {
       const middleware = configureMiddleware()
@@ -387,19 +457,21 @@ describe('auth middleware', () => {
     })
 
     describe('when request returns 401 unauthorized', () => {
-      it('dispatches invalidateSession', async () => {
+      it('calls authenticators invalidate', async () => {
         fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
-        const middleware = configureMiddleware()
+        const middleware = configureMiddleware(spiedAuthenticator)
         const mockStore = configureStore([middleware])
         const data = { token: '1235' }
-        const store = mockStore({ session: { data, isAuthenticated: true } })
-        const invalidateAction = invalidateSession()
+        const store = mockStore({
+          session: { data, isAuthenticated: true, authenticator: 'test' }
+        })
 
         await store.dispatch(fetchAction('https://test.com'))
 
-        expect(store.getActions()).toEqual(
-          expect.arrayContaining([invalidateAction])
-        )
+        expect(spiedAuthenticator.invalidate).toHaveBeenCalledWith(data)
+
+        spiedAuthenticator.authenticate.mockClear()
+        spiedAuthenticator.invalidate.mockClear()
       })
 
       it('does not dispatch if not authenticated', async () => {

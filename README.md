@@ -227,6 +227,9 @@ const credentialsAuthenticator = createAuthenticator({
   authenticate(data) {
     // ...
   },
+  invalidate(data) {
+    // ...
+  },
   restore(data) {
     // ...
   }
@@ -250,6 +253,16 @@ const credentialsAuthenticator = createAuthenticator({
   a default implementation of this function is defined if none is given and
   always returns a rejected promise resulting in an unauthenticated session. It
   is important that this function is defined when creating your authenticator.
+
+* `invalidate(data)` (_function_): A function responsible for doing any 
+  additional cleanup of the authenticated data. This function will be invoked 
+  when the [`invalidateSession`](#invalidatesession) action is dispatched. It
+  accepts a single argument with the data persisted to the session and must 
+  return a promise. A resolved promise will clear the authenticated session 
+  data and result in an unauthenticated session. A rejected promise will 
+  result in invalidation being interrupted, however session data will still be
+  wiped. Note that a default implementation of this function is defined if none
+  is given and always returns a resolved promise.
 
 * `restore(data)` (_function_): A function used to restore the session,
   typically after a page refresh. This function will be invoked when the
@@ -291,6 +304,9 @@ const credentialsAuthenticator = createAuthenticator({
     }
 
     return Promise.reject()
+  },
+  invalidate(data) {
+    return fetch('/api/invalidate', { method: 'DELETE' })
   }
 })
 
