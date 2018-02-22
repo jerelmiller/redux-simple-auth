@@ -84,6 +84,20 @@ export default (config = {}) => {
     }
 
     return next => action => {
+      const sync = () => {
+        const { session: prevSession } = getState()
+        const result = next(action)
+        const { session } = getState()
+
+        if (session.data !== prevSession.data) {
+          const { authenticator, data } = session
+
+          storage.persist({ authenticated: { ...data, authenticator } })
+        }
+
+        return result
+      }
+
       switch (action.type) {
         case AUTHENTICATE: {
           const authenticator = findAuthenticator(action.meta.authenticator)
@@ -132,7 +146,7 @@ export default (config = {}) => {
           if (!state.session) {
             throw new Error(
               'No session data to invalidate. Be sure you authenticate the ' +
-              'session before you try to invalidate it' 
+                'session before you try to invalidate it'
             )
           }
 
@@ -143,7 +157,7 @@ export default (config = {}) => {
             return Promise.reject(
               new Error(
                 'No authenticated session. Be sure you authenticate the session ' +
-                'before you try to invalidate it'
+                  'before you try to invalidate it'
               )
             )
           }
@@ -157,25 +171,13 @@ export default (config = {}) => {
                 'config.'
             )
           }
-          
-          return authenticator.invalidate(getSessionData(state)).then(
-            () => next(action),
-            // TODO: what happens in this block:
-            () => dispatch(invalidateSessionFailed())
-          )
+
+          return authenticator
+            .invalidate(getSessionData(state))
+            .then(sync, () => dispatch(invalidateSessionFailed()))
         }
         default: {
-          const { session: prevSession } = getState()
-          const result = next(action)
-          const { session } = getState()
-
-          if (session.data !== prevSession.data) {
-            const { authenticator, data } = session
-
-            storage.persist({ authenticated: { ...data, authenticator } })
-          }
-
-          return result
+          return sync()
         }
       }
     }
