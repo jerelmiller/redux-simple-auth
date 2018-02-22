@@ -195,11 +195,12 @@ like to build your own.
 
 **OAuth2 Implicit Grant (alpha)**
 
-A very basic authenticator to handle OAuth2 implicit grant flow. This
-essentially validates that the data passed to `authenticate` has an
-`access_token` parameter. This authenticator is currently in alpha. If you need
-more robust authentication/restore behavior, consider creating your own [custom
-authenticator](#implementing-a-custom-authenticator) in the meantime.
+An authenticator to handle OAuth2 implicit grant flow. This validates that the
+data passed to `authenticate` has an `access_token` parameter.
+
+**NOTE:** This authenticator is currently in alpha. If you need
+more robust authentication/restore behavior, consider building your own [custom
+authenticator](#implementing-a-custom-authenticator).
 
 ```javascript
 import { createOauth2ImplicitGrantAuthenticator } from 'redux-simple-auth'
