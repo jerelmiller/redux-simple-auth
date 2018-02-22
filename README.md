@@ -189,9 +189,9 @@ store.dispatch(authenticate('credentials', { email, password }))
 ### Built-in authenticators
 
 Redux Simple Auth currently ships with 1 authenticator. There are plans to
-implement authenticators as this library matures. For now, refer to the [custom
-authenticators](#implementing-a-custom-authenticator) documentation to build
-your own.
+implement more authenticators as this library matures. Refer to the [custom
+authenticators](#implementing-a-custom-authenticator) documentation if you would
+like to build your own.
 
 **OAuth2 Implicit Grant (alpha)**
 
