@@ -188,10 +188,29 @@ store.dispatch(authenticate('credentials', { email, password }))
 
 ### Built-in authenticators
 
-Redux Simple Auth does not currently ship with any built-in authenticators.
-There are plans to implement authenticators as this library matures. For now,
-refer to the [custom authenticators](#implementing-a-custom-authenticator)
-documentation to build your own.
+Redux Simple Auth currently ships with 1 authenticator. There are plans to
+implement authenticators as this library matures. For now, refer to the [custom
+authenticators](#implementing-a-custom-authenticator) documentation to build
+your own.
+
+**OAuth2 Implicit Grant (alpha)**
+
+A very basic authenticator to handle OAuth2 implicit grant flow. This
+essentially validates that the data passed to `authenticate` has an
+`access_token` parameter. This authenticator is currently in alpha. If you need
+more robust authentication/restore behavior, consider creating your own [custom
+authenticator](#implementing-a-custom-authenticator) in the meantime.
+
+```javascript
+import { createOauth2ImplicitGrantAuthenticator } from 'redux-simple-auth'
+
+const oauth2ImplicitGrantAuthenticator = createOauth2ImplicitGrantAuthenticator()
+```
+
+**Options**
+
+There are currently no options for this authenticator. As OAuth2 support is
+built out, options will be added to better support extensibility.
 
 ### Implementing a custom authenticator
 
