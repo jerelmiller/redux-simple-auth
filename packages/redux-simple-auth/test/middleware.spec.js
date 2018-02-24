@@ -236,6 +236,18 @@ describe('auth middleware', () => {
 
         expect(store.getActions()).toContainEqual(authenticateFailed())
       })
+
+      it('returns rejected promise', async () => {
+        const middleware = configureMiddleware(failAuthenticator)
+        const mockStore = configureStore([middleware])
+        const store = mockStore({ session: { isAuthenticated: false } })
+        const data = { username: 'test', password: 'password' }
+        const action = authenticate('test', data)
+
+        const promise = store.dispatch(action)
+
+        await expect(promise).rejects.toEqual(authenticateFailed())
+      })
     })
   })
 
