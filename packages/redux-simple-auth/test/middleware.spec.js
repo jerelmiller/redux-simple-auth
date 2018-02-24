@@ -232,9 +232,23 @@ describe('auth middleware', () => {
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
 
-        await store.dispatch(action)
+        try {
+          await store.dispatch(action)
+        } catch (e) {}
 
         expect(store.getActions()).toContainEqual(authenticateFailed())
+      })
+
+      it('returns rejected promise', async () => {
+        const middleware = configureMiddleware(failAuthenticator)
+        const mockStore = configureStore([middleware])
+        const store = mockStore({ session: { isAuthenticated: false } })
+        const data = { username: 'test', password: 'password' }
+        const action = authenticate('test', data)
+
+        const promise = store.dispatch(action)
+
+        await expect(promise).rejects.toEqual(authenticateFailed())
       })
     })
   })
@@ -266,7 +280,7 @@ describe('auth middleware', () => {
 
         expect(() => store.dispatch(action)).toThrow(
           'No session data to invalidate. Be sure you authenticate the ' +
-          'session before you try to invalidate it'
+            'session before you try to invalidate it'
         )
       })
     })
@@ -278,11 +292,11 @@ describe('auth middleware', () => {
         })
         const middleware = configureMiddleware(authenticator)
         const mockStore = configureStore([middleware])
-        const store = mockStore({ session: { } })
+        const store = mockStore({ session: {} })
         await expect(store.dispatch(invalidateSession())).rejects.toEqual(
           new Error(
             'No authenticated session. Be sure you authenticate the session ' +
-            'before you try to invalidate it'
+              'before you try to invalidate it'
           )
         )
 
@@ -302,7 +316,7 @@ describe('auth middleware', () => {
 
         expect(() => store.dispatch(action)).toThrow(
           'No session data to invalidate. Be sure you authenticate the ' +
-          'session before you try to invalidate it' 
+            'session before you try to invalidate it'
         )
       })
     })
