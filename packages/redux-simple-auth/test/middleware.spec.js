@@ -232,7 +232,9 @@ describe('auth middleware', () => {
         const data = { username: 'test', password: 'password' }
         const action = authenticate('test', data)
 
-        await store.dispatch(action)
+        try {
+          await store.dispatch(action)
+        } catch (e) {}
 
         expect(store.getActions()).toContainEqual(authenticateFailed())
       })
