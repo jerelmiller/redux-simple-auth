@@ -114,7 +114,7 @@ export default (config = {}) => {
             .authenticate(action.payload)
             .then(
               data => dispatch(authenticateSucceeded(authenticator.name, data)),
-              error => dispatch(authenticateFailed(error))
+              error => Promise.reject(dispatch(authenticateFailed(error)))
             )
         }
         case FETCH: {
