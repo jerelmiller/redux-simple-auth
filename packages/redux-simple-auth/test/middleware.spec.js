@@ -280,7 +280,7 @@ describe('auth middleware', () => {
 
         expect(() => store.dispatch(action)).toThrow(
           'No session data to invalidate. Be sure you authenticate the ' +
-          'session before you try to invalidate it'
+            'session before you try to invalidate it'
         )
       })
     })
@@ -292,11 +292,11 @@ describe('auth middleware', () => {
         })
         const middleware = configureMiddleware(authenticator)
         const mockStore = configureStore([middleware])
-        const store = mockStore({ session: { } })
+        const store = mockStore({ session: {} })
         await expect(store.dispatch(invalidateSession())).rejects.toEqual(
           new Error(
             'No authenticated session. Be sure you authenticate the session ' +
-            'before you try to invalidate it'
+              'before you try to invalidate it'
           )
         )
 
@@ -316,7 +316,7 @@ describe('auth middleware', () => {
 
         expect(() => store.dispatch(action)).toThrow(
           'No session data to invalidate. Be sure you authenticate the ' +
-          'session before you try to invalidate it' 
+            'session before you try to invalidate it'
         )
       })
     })
