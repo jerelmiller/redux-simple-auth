@@ -244,10 +244,31 @@ store.dispatch(authenticate('credentials', credentials))
   `application/x-www-form-urlencoded` request.
   * _Default_: `JSON.stringify`
 
+```javascript
+const credentialsAuthenticator = createCredentialsAuthenticator({
+  endpoint: '/api/authenticate',
+  contentType: 'application/x-www-form-urlencoded',
+  transformRequest(credentials) {
+    return Object.keys(credentials)
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(credentials[key])}`)
+      .join('&')
+  }
+})
+```
+
 * `transformResponse`: (_function_): A function that allows you to transform the
   payload returned from the server as the data the will be stored in the
   session.
   * _Default_: `(payload) => payload`
+
+```javascript
+const credentialsAuthenticator = createCredentialsAuthenticator({
+  endpoint: '/api/authenticate',
+  transformResponse: data => ({
+    token: data.response.token
+  })
+})
+```
 
 
 **OAuth2 Implicit Grant (alpha)**
