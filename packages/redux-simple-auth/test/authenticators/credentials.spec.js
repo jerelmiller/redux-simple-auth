@@ -25,9 +25,11 @@ it('resolves with returned data by default', async () => {
   const credentials = createCredentialsAuthenticator({
     endpoint: '/authenticate'
   })
-  const creds = { email: 'text@example.com', password: 'password' }
 
-  const promise = credentials.authenticate(creds)
+  const promise = credentials.authenticate({
+    email: 'text@example.com',
+    password: 'password'
+  })
 
   await expect(promise).resolves.toEqual({ token: '12345' })
 })
