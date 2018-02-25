@@ -73,3 +73,27 @@ it('allows content-type to be configured', () => {
     body: JSON.stringify(creds)
   })
 })
+
+it('allows headers to be configured', () => {
+  fetch.mockResponse(JSON.stringify({ ok: true }))
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate',
+    headers: {
+      Accept: 'text/html',
+      'X-Token': '1234'
+    }
+  })
+  const creds = { email: 'text@example.com', password: 'password' }
+
+  credentials.authenticate(creds)
+
+  expect(fetch).toHaveBeenCalledWith('/authenticate', {
+    method: 'POST',
+    headers: {
+      Accept: 'text/html',
+      'Content-Type': 'application/json',
+      'X-Token': '1234'
+    },
+    body: JSON.stringify(creds)
+  })
+})
