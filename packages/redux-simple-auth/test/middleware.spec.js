@@ -30,10 +30,6 @@ beforeEach(() => {
   fetch.resetMocks()
 })
 
-afterEach(() => {
-  storage.restore.mockClear()
-})
-
 it('throws when no authenticator is given', () => {
   expect(() =>
     createAuthMiddleware({
