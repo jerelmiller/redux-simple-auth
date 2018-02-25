@@ -177,23 +177,17 @@ it('default restore rejects if no data', async () => {
   await expect(promise).rejects.toBeUndefined()
 })
 
-it('allows restore to be configured', async () => {
+it('allows restore to be configured', () => {
+  const restore = jest.fn()
   const credentials = createCredentialsAuthenticator({
     endpoint: '/authenticate',
-    restore: data => {
-      if (data.token === 'secret-key') {
-        return Promise.resolve(data)
-      }
-
-      return Promise.reject()
-    }
+    restore
   })
+  const data = { token: '1234' }
 
-  const valid = credentials.restore({ token: 'secret-key' })
-  const invalid = credentials.restore({ token: 'nope' })
+  credentials.restore(data)
 
-  await expect(valid).resolves.toEqual({ token: 'secret-key' })
-  await expect(invalid).rejects.toBeUndefined()
+  expect(restore).toHaveBeenCalledWith(data)
 })
 
 it('has default invalidate', async () => {
