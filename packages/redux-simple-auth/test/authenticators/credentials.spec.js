@@ -54,3 +54,22 @@ it('throws invariant if `endpoint` is not given', () => {
     'You must provide an endpoint for the `credentials` authenticator'
   )
 })
+
+it('allows content-type to be overridden', () => {
+  fetch.mockResponse(JSON.stringify({ ok: true }))
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate',
+    contentType: 'application/vnd.api+json'
+  })
+  const creds = { email: 'text@example.com', password: 'password' }
+
+  credentials.authenticate(creds)
+
+  expect(fetch).toHaveBeenCalledWith('/authenticate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/vnd.api+json'
+    },
+    body: JSON.stringify(creds)
+  })
+})
