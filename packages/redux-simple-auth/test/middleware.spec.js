@@ -222,7 +222,7 @@ describe('AUTHENTICATE dispatched', () => {
   })
 })
 
-describe('when invalidating', () => {
+describe('INVALIDATE_SESSION dispatched', () => {
   it('calls authenticators invalidate', () => {
     const middleware = configureMiddleware(spiedAuthenticator)
     const mockStore = configureStore([middleware])
