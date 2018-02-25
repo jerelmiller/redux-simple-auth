@@ -892,6 +892,7 @@ The following actions are available action types
 * `AUTHENTICATE_SUCCEEDED`
 * `FETCH`
 * `INVALIDATE_SESSION`
+* `INVALIDATE_SESSION_FAILED`
 * `RESTORE`
 * `RESTORE_FAILED`
 * `UPDATE_SESSION`
