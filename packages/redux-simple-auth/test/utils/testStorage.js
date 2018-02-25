@@ -1,10 +1,10 @@
-const dummyData = {
-  authenticated: {
-    authenticator: 'test'
+export default (initialData = {}) => {
+  let data = initialData
+
+  return {
+    reset: () => (data = initialData),
+    getData: () => data,
+    persist: d => (data = d),
+    restore: jest.fn(() => data)
   }
 }
-
-export default (data = dummyData) => ({
-  persist: jest.fn(),
-  restore: jest.fn(() => data)
-})
