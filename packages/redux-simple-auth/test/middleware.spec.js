@@ -237,21 +237,19 @@ describe('INVALIDATE_SESSION dispatched', () => {
     spiedAuthenticator.invalidate.mockClear()
   })
 
-  describe('when there is no session', () => {
-    it('throws error', () => {
-      const authenticator = createAuthenticator({
-        name: 'fake'
-      })
-      const middleware = configureMiddleware(authenticator)
-      const mockStore = configureStore([middleware])
-      const store = mockStore()
-      const action = invalidateSession('not-real', {})
-
-      expect(() => store.dispatch(action)).toThrow(
-        'No session data to invalidate. Be sure you authenticate the ' +
-          'session before you try to invalidate it'
-      )
+  it('throws error when there is no session', () => {
+    const authenticator = createAuthenticator({
+      name: 'fake'
     })
+    const middleware = configureMiddleware(authenticator)
+    const mockStore = configureStore([middleware])
+    const store = mockStore()
+    const action = invalidateSession('not-real', {})
+
+    expect(() => store.dispatch(action)).toThrow(
+      'No session data to invalidate. Be sure you authenticate the ' +
+        'session before you try to invalidate it'
+    )
   })
 
   describe('when redux store authenticator is not found', () => {
