@@ -1,5 +1,7 @@
 import fetch from 'jest-fetch-mock'
 
+jest.mock('warning')
+
 const createLocalStorageMock = () => {
   let store = {}
 
