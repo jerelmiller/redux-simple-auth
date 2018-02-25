@@ -216,7 +216,7 @@ const credentialsAuthenticator = createCredentialsAuthenticator({
 When authenticating via the `authenticate` action, simply give the credentials
 payload as the second argument.
 
-```
+```javascript
 const credentials = { email: 'test@example.com', password: 'F@keP@ssword!' }
 
 store.dispatch(authenticate('credentials', credentials))
