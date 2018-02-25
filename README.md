@@ -270,6 +270,15 @@ const credentialsAuthenticator = createCredentialsAuthenticator({
 })
 ```
 
+* `restore`: (_function_): A restore function for the authenticator. The default
+  implementation will resolve if the data is non-empty. If you would like more
+  custom behavior, see the section on [custom
+  authenticators](#implementing-a-custom-authenticator) for usage information.
+
+* `invalidate`: (_function_): An invalidation function for the authenticator.
+  The default implementation will always resolve. If you would like more custom
+  behavior, see the section on [custom
+  authenticators](#implementing-a-custom-authenticator) for usage information.
 
 **OAuth2 Implicit Grant (alpha)**
 
