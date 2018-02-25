@@ -148,9 +148,7 @@ export default (config = {}) => {
 
           warning(
             getIsAuthenticated(state),
-            'You are trying to invalidate a session that is not authenticated. ' +
-              'This may have unintended consequences if your authenticator ' +
-              'implements custom invalidation logic.'
+            'You are trying to invalidate a session that is not authenticated.'
           )
 
           const authenticatorName = getAuthenticator(state)
