@@ -114,7 +114,7 @@ describe('AUTHENTICATE dispatched', () => {
       authenticator
     })
     const mockStore = configureStore([middleware])
-    const store = mockStore()
+    const store = mockStore({ session: reducer(undefined, {}) })
     const data = { username: 'test', password: 'password' }
     const action = authenticate('test', data)
 
