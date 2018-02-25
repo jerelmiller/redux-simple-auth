@@ -253,7 +253,7 @@ describe('INVALIDATE_SESSION dispatched', () => {
     expect(store.getActions()).toContainEqual(invalidateSessionFailed())
   })
 
-  it('returns rejected promise with action', async () => {
+  it('returns rejected promise with action when not authenticated', async () => {
     const middleware = createAuthMiddleware({
       storage,
       authenticator: testAuthenticator
