@@ -166,3 +166,13 @@ it('default restore resolves if data exists', async () => {
 
   await expect(promise).resolves.toEqual({ token: '1234' })
 })
+
+it('default restore rejects if no data', async () => {
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate'
+  })
+
+  const promise = credentials.restore({})
+
+  await expect(promise).rejects.toBeUndefined()
+})
