@@ -50,9 +50,7 @@ it('throws when authenticators are not an array', () => {
 })
 
 it('throws when authenticator is an array', () => {
-  expect(() =>
-    createAuthMiddleware({ storage, authenticator: [spiedAuthenticator] })
-  ).toThrow(
+  expect(() => createAuthMiddleware({ storage, authenticator: [] })).toThrow(
     'Expected `authenticator` to be an object. If you need multiple ' +
       'authenticators, consider using the `authenticators` option.'
   )
