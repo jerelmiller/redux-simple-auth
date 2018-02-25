@@ -12,7 +12,7 @@ export default ({
 }) => {
   invariant(
     endpoint,
-    'You must provide an endpoint to use the `credentials` authenticator'
+    'You must provide an endpoint for the `credentials` authenticator'
   )
 
   return createAuthenticator({
