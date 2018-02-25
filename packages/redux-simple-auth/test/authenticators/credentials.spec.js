@@ -31,3 +31,18 @@ it('resolves with returned data by default', async () => {
 
   await expect(promise).resolves.toEqual({ token: '12345' })
 })
+
+it('handles invalid responses', async () => {
+  const error = { error: 'Wrong email or password' }
+  fetch.mockResponse(JSON.stringify(error), { status: 401 })
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate'
+  })
+
+  const promise = credentials.authenticate({
+    email: 'text@example.com',
+    password: 'password'
+  })
+
+  await expect(promise).rejects.toEqual(error)
+})
