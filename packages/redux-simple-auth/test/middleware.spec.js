@@ -56,7 +56,7 @@ it('throws when authenticator is an array', () => {
   )
 })
 
-it('persists changes to storage', () => {
+it('persists changed authenticated data to storage', () => {
   const storage = createMockStorage()
   const middleware = createAuthMiddleware({
     storage,
