@@ -2,11 +2,20 @@ import createAuthenticator from '../createAuthenticator'
 import identity from '../utils/identity'
 import invariant from 'invariant'
 
+const defaultRestore = data => {
+  if (Object.keys(data).length > 0) {
+    return Promise.resolve(data)
+  }
+
+  return Promise.reject()
+}
+
 export default ({
   endpoint,
   contentType = 'application/json',
   headers = {},
   method = 'POST',
+  restore = defaultRestore,
   transformRequest = JSON.stringify,
   transformResponse = identity
 }) => {
@@ -34,12 +43,6 @@ export default ({
 
         return transformResponse(json)
       }),
-    restore: data => {
-      if (Object.keys(data).length > 0) {
-        return Promise.resolve(data)
-      }
-
-      return Promise.reject()
-    }
+    restore
   })
 }
