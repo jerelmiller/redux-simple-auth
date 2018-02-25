@@ -6,9 +6,9 @@ export default ({
   endpoint,
   contentType = 'application/json',
   headers = {},
+  method = 'POST',
   transformRequest = JSON.stringify,
-  transformResponse = identity,
-  method = 'POST'
+  transformResponse = identity
 }) => {
   invariant(
     endpoint,
