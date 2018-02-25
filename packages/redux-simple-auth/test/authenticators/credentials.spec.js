@@ -176,3 +176,22 @@ it('default restore rejects if no data', async () => {
 
   await expect(promise).rejects.toBeUndefined()
 })
+
+it('allows restore to be configured', async () => {
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate',
+    restore: data => {
+      if (data.token === 'secret-key') {
+        return Promise.resolve(data)
+      }
+
+      return Promise.reject()
+    }
+  })
+
+  const valid = credentials.restore({ token: 'secret-key' })
+  const invalid = credentials.restore({ token: 'nope' })
+
+  await expect(valid).resolves.toEqual({ token: 'secret-key' })
+  await expect(invalid).rejects.toBeUndefined()
+})
