@@ -146,6 +146,12 @@ describe('when authenticating', () => {
     const mockStore = configureStore([middleware])
 
     it('sets authenticated data on local storage', async () => {
+      const storage = createMockStorage()
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: successAuthenticator
+      })
+      const mockStore = configureStore([middleware])
       const initialState = reducer(undefined, {})
       const getState = jest
         .fn()
@@ -164,7 +170,7 @@ describe('when authenticating', () => {
 
       await store.dispatch(action)
 
-      expect(storage.persist).toHaveBeenCalledWith({
+      expect(storage.getData()).toEqual({
         authenticated: {
           token: '1234',
           authenticator: 'test'
