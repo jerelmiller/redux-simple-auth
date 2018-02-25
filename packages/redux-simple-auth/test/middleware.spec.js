@@ -34,62 +34,58 @@ afterEach(() => {
   storage.restore.mockClear()
 })
 
-describe('config', () => {
-  it('throws when no authenticator is given', () => {
-    expect(() =>
-      createAuthMiddleware({
-        storage,
-        authenticator: undefined,
-        authenticators: undefined
-      })
-    ).toThrow(
-      'No authenticator was given. Be sure to configure an authenticator ' +
-        'by using the `authenticator` option for a single authenticator or ' +
-        'using the `authenticators` option to allow multiple authenticators'
-    )
-  })
-
-  it('throws when authenticators are not an array', () => {
-    expect(() =>
-      createAuthMiddleware({ storage, authenticators: spiedAuthenticator })
-    ).toThrow(
-      'Expected `authenticators` to be an array. If you only need a single ' +
-        'authenticator, consider using the `authenticator` option.'
-    )
-  })
-
-  it('throws when authenticator is an array', () => {
-    expect(() =>
-      createAuthMiddleware({ storage, authenticator: [spiedAuthenticator] })
-    ).toThrow(
-      'Expected `authenticator` to be an object. If you need multiple ' +
-        'authenticators, consider using the `authenticators` option.'
-    )
-  })
+it('throws when no authenticator is given', () => {
+  expect(() =>
+    createAuthMiddleware({
+      storage,
+      authenticator: undefined,
+      authenticators: undefined
+    })
+  ).toThrow(
+    'No authenticator was given. Be sure to configure an authenticator ' +
+      'by using the `authenticator` option for a single authenticator or ' +
+      'using the `authenticators` option to allow multiple authenticators'
+  )
 })
 
-describe('when authenticated data changes', () => {
-  it('persists changes to storage', () => {
-    const middleware = configureMiddleware(successAuthenticator)
-    const mockStore = configureStore([middleware])
-    const getState = jest
-      .fn()
-      .mockReturnValueOnce({
-        session: { authenticator: null, data: {} }
-      })
-      .mockReturnValueOnce({
-        session: { authenticator: 'test', data: { token: '1234' } }
-      })
-    const store = mockStore(getState)
+it('throws when authenticators are not an array', () => {
+  expect(() =>
+    createAuthMiddleware({ storage, authenticators: spiedAuthenticator })
+  ).toThrow(
+    'Expected `authenticators` to be an array. If you only need a single ' +
+      'authenticator, consider using the `authenticator` option.'
+  )
+})
 
-    store.dispatch({ type: 'test' })
+it('throws when authenticator is an array', () => {
+  expect(() =>
+    createAuthMiddleware({ storage, authenticator: [spiedAuthenticator] })
+  ).toThrow(
+    'Expected `authenticator` to be an object. If you need multiple ' +
+      'authenticators, consider using the `authenticators` option.'
+  )
+})
 
-    expect(storage.persist).toHaveBeenCalledWith({
-      authenticated: {
-        authenticator: 'test',
-        token: '1234'
-      }
+it('persists changes to storage', () => {
+  const middleware = configureMiddleware(successAuthenticator)
+  const mockStore = configureStore([middleware])
+  const getState = jest
+    .fn()
+    .mockReturnValueOnce({
+      session: { authenticator: null, data: {} }
     })
+    .mockReturnValueOnce({
+      session: { authenticator: 'test', data: { token: '1234' } }
+    })
+  const store = mockStore(getState)
+
+  store.dispatch({ type: 'test' })
+
+  expect(storage.persist).toHaveBeenCalledWith({
+    authenticated: {
+      authenticator: 'test',
+      token: '1234'
+    }
   })
 })
 
