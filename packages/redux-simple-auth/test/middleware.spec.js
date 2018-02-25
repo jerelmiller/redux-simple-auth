@@ -240,6 +240,23 @@ describe('INVALIDATE_SESSION dispatched', () => {
     expect(authenticator.invalidate).toHaveBeenCalledWith(data)
   })
 
+  it('dispatches INVALIDATE_SESSION_FAILED if authenticator fails to invalidate', async () => {
+    const authenticator = createAuthenticator({
+      name: 'test',
+      invalidate: () => Promise.reject()
+    })
+    const middleware = createAuthMiddleware({ storage, authenticator })
+    const mockStore = configureStore([middleware])
+    const store = mockStore({
+      session: { isAuthenticated: true, authenticator: 'test' }
+    })
+    const invalidateAction = invalidateSession()
+
+    await store.dispatch(invalidateAction)
+
+    expect(store.getActions()).toContainEqual(invalidateSessionFailed())
+  })
+
   it('dispatches INVALIDATE_SESSION_FAILED if not authenticated', async () => {
     const middleware = createAuthMiddleware({
       storage,
