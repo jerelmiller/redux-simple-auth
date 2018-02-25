@@ -21,6 +21,13 @@ import warning from 'warning'
 
 const storage = createMockStorage()
 
+const sessionState = (overrides = {}) => ({
+  session: {
+    ...reducer(undefined, {}),
+    ...overrides
+  }
+})
+
 beforeEach(() => {
   fetch.resetMocks()
 })
@@ -97,16 +104,14 @@ it('hydrates session data from storage', async () => {
   })
   const store = await createStore({ middleware })
 
-  expect(store.getState()).toEqual({
-    session: {
+  expect(store.getState()).toEqual(
+    sessionState({
       authenticator: 'test',
       isAuthenticated: true,
       isRestored: true,
-      hasFailedAuth: false,
-      lastError: null,
       data: { token: 1234 }
-    }
-  })
+    })
+  )
 })
 
 describe('AUTHENTICATE dispatched', () => {
