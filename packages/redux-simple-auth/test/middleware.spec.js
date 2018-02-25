@@ -106,7 +106,6 @@ it('hydrates session data from storage', async () => {
 
 describe('AUTHENTICATE dispatched', () => {
   it('authenticates with configured authenticator', () => {
-    const storage = createMockStorage()
     const authenticator = createAuthenticator({
       name: 'test',
       authenticate: jest.fn(() => Promise.resolve())
@@ -150,7 +149,6 @@ describe('AUTHENTICATE dispatched', () => {
   })
 
   it('throws error when authenticator is not found', () => {
-    const storage = createMockStorage()
     const authenticator = createAuthenticator({
       name: 'fake'
     })
@@ -169,7 +167,6 @@ describe('AUTHENTICATE dispatched', () => {
   })
 
   it('dispatches AUTHENTICATE_SUCCEEDED when authenticated', async () => {
-    const storage = createMockStorage()
     const middleware = createAuthMiddleware({
       storage,
       authenticator: testAuthenticator
@@ -188,7 +185,6 @@ describe('AUTHENTICATE dispatched', () => {
   })
 
   it('dispatches AUTHENTICATE_FAILED when authentication fails', async () => {
-    const storage = createMockStorage()
     const error = 'Nope'
     const authenticator = createAuthenticator({
       name: 'fail',
@@ -208,7 +204,6 @@ describe('AUTHENTICATE dispatched', () => {
   })
 
   it('returns rejected promise when authentication fails', async () => {
-    const storage = createMockStorage()
     const error = 'Not today'
     const authenticator = createAuthenticator({
       name: 'fail',
@@ -228,7 +223,6 @@ describe('AUTHENTICATE dispatched', () => {
 
 describe('INVALIDATE_SESSION dispatched', () => {
   it('invalidates with configured authenticator', () => {
-    const storage = createMockStorage()
     const authenticator = createAuthenticator({
       name: 'test',
       invalidate: jest.fn(() => Promise.resolve())
@@ -245,7 +239,6 @@ describe('INVALIDATE_SESSION dispatched', () => {
   })
 
   it('throws error when there is no session', () => {
-    const storage = createMockStorage()
     const authenticator = createAuthenticator({
       name: 'fake'
     })
