@@ -15,6 +15,7 @@ import {
 } from '../src/actions'
 import { testAuthenticator } from './utils/authenticators'
 import createMockStorage from './utils/testStorage'
+import createStore from './utils/createStore'
 import configureStore from 'redux-mock-store'
 import warning from 'warning'
 
@@ -94,13 +95,18 @@ it('hydrates session data from storage', async () => {
     storage,
     authenticator: testAuthenticator
   })
-  const mockStore = configureStore([middleware])
+  const store = await createStore({ middleware })
 
-  const store = await mockStore({ session: {} })
-
-  expect(store.getActions()).toContainEqual(
-    restore({ authenticator: 'test', token: 1234 })
-  )
+  expect(store.getState()).toEqual({
+    session: {
+      authenticator: 'test',
+      isAuthenticated: true,
+      isRestored: true,
+      hasFailedAuth: false,
+      lastError: null,
+      data: { token: 1234 }
+    }
+  })
 })
 
 describe('AUTHENTICATE dispatched', () => {
