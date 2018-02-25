@@ -100,9 +100,17 @@ it('hydrates session data from storage', async () => {
   )
 })
 
-describe('when authenticating', () => {
-  it('calls authenticators authenticate', () => {
-    const middleware = configureMiddleware(spiedAuthenticator)
+describe('AUTHENTICATE dispatched', () => {
+  it('authenticates with configured authenticator', () => {
+    const storage = createMockStorage()
+    const authenticator = createAuthenticator({
+      name: 'test',
+      authenticate: jest.fn(() => Promise.resolve())
+    })
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator
+    })
     const mockStore = configureStore([middleware])
     const store = mockStore()
     const data = { username: 'test', password: 'password' }
@@ -110,9 +118,7 @@ describe('when authenticating', () => {
 
     store.dispatch(action)
 
-    expect(spiedAuthenticator.authenticate).toHaveBeenCalledWith(data)
-
-    spiedAuthenticator.authenticate.mockClear()
+    expect(authenticator.authenticate).toHaveBeenCalledWith(data)
   })
 
   it('allows single authenticator', () => {
