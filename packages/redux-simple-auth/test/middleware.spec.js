@@ -10,7 +10,8 @@ import {
   fetch as fetchAction,
   invalidateSession,
   updateSession,
-  invalidateSessionFailed
+  invalidateSessionFailed,
+  restore
 } from '../src/actions'
 import {
   failAuthenticator,
@@ -90,6 +91,23 @@ it('persists changes to storage', () => {
       token: '1234'
     }
   })
+})
+
+it('hydrates session data from storage', async () => {
+  const storage = createMockStorage({
+    authenticated: { authenticator: 'test', token: 1234 }
+  })
+  const middleware = createAuthMiddleware({
+    storage,
+    authenticator: successAuthenticator
+  })
+  const mockStore = configureStore([middleware])
+
+  const store = await mockStore()
+
+  expect(store.getActions()).toContainEqual(
+    restore({ authenticator: 'test', token: 1234 })
+  )
 })
 
 describe('when authenticating', () => {
@@ -287,16 +305,6 @@ describe('when invalidating', () => {
           'session before you try to invalidate it'
       )
     })
-  })
-})
-
-describe('session restoration', () => {
-  it('hydrates session data from storage', () => {
-    const middleware = configureMiddleware()
-    const mockStore = configureStore([middleware])
-    mockStore({ session: { isAuthenticated: false } })
-
-    expect(storage.restore).toHaveBeenCalled()
   })
 })
 
