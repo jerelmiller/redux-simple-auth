@@ -208,9 +208,14 @@ describe('when authenticating', () => {
 
   describe('when not successful', () => {
     it('dispatches AUTHENTICATE_FAILED', async () => {
-      const middleware = configureMiddleware(failAuthenticator)
+      const storage = createMockStorage()
+      const authenticator = createAuthenticator({
+        name: 'fail',
+        authenticate: () => Promise.reject()
+      })
+      const middleware = createAuthMiddleware({ storage, authenticator })
       const mockStore = configureStore([middleware])
-      const store = mockStore({ session: { isAuthenticated: false } })
+      const store = mockStore()
       const data = { username: 'test', password: 'password' }
       const action = authenticate('test', data)
 
