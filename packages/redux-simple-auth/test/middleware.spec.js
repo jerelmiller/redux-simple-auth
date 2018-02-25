@@ -16,6 +16,7 @@ import {
 import { spiedAuthenticator, testAuthenticator } from './utils/authenticators'
 import createMockStorage from './utils/testStorage'
 import configureStore from 'redux-mock-store'
+import warning from 'warning'
 
 const storage = createMockStorage()
 
@@ -28,6 +29,7 @@ beforeEach(() => {
 
 afterEach(() => {
   storage.reset()
+  warning.reset()
 })
 
 it('throws when no authenticator is given', () => {
@@ -288,6 +290,23 @@ describe('INVALIDATE_SESSION dispatched', () => {
     } catch (e) {}
 
     expect(store.getActions()).toContainEqual(invalidateSessionFailed())
+  })
+
+  it('warns if not authenticated', async () => {
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
+    })
+    const mockStore = configureStore([middleware])
+    const store = mockStore({ session: { isAuthenticated: false } })
+
+    try {
+      await store.dispatch(invalidateSession())
+    } catch (e) {}
+
+    expect(warning.getWarnings()).toContainEqual(
+      'You are trying to invalidate a session that is not authenticated.'
+    )
   })
 
   it('returns rejected promise with action when not authenticated', async () => {
