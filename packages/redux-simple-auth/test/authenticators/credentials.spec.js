@@ -142,3 +142,17 @@ it('allows request body to be transform by configuration', () => {
     body: transformRequest(creds)
   })
 })
+
+it('allows response to be transformed by configuration', async () => {
+  fetch.mockResponse(JSON.stringify({ response: { token: '1234' } }))
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate',
+    contentType: 'application/x-www-form-urlencoded',
+    transformResponse: data => ({ token: data.response.token })
+  })
+  const creds = { email: 'text@example.com', password: 'password' }
+
+  const promise = credentials.authenticate(creds)
+
+  await expect(promise).resolves.toEqual({ token: '1234' })
+})
