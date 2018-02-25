@@ -201,7 +201,8 @@ documentation.
 
 **Credentials**
 
-An authenticator that handles most email/username and password flows.
+An authenticator aimed to abstract away many of the common authentication
+scenarios used when authenticating via credentials.
 
 ```javascript
 import { createCredentialsAuthenticator } from 'redux-simple-auth'
@@ -868,7 +869,7 @@ The following actions are available action types
 ## TODO
 
 - [ ] Built-in authenticators for common scenarios
-  - [ ] Credentials
+  - [x] Credentials
   - [ ] Devise
   - [ ] OAuth
   - [ ] Facebook Login
