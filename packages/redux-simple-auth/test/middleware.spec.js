@@ -230,7 +230,9 @@ describe('INVALIDATE_SESSION dispatched', () => {
     const middleware = createAuthMiddleware({ storage, authenticator })
     const mockStore = configureStore([middleware])
     const data = { token: 1234 }
-    const store = mockStore({ session: { authenticator: 'test', data } })
+    const store = mockStore({
+      session: { isAuthenticated: true, authenticator: 'test', data }
+    })
     const invalidateAction = invalidateSession()
 
     store.dispatch(invalidateAction)
