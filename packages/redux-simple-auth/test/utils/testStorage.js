@@ -5,6 +5,6 @@ export default (initialData = {}) => {
     reset: () => (data = initialData),
     getData: () => data,
     persist: d => (data = d),
-    restore: jest.fn(() => data)
+    restore: () => data
   }
 }
