@@ -241,10 +241,11 @@ describe('INVALIDATE_SESSION dispatched', () => {
   })
 
   it('throws error when there is no session', () => {
+    const storage = createMockStorage()
     const authenticator = createAuthenticator({
       name: 'fake'
     })
-    const middleware = configureMiddleware(authenticator)
+    const middleware = createAuthMiddleware({ storage, authenticator })
     const mockStore = configureStore([middleware])
     const store = mockStore()
     const action = invalidateSession('not-real', {})
