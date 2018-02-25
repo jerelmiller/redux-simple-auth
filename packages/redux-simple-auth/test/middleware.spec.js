@@ -23,10 +23,12 @@ const configureMiddleware = (...authenticators) =>
   createAuthMiddleware({ storage, authenticators })
 
 beforeEach(() => {
+  console.error = jest.fn()
   fetch.resetMocks()
 })
 
 afterEach(() => {
+  console.error.mockReset()
   storage.reset()
 })
 
