@@ -20,7 +20,7 @@ it('fetches from given endpoint using default config', () => {
   })
 })
 
-it('resolves with returned data by default', () => {
+it('resolves with returned data by default', async () => {
   fetch.mockResponse(JSON.stringify({ token: '12345' }))
   const credentials = createCredentialsAuthenticator({
     endpoint: '/authenticate'
@@ -29,5 +29,5 @@ it('resolves with returned data by default', () => {
 
   const promise = credentials.authenticate(creds)
 
-  expect(promise).resolves.toEqual({ token: '12345' })
+  await expect(promise).resolves.toEqual({ token: '12345' })
 })
