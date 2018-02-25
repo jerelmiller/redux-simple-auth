@@ -146,10 +146,14 @@ describe('AUTHENTICATE dispatched', () => {
   })
 
   it('throws error when authenticator is not found', () => {
+    const storage = createMockStorage()
     const authenticator = createAuthenticator({
       name: 'fake'
     })
-    const middleware = configureMiddleware(authenticator)
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticators: [authenticator]
+    })
     const mockStore = configureStore([middleware])
     const store = mockStore()
     const action = authenticate('not-real', {})
