@@ -15,6 +15,7 @@ import {
   getAuthenticator,
   getIsAuthenticated
 } from './selectors'
+import warning from 'warning'
 
 const validateAuthenticatorsPresence = ({ authenticator, authenticators }) => {
   if (authenticator == null && authenticators == null) {
@@ -142,27 +143,16 @@ export default (config = {}) => {
         }
         case INVALIDATE_SESSION: {
           const state = getState()
-
-          if (!state.session) {
-            throw new Error(
-              'No session data to invalidate. Be sure you authenticate the ' +
-                'session before you try to invalidate it'
-            )
-          }
-
           const authenticatorName = getAuthenticator(state)
-
-          if (!authenticatorName) {
-            dispatch(invalidateSessionFailed())
-            return Promise.reject(
-              new Error(
-                'No authenticated session. Be sure you authenticate the session ' +
-                  'before you try to invalidate it'
-              )
-            )
-          }
-
           const authenticator = findAuthenticator(authenticatorName)
+
+          if (!getIsAuthenticated(state)) {
+            warning(
+              false,
+              'You are trying to invalidate a session that is not authenticated.'
+            )
+            return Promise.reject(dispatch(invalidateSessionFailed()))
+          }
 
           if (!authenticator) {
             throw new Error(
@@ -174,7 +164,9 @@ export default (config = {}) => {
 
           return authenticator
             .invalidate(getSessionData(state))
-            .then(sync, () => dispatch(invalidateSessionFailed()))
+            .then(sync, () =>
+              Promise.reject(dispatch(invalidateSessionFailed()))
+            )
         }
         default: {
           return sync()

@@ -17,22 +17,22 @@ describe('createAuthenticator', () => {
   })
 
   describe('#restore', () => {
-    it('defaults to return a rejected promise', () => {
+    it('defaults to return a rejected promise', async () => {
       const authenticator = createAuthenticator({ name: 'test' })
 
       const promise = authenticator.restore()
 
-      expect(promise).rejects
+      await expect(promise).rejects.toBeUndefined()
     })
   })
 
   describe('#authenticate', () => {
-    it('defaults to return a rejected promise', () => {
+    it('defaults to return a rejected promise', async () => {
       const authenticator = createAuthenticator({ name: 'test' })
 
       const promise = authenticator.authenticate()
 
-      expect(promise).rejects
+      await expect(promise).rejects.toBeUndefined()
     })
   })
 })

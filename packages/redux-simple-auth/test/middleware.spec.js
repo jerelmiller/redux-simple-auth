@@ -10,498 +10,524 @@ import {
   fetch as fetchAction,
   invalidateSession,
   updateSession,
-  invalidateSessionFailed
+  invalidateSessionFailed,
+  restore
 } from '../src/actions'
-import {
-  failAuthenticator,
-  spiedAuthenticator,
-  successAuthenticator
-} from './utils/authenticators'
+import { testAuthenticator } from './utils/authenticators'
 import createMockStorage from './utils/testStorage'
+import createStore from './utils/createStore'
 import configureStore from 'redux-mock-store'
+import warning from 'warning'
 
 const storage = createMockStorage()
 
-const configureMiddleware = (...authenticators) =>
-  createAuthMiddleware({ storage, authenticators })
+const sessionState = (overrides = {}) => ({
+  session: {
+    ...reducer(undefined, {}),
+    ...overrides
+  }
+})
 
 beforeEach(() => {
   fetch.resetMocks()
 })
 
 afterEach(() => {
-  storage.persist.mockClear()
-  storage.restore.mockClear()
+  storage.reset()
+  warning.reset()
 })
 
-describe('auth middleware', () => {
-  it('returns a function that handles {getState, dispatch}', () => {
+it('throws when no authenticator is given', () => {
+  expect(() =>
+    createAuthMiddleware({
+      storage,
+      authenticator: undefined,
+      authenticators: undefined
+    })
+  ).toThrow(
+    'No authenticator was given. Be sure to configure an authenticator ' +
+      'by using the `authenticator` option for a single authenticator or ' +
+      'using the `authenticators` option to allow multiple authenticators'
+  )
+})
+
+it('throws when authenticators are not an array', () => {
+  expect(() =>
+    createAuthMiddleware({ storage, authenticators: 'bloop' })
+  ).toThrow(
+    'Expected `authenticators` to be an array. If you only need a single ' +
+      'authenticator, consider using the `authenticator` option.'
+  )
+})
+
+it('throws when authenticator is an array', () => {
+  expect(() => createAuthMiddleware({ storage, authenticator: [] })).toThrow(
+    'Expected `authenticator` to be an object. If you need multiple ' +
+      'authenticators, consider using the `authenticators` option.'
+  )
+})
+
+it('persists changed authenticated data to storage', () => {
+  const storage = createMockStorage()
+  const middleware = createAuthMiddleware({
+    storage,
+    authenticator: testAuthenticator
+  })
+  const mockStore = configureStore([middleware])
+  const getState = jest
+    .fn()
+    .mockReturnValueOnce(sessionState({ authenticator: null, data: {} }))
+    .mockReturnValue(
+      sessionState({
+        authenticator: 'test',
+        data: { token: '1234' }
+      })
+    )
+  const store = mockStore(getState)
+
+  store.dispatch({ type: 'test' })
+
+  expect(storage.getData()).toEqual({
+    authenticated: {
+      authenticator: 'test',
+      token: '1234'
+    }
+  })
+})
+
+it('hydrates session data from storage', async () => {
+  const storage = createMockStorage({
+    authenticated: { authenticator: 'test', token: 1234 }
+  })
+  const middleware = createAuthMiddleware({
+    storage,
+    authenticator: testAuthenticator
+  })
+  const store = await createStore({ middleware })
+
+  expect(store.getState()).toEqual(
+    sessionState({
+      authenticator: 'test',
+      isAuthenticated: true,
+      isRestored: true,
+      data: { token: 1234 }
+    })
+  )
+})
+
+describe('AUTHENTICATE dispatched', () => {
+  it('authenticates with configured authenticator', () => {
+    const authenticator = createAuthenticator({
+      name: 'test',
+      authenticate: jest.fn(() => Promise.resolve())
+    })
     const middleware = createAuthMiddleware({
       storage,
-      authenticator: spiedAuthenticator
+      authenticator
     })
-    expect(middleware).toBeInstanceOf(Function)
-    expect(middleware.length).toBe(1)
+    const store = createStore({ middleware })
+    const data = { username: 'test', password: 'password' }
+    const action = authenticate('test', data)
+
+    store.dispatch(action)
+
+    expect(authenticator.authenticate).toHaveBeenCalledWith(data)
   })
 
-  describe('store handler', () => {
-    it('returns function that handles next', () => {
-      const middleware = createAuthMiddleware({
+  it('authenticates with matching authenticator', () => {
+    const credsAuthenticator = createAuthenticator({
+      name: 'creds',
+      authenticate: jest.fn(() => Promise.resolve())
+    })
+    const testAuthenticator = createAuthenticator({
+      name: 'test',
+      authenticate: jest.fn(() => Promise.resolve())
+    })
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticators: [credsAuthenticator, testAuthenticator]
+    })
+    const store = createStore({ middleware })
+    const data = { username: 'test', password: 'password' }
+    const action = authenticate('test', data)
+
+    store.dispatch(action)
+
+    expect(testAuthenticator.authenticate).toHaveBeenCalledWith(data)
+    expect(credsAuthenticator.authenticate).not.toHaveBeenCalled()
+  })
+
+  it('throws error when authenticator is not found', () => {
+    const authenticator = createAuthenticator({
+      name: 'fake'
+    })
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticators: [authenticator]
+    })
+    const store = createStore({ middleware })
+    const action = authenticate('not-real', {})
+
+    expect(() => store.dispatch(action)).toThrow(
+      'No authenticator with name `not-real` was found. Be sure ' +
+        'you have defined it in the authenticators config'
+    )
+  })
+
+  it('dispatches AUTHENTICATE_SUCCEEDED when authenticated', async () => {
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
+    })
+    const mockStore = configureStore([middleware])
+    const store = mockStore(sessionState())
+    const data = { username: 'test', password: 'password' }
+    const action = authenticate('test', data)
+    const expectedAction = authenticateSucceeded('test', {
+      token: 'abcdefg'
+    })
+
+    await store.dispatch(action)
+
+    expect(store.getActions()).toContainEqual(expectedAction)
+  })
+
+  it('dispatches AUTHENTICATE_FAILED when authentication fails', async () => {
+    const error = 'Nope'
+    const authenticator = createAuthenticator({
+      name: 'fail',
+      authenticate: () => Promise.reject(error)
+    })
+    const middleware = createAuthMiddleware({ storage, authenticator })
+    const mockStore = configureStore([middleware])
+    const store = mockStore({ session: reducer(undefined, {}) })
+    const data = { username: 'test', password: 'password' }
+    const action = authenticate('test', data)
+
+    try {
+      await store.dispatch(action)
+    } catch (e) {}
+
+    expect(store.getActions()).toContainEqual(authenticateFailed(error))
+  })
+
+  it('returns rejected promise when authentication fails', async () => {
+    const error = 'Not today'
+    const authenticator = createAuthenticator({
+      name: 'fail',
+      authenticate: () => Promise.reject(error)
+    })
+    const middleware = createAuthMiddleware({ storage, authenticator })
+    const store = createStore({ middleware })
+    const data = { username: 'test', password: 'password' }
+    const action = authenticate('test', data)
+
+    const promise = store.dispatch(action)
+
+    await expect(promise).rejects.toEqual(authenticateFailed(error))
+  })
+})
+
+describe('INVALIDATE_SESSION dispatched', () => {
+  it('invalidates with configured authenticator', () => {
+    const authenticator = createAuthenticator({
+      name: 'test',
+      invalidate: jest.fn(() => Promise.resolve())
+    })
+    const middleware = createAuthMiddleware({ storage, authenticator })
+    const data = { token: 1234 }
+    const store = createStore({
+      middleware,
+      initialState: sessionState({
+        isAuthenticated: true,
+        authenticator: 'test',
+        data
+      })
+    })
+    const invalidateAction = invalidateSession()
+
+    store.dispatch(invalidateAction)
+
+    expect(authenticator.invalidate).toHaveBeenCalledWith(data)
+  })
+
+  it('dispatches INVALIDATE_SESSION_FAILED if authenticator fails to invalidate', async () => {
+    const authenticator = createAuthenticator({
+      name: 'test',
+      invalidate: () => Promise.reject()
+    })
+    const middleware = createAuthMiddleware({ storage, authenticator })
+    const mockStore = configureStore([middleware])
+    const store = mockStore({
+      session: { isAuthenticated: true, authenticator: 'test' }
+    })
+    const invalidateAction = invalidateSession()
+
+    try {
+      await store.dispatch(invalidateAction)
+    } catch (e) {}
+
+    expect(store.getActions()).toContainEqual(invalidateSessionFailed())
+  })
+
+  it('returns rejected promise when authenticator fails to invalidate', async () => {
+    const authenticator = createAuthenticator({
+      name: 'test',
+      invalidate: () => Promise.reject()
+    })
+    const middleware = createAuthMiddleware({ storage, authenticator })
+    const store = createStore({
+      middleware,
+      initialState: sessionState({
+        isAuthenticated: true,
+        authenticator: 'test'
+      })
+    })
+
+    const promise = store.dispatch(invalidateSession())
+
+    await expect(promise).rejects.toEqual(invalidateSessionFailed())
+  })
+
+  it('dispatches INVALIDATE_SESSION_FAILED if not authenticated', async () => {
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
+    })
+    const mockStore = configureStore([middleware])
+    const store = mockStore(sessionState())
+
+    try {
+      await store.dispatch(invalidateSession())
+    } catch (e) {}
+
+    expect(store.getActions()).toContainEqual(invalidateSessionFailed())
+  })
+
+  it('warns if not authenticated', async () => {
+    const store = createStore({
+      middleware: createAuthMiddleware({
         storage,
-        authenticator: spiedAuthenticator
+        authenticator: testAuthenticator
       })
-      const nextHandler = middleware({})
-
-      expect(nextHandler).toBeInstanceOf(Function)
-      expect(nextHandler.length).toBe(1)
     })
+
+    try {
+      await store.dispatch(invalidateSession())
+    } catch (e) {}
+
+    expect(warning.getWarnings()).toContainEqual(
+      'You are trying to invalidate a session that is not authenticated.'
+    )
   })
 
-  describe('action handler', () => {
-    it('action handler returns a function that handles action', () => {
-      const middleware = createAuthMiddleware({
+  it('returns rejected promise with action when not authenticated', async () => {
+    const store = createStore({
+      middleware: createAuthMiddleware({
         storage,
-        authenticator: spiedAuthenticator
+        authenticator: testAuthenticator
       })
-      const nextHandler = middleware({})
-      const actionHandler = nextHandler()
-
-      expect(actionHandler).toBeInstanceOf(Function)
-      expect(actionHandler.length).toBe(1)
     })
+
+    const promise = store.dispatch(invalidateSession())
+
+    await expect(promise).rejects.toEqual(invalidateSessionFailed())
   })
 
-  describe('config', () => {
-    it('throws when no authenticator is given', () => {
-      expect(() =>
-        createAuthMiddleware({
-          storage,
-          authenticator: undefined,
-          authenticators: undefined
-        })
-      ).toThrow(
-        'No authenticator was given. Be sure to configure an authenticator ' +
-          'by using the `authenticator` option for a single authenticator or ' +
-          'using the `authenticators` option to allow multiple authenticators'
-      )
+  it('throws error when authenticator does not exist', () => {
+    const authenticator = createAuthenticator({
+      name: 'fake'
     })
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticators: [authenticator]
+    })
+    const mockStore = configureStore([middleware])
+    const store = mockStore({
+      session: { isAuthenticated: true, authenticator: 'nope' }
+    })
+    const action = invalidateSession()
 
-    it('throws when authenticators are not an array', () => {
-      expect(() =>
-        createAuthMiddleware({ storage, authenticators: spiedAuthenticator })
-      ).toThrow(
-        'Expected `authenticators` to be an array. If you only need a single ' +
-          'authenticator, consider using the `authenticator` option.'
-      )
-    })
+    expect(() => store.dispatch(action)).toThrow(
+      'No authenticator with name `nope` was found. Be sure ' +
+        'you have defined it in the authenticators config'
+    )
+  })
+})
 
-    it('throws when authenticator is an array', () => {
-      expect(() =>
-        createAuthMiddleware({ storage, authenticator: [spiedAuthenticator] })
-      ).toThrow(
-        'Expected `authenticator` to be an object. If you need multiple ' +
-          'authenticators, consider using the `authenticators` option.'
-      )
+describe('FETCH dispatched', () => {
+  it('uses global fetch to make network call', () => {
+    fetch.mockResponse(JSON.stringify({ ok: true }))
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
     })
+    const store = createStore({ middleware })
+
+    store.dispatch(fetchAction('https://test.com'))
+
+    expect(fetch).toHaveBeenCalledWith('https://test.com', { headers: {} })
   })
 
-  describe('when authenticated data changes', () => {
-    it('persists changes to storage', () => {
-      const middleware = configureMiddleware(successAuthenticator)
-      const mockStore = configureStore([middleware])
-      const getState = jest
-        .fn()
-        .mockReturnValueOnce({
-          session: { authenticator: null, data: {} }
-        })
-        .mockReturnValueOnce({
-          session: { authenticator: 'test', data: { token: '1234' } }
-        })
-      const store = mockStore(getState)
-
-      store.dispatch({ type: 'test' })
-
-      expect(storage.persist).toHaveBeenCalledWith({
-        authenticated: {
-          authenticator: 'test',
-          token: '1234'
-        }
-      })
+  it('passes request options to fetch', () => {
+    fetch.mockResponse(JSON.stringify({ ok: true }))
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
     })
-  })
+    const store = createStore({ middleware })
 
-  describe('when authenticating', () => {
-    it('calls authenticators authenticate', () => {
-      const middleware = configureMiddleware(spiedAuthenticator)
-      const mockStore = configureStore([middleware])
-      const store = mockStore()
-      const data = { username: 'test', password: 'password' }
-      const action = authenticate('test', data)
-
-      store.dispatch(action)
-
-      expect(spiedAuthenticator.authenticate).toHaveBeenCalledWith(data)
-
-      spiedAuthenticator.authenticate.mockClear()
-    })
-
-    it('allows single authenticator', () => {
-      const middleware = createAuthMiddleware({
-        storage,
-        authenticator: spiedAuthenticator
-      })
-      const mockStore = configureStore([middleware])
-      const store = mockStore()
-      const data = { username: 'test', password: 'password' }
-      const action = authenticate('test', data)
-
-      store.dispatch(action)
-
-      expect(spiedAuthenticator.authenticate).toHaveBeenCalledWith(data)
-
-      spiedAuthenticator.authenticate.mockClear()
-    })
-
-    describe('when authenticator is not found', () => {
-      it('throws error', () => {
-        const authenticator = createAuthenticator({
-          name: 'fake'
-        })
-        const middleware = configureMiddleware(authenticator)
-        const mockStore = configureStore([middleware])
-        const store = mockStore()
-        const action = authenticate('not-real', {})
-
-        expect(() => store.dispatch(action)).toThrow(
-          'No authenticator with name `not-real` was found. Be sure ' +
-            'you have defined it in the authenticators config'
-        )
-      })
-    })
-
-    describe('when successful', () => {
-      const middleware = configureMiddleware(successAuthenticator)
-      const mockStore = configureStore([middleware])
-
-      it('sets authenticated data on local storage', async () => {
-        const initialState = reducer(undefined, {})
-        const getState = jest
-          .fn()
-          .mockReturnValueOnce({ session: {} }) // restore
-          .mockReturnValueOnce({ session: {} }) // restore
-          .mockReturnValueOnce({ session: initialState })
-          .mockReturnValueOnce({
-            session: reducer(
-              initialState,
-              authenticateSucceeded('test', { token: '1234' })
-            )
-          })
-        const store = mockStore(getState)
-        const data = { username: 'test', password: 'password' }
-        const action = authenticate('test', data)
-
-        await store.dispatch(action)
-
-        expect(storage.persist).toHaveBeenCalledWith({
-          authenticated: {
-            token: '1234',
-            authenticator: 'test'
-          }
-        })
-      })
-
-      it('dispatches AUTHENTICATE_SUCCEEDED', async () => {
-        const store = mockStore({ session: reducer(undefined, {}) })
-        const data = { username: 'test', password: 'password' }
-        const action = authenticate('test', data)
-        const expectedAction = authenticateSucceeded('test', {
-          token: 'abcdefg'
-        })
-
-        await store.dispatch(action)
-
-        expect(store.getActions()).toContainEqual(expectedAction)
-      })
-    })
-
-    describe('when not successful', () => {
-      it('dispatches AUTHENTICATE_FAILED', async () => {
-        const middleware = configureMiddleware(failAuthenticator)
-        const mockStore = configureStore([middleware])
-        const store = mockStore({ session: { isAuthenticated: false } })
-        const data = { username: 'test', password: 'password' }
-        const action = authenticate('test', data)
-
-        try {
-          await store.dispatch(action)
-        } catch (e) {}
-
-        expect(store.getActions()).toContainEqual(authenticateFailed())
-      })
-
-      it('returns rejected promise', async () => {
-        const middleware = configureMiddleware(failAuthenticator)
-        const mockStore = configureStore([middleware])
-        const store = mockStore({ session: { isAuthenticated: false } })
-        const data = { username: 'test', password: 'password' }
-        const action = authenticate('test', data)
-
-        const promise = store.dispatch(action)
-
-        await expect(promise).rejects.toEqual(authenticateFailed())
-      })
-    })
-  })
-
-  describe('when invalidating', () => {
-    it('calls authenticators invalidate', () => {
-      const middleware = configureMiddleware(spiedAuthenticator)
-      const mockStore = configureStore([middleware])
-      const data = { username: 'test', password: 'password' }
-      const store = mockStore({ session: { authenticator: 'test', data } })
-      const invalidateAction = invalidateSession()
-
-      store.dispatch(invalidateAction)
-      expect(spiedAuthenticator.invalidate).toHaveBeenCalledWith(data)
-
-      spiedAuthenticator.authenticate.mockClear()
-      spiedAuthenticator.invalidate.mockClear()
-    })
-
-    describe('when there is no session', () => {
-      it('throws error', () => {
-        const authenticator = createAuthenticator({
-          name: 'fake'
-        })
-        const middleware = configureMiddleware(authenticator)
-        const mockStore = configureStore([middleware])
-        const store = mockStore()
-        const action = invalidateSession('not-real', {})
-
-        expect(() => store.dispatch(action)).toThrow(
-          'No session data to invalidate. Be sure you authenticate the ' +
-            'session before you try to invalidate it'
-        )
-      })
-    })
-
-    describe('when redux store authenticator is not found', () => {
-      it('returns a rejected promise and dispatches invalidate Session', async () => {
-        const authenticator = createAuthenticator({
-          name: 'unmatchable'
-        })
-        const middleware = configureMiddleware(authenticator)
-        const mockStore = configureStore([middleware])
-        const store = mockStore({ session: {} })
-        await expect(store.dispatch(invalidateSession())).rejects.toEqual(
-          new Error(
-            'No authenticated session. Be sure you authenticate the session ' +
-              'before you try to invalidate it'
-          )
-        )
-
-        expect(store.getActions()).toContainEqual(invalidateSessionFailed())
-      })
-    })
-
-    describe('when there is no authenticator', () => {
-      it('throws error', () => {
-        const authenticator = createAuthenticator({
-          name: 'fake'
-        })
-        const middleware = configureMiddleware(authenticator)
-        const mockStore = configureStore([middleware])
-        const store = mockStore()
-        const action = invalidateSession()
-
-        expect(() => store.dispatch(action)).toThrow(
-          'No session data to invalidate. Be sure you authenticate the ' +
-            'session before you try to invalidate it'
-        )
-      })
-    })
-  })
-
-  describe('session restoration', () => {
-    it('hydrates session data from storage', () => {
-      const middleware = configureMiddleware()
-      const mockStore = configureStore([middleware])
-      mockStore({ session: { isAuthenticated: false } })
-
-      expect(storage.restore).toHaveBeenCalled()
-    })
-  })
-
-  describe('when fetch action is dispatched', () => {
-    it('fetches data', () => {
-      fetch.mockResponse(JSON.stringify({ ok: true }))
-      const middleware = configureMiddleware()
-      const mockStore = configureStore([middleware])
-      const store = mockStore({ session: reducer(undefined, {}) })
-
-      store.dispatch(fetchAction('https://test.com'))
-
-      expect(fetch).toHaveBeenCalledWith('https://test.com', { headers: {} })
-    })
-
-    it('passes request options to fetch', () => {
-      fetch.mockResponse(JSON.stringify({ ok: true }))
-      const middleware = configureMiddleware()
-      const mockStore = configureStore([middleware])
-      const store = mockStore({ session: reducer(undefined, {}) })
-
-      store.dispatch(
-        fetchAction('https://test.com', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'test@test.com' })
-        })
-      )
-
-      expect(fetch).toHaveBeenCalledWith('https://test.com', {
+    store.dispatch(
+      fetchAction('https://test.com', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: 'test@test.com' })
       })
+    )
+
+    expect(fetch).toHaveBeenCalledWith('https://test.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'test@test.com' })
+    })
+  })
+
+  it('authorizes with configured authenticator', () => {
+    fetch.mockResponse(JSON.stringify({ ok: true }))
+    const authorize = jest.fn()
+    const middleware = createAuthMiddleware({
+      storage,
+      authorize,
+      authenticator: testAuthenticator
+    })
+    const data = { token: '1235' }
+    const store = createStore({
+      middleware,
+      initialState: sessionState({ data })
     })
 
-    it('calls authorize with authenticated data', () => {
-      fetch.mockResponse(JSON.stringify({ ok: true }))
-      const authorize = jest.fn()
-      const middleware = createAuthMiddleware({
-        storage,
-        authorize,
-        authenticator: spiedAuthenticator
-      })
-      const mockStore = configureStore([middleware])
-      const data = { token: '1235' }
-      const store = mockStore({ session: { data } })
+    store.dispatch(fetchAction('https://test.com'))
 
-      store.dispatch(fetchAction('https://test.com'))
+    expect(authorize).toHaveBeenCalledWith(data, expect.any(Function))
+  })
 
-      expect(authorize).toHaveBeenCalledWith(data, expect.any(Function))
-    })
-
-    it('sets headers when authorize runs block function', () => {
-      fetch.mockResponse(JSON.stringify({ ok: true }))
-      const authorize = (data, block) => {
+  it('sets headers defined in authorize function', () => {
+    fetch.mockResponse(JSON.stringify({ ok: true }))
+    const middleware = createAuthMiddleware({
+      storage,
+      authorize: (data, block) => {
         block('Authorization', data.token)
-      }
+      },
+      authenticator: testAuthenticator
+    })
+    const store = createStore({
+      middleware,
+      initialState: sessionState({ data: { token: '1235' } })
+    })
+
+    store.dispatch(fetchAction('https://test.com'))
+
+    expect(fetch).toHaveBeenCalledWith('https://test.com', {
+      headers: { Authorization: '1235' }
+    })
+  })
+
+  describe('when refresh option is set', () => {
+    it('dispatches update session action', async () => {
+      fetch.mockResponse(JSON.stringify({ ok: true }), {
+        headers: {
+          'x-access-token': '6789'
+        }
+      })
       const middleware = createAuthMiddleware({
         storage,
-        authorize,
-        authenticator: spiedAuthenticator
+        authenticator: testAuthenticator,
+        refresh: response => ({
+          token: response.headers.get('x-access-token')
+        })
       })
       const mockStore = configureStore([middleware])
       const data = { token: '1235' }
       const store = mockStore({ session: { data } })
+      const updateAction = updateSession({ token: '6789' })
 
-      store.dispatch(fetchAction('https://test.com'))
+      await store.dispatch(fetchAction('https://test.com'))
 
-      expect(fetch).toHaveBeenCalledWith('https://test.com', {
-        headers: { Authorization: '1235' }
-      })
+      expect(store.getActions()).toEqual(expect.arrayContaining([updateAction]))
     })
 
-    describe('when refresh option is set', () => {
-      it('dispatches update session action', async () => {
-        fetch.mockResponse(JSON.stringify({ ok: true }), {
-          headers: {
-            'x-access-token': '6789'
-          }
-        })
-        const middleware = createAuthMiddleware({
-          storage,
-          authenticator: successAuthenticator,
-          refresh: response => ({
-            token: response.headers.get('x-access-token')
-          })
-        })
-        const mockStore = configureStore([middleware])
-        const data = { token: '1235' }
-        const store = mockStore({ session: { data } })
-        const updateAction = updateSession({ token: '6789' })
+    it('does not dispatch when returning null', async () => {
+      fetch.mockResponse(JSON.stringify({ ok: true }), {
+        headers: {
+          'x-access-token': '6789'
+        }
+      })
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: testAuthenticator,
+        refresh: () => null
+      })
+      const mockStore = configureStore([middleware])
+      const data = { token: '1235' }
+      const store = mockStore({ session: { data } })
+      const updateAction = updateSession(null)
 
-        await store.dispatch(fetchAction('https://test.com'))
+      await store.dispatch(fetchAction('https://test.com'))
 
-        expect(store.getActions()).toEqual(
-          expect.arrayContaining([updateAction])
-        )
+      expect(store.getActions()).not.toEqual(
+        expect.arrayContaining([updateAction])
+      )
+    })
+  })
+
+  it('does not dispatch invalidate action when request succeeds', async () => {
+    fetch.mockResponse(JSON.stringify({ ok: true }))
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
+    })
+    const mockStore = configureStore([middleware])
+    const data = { token: '1235' }
+    const store = mockStore({ session: { data } })
+    const invalidateAction = invalidateSession()
+
+    await store.dispatch(fetchAction('https://test.com'))
+
+    expect(store.getActions()).not.toContainEqual(invalidateAction)
+  })
+
+  describe('when request returns 401 unauthorized', () => {
+    it('dispatches INVALIDATE_SESSION', async () => {
+      fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: testAuthenticator
+      })
+      const mockStore = configureStore([middleware])
+      const data = { token: '1235' }
+      const store = mockStore({
+        session: { data, isAuthenticated: true, authenticator: 'test' }
       })
 
-      it('does not dispatch when returning null', async () => {
-        fetch.mockResponse(JSON.stringify({ ok: true }), {
-          headers: {
-            'x-access-token': '6789'
-          }
-        })
-        const middleware = createAuthMiddleware({
-          storage,
-          authenticator: successAuthenticator,
-          refresh: () => null
-        })
-        const mockStore = configureStore([middleware])
-        const data = { token: '1235' }
-        const store = mockStore({ session: { data } })
-        const updateAction = updateSession(null)
+      await store.dispatch(fetchAction('https://test.com'))
 
-        await store.dispatch(fetchAction('https://test.com'))
-
-        expect(store.getActions()).not.toEqual(
-          expect.arrayContaining([updateAction])
-        )
-      })
+      expect(store.getActions()).toContainEqual(invalidateSession())
     })
 
-    describe('when request succeeds', () => {
-      it('does not dispatch invalidate action', async () => {
-        fetch.mockResponse(JSON.stringify({ ok: true }))
-        const middleware = configureMiddleware()
-        const mockStore = configureStore([middleware])
-        const data = { token: '1235' }
-        const store = mockStore({ session: { data } })
-        const invalidateAction = invalidateSession()
-
-        await store.dispatch(fetchAction('https://test.com'))
-
-        expect(store.getActions()).not.toEqual(
-          expect.arrayContaining([invalidateAction])
-        )
+    it('does not dispatch if not authenticated', async () => {
+      fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: testAuthenticator
       })
-    })
+      const mockStore = configureStore([middleware])
+      const data = { token: '1235' }
+      const store = mockStore({ session: { data, isAuthenticated: false } })
+      const invalidateAction = invalidateSession()
 
-    describe('when request returns 401 unauthorized', () => {
-      it('calls authenticators invalidate', async () => {
-        fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
-        const middleware = configureMiddleware(spiedAuthenticator)
-        const mockStore = configureStore([middleware])
-        const data = { token: '1235' }
-        const store = mockStore({
-          session: { data, isAuthenticated: true, authenticator: 'test' }
-        })
+      await store.dispatch(fetchAction('https://test.com'))
 
-        await store.dispatch(fetchAction('https://test.com'))
-
-        expect(spiedAuthenticator.invalidate).toHaveBeenCalledWith(data)
-
-        spiedAuthenticator.authenticate.mockClear()
-        spiedAuthenticator.invalidate.mockClear()
-      })
-
-      it('does not dispatch if not authenticated', async () => {
-        fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
-        const middleware = configureMiddleware()
-        const mockStore = configureStore([middleware])
-        const data = { token: '1235' }
-        const store = mockStore({ session: { data, isAuthenticated: false } })
-        const invalidateAction = invalidateSession()
-
-        await store.dispatch(fetchAction('https://test.com'))
-
-        expect(store.getActions()).not.toEqual(
-          expect.arrayContaining([invalidateAction])
-        )
-      })
+      expect(store.getActions()).not.toContainEqual(invalidateAction)
     })
   })
 })
