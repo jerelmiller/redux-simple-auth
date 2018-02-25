@@ -238,21 +238,6 @@ describe('INVALIDATE_SESSION dispatched', () => {
     expect(authenticator.invalidate).toHaveBeenCalledWith(data)
   })
 
-  it('throws error when there is no session', () => {
-    const authenticator = createAuthenticator({
-      name: 'fake'
-    })
-    const middleware = createAuthMiddleware({ storage, authenticator })
-    const mockStore = configureStore([middleware])
-    const store = mockStore()
-    const action = invalidateSession('not-real', {})
-
-    expect(() => store.dispatch(action)).toThrow(
-      'No session data to invalidate. Be sure you authenticate the ' +
-        'session before you try to invalidate it'
-    )
-  })
-
   describe('when redux store authenticator is not found', () => {
     it('returns a rejected promise and dispatches invalidate Session', async () => {
       const authenticator = createAuthenticator({
