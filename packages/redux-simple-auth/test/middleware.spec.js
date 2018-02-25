@@ -203,23 +203,22 @@ describe('AUTHENTICATE dispatched', () => {
     expect(store.getActions()).toContainEqual(authenticateFailed(error))
   })
 
-  describe('when not successful', () => {
-    it('returns rejected promise', async () => {
-      const storage = createMockStorage()
-      const authenticator = createAuthenticator({
-        name: 'fail',
-        authenticate: () => Promise.reject()
-      })
-      const middleware = createAuthMiddleware({ storage, authenticator })
-      const mockStore = configureStore([middleware])
-      const store = mockStore({ session: { isAuthenticated: false } })
-      const data = { username: 'test', password: 'password' }
-      const action = authenticate('test', data)
-
-      const promise = store.dispatch(action)
-
-      await expect(promise).rejects.toEqual(authenticateFailed())
+  it('returns rejected promise when authentication fails', async () => {
+    const storage = createMockStorage()
+    const error = 'Not today'
+    const authenticator = createAuthenticator({
+      name: 'fail',
+      authenticate: () => Promise.reject(error)
     })
+    const middleware = createAuthMiddleware({ storage, authenticator })
+    const mockStore = configureStore([middleware])
+    const store = mockStore({ session: { isAuthenticated: false } })
+    const data = { username: 'test', password: 'password' }
+    const action = authenticate('test', data)
+
+    const promise = store.dispatch(action)
+
+    await expect(promise).rejects.toEqual(authenticateFailed(error))
   })
 })
 
