@@ -161,9 +161,6 @@ describe('AUTHENTICATE dispatched', () => {
   })
 
   describe('when successful', () => {
-    const middleware = configureMiddleware(testAuthenticator)
-    const mockStore = configureStore([middleware])
-
     it('sets authenticated data on storage', async () => {
       const storage = createMockStorage()
       const middleware = createAuthMiddleware({
@@ -198,6 +195,12 @@ describe('AUTHENTICATE dispatched', () => {
     })
 
     it('dispatches AUTHENTICATE_SUCCEEDED', async () => {
+      const storage = createMockStorage()
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: testAuthenticator
+      })
+      const mockStore = configureStore([middleware])
       const store = mockStore({ session: reducer(undefined, {}) })
       const data = { username: 'test', password: 'password' }
       const action = authenticate('test', data)
