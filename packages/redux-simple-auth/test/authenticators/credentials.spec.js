@@ -97,3 +97,22 @@ it('allows headers to be configured', () => {
     body: JSON.stringify(creds)
   })
 })
+
+it('allows method to be configured', () => {
+  fetch.mockResponse(JSON.stringify({ ok: true }))
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate',
+    method: 'PUT'
+  })
+  const creds = { email: 'text@example.com', password: 'password' }
+
+  credentials.authenticate(creds)
+
+  expect(fetch).toHaveBeenCalledWith('/authenticate', {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(creds)
+  })
+})
