@@ -15,6 +15,7 @@ import {
   getAuthenticator,
   getIsAuthenticated
 } from './selectors'
+import warning from 'warning'
 
 const validateAuthenticatorsPresence = ({ authenticator, authenticators }) => {
   if (authenticator == null && authenticators == null) {
@@ -143,12 +144,12 @@ export default (config = {}) => {
         case INVALIDATE_SESSION: {
           const state = getState()
 
-          if (!state.session) {
-            throw new Error(
-              'No session data to invalidate. Be sure you authenticate the ' +
-                'session before you try to invalidate it'
-            )
-          }
+          warning(
+            !getIsAuthenticated(state),
+            'You are trying to invalidate a session that is not authenticated. ' +
+              'This may have unintended consequences if your authenticator ' +
+              'implements custom invalidation logic.'
+          )
 
           const authenticatorName = getAuthenticator(state)
 
