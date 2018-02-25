@@ -13,7 +13,7 @@ import {
   invalidateSessionFailed,
   restore
 } from '../src/actions'
-import { spiedAuthenticator, testAuthenticator } from './utils/authenticators'
+import { testAuthenticator } from './utils/authenticators'
 import createMockStorage from './utils/testStorage'
 import configureStore from 'redux-mock-store'
 import warning from 'warning'
