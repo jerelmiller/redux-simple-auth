@@ -96,7 +96,7 @@ it('hydrates session data from storage', async () => {
   })
   const mockStore = configureStore([middleware])
 
-  const store = await mockStore()
+  const store = await mockStore({ session: {} })
 
   expect(store.getActions()).toContainEqual(
     restore({ authenticator: 'test', token: 1234 })
@@ -137,7 +137,7 @@ describe('AUTHENTICATE dispatched', () => {
       authenticators: [credsAuthenticator, testAuthenticator]
     })
     const mockStore = configureStore([middleware])
-    const store = mockStore()
+    const store = mockStore({ session: reducer(undefined, {}) })
     const data = { username: 'test', password: 'password' }
     const action = authenticate('test', data)
 
@@ -156,7 +156,7 @@ describe('AUTHENTICATE dispatched', () => {
       authenticators: [authenticator]
     })
     const mockStore = configureStore([middleware])
-    const store = mockStore()
+    const store = mockStore({ session: reducer(undefined, {}) })
     const action = authenticate('not-real', {})
 
     expect(() => store.dispatch(action)).toThrow(
@@ -191,7 +191,7 @@ describe('AUTHENTICATE dispatched', () => {
     })
     const middleware = createAuthMiddleware({ storage, authenticator })
     const mockStore = configureStore([middleware])
-    const store = mockStore()
+    const store = mockStore({ session: reducer(undefined, {}) })
     const data = { username: 'test', password: 'password' }
     const action = authenticate('test', data)
 
