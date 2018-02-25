@@ -1,5 +1,6 @@
 import createAuthenticator from '../createAuthenticator'
 import identity from '../utils/identity'
+import invariant from 'invariant'
 
 export default ({
   endpoint,
@@ -8,8 +9,13 @@ export default ({
   transformRequest = JSON.stringify,
   transformResponse = identity,
   method = 'POST'
-}) =>
-  createAuthenticator({
+}) => {
+  invariant(
+    endpoint,
+    'You must provide an endpoint to use the `credentials` authenticator'
+  )
+
+  return createAuthenticator({
     name: 'credentials',
     authenticate: credentials =>
       fetch(endpoint, {
@@ -29,3 +35,4 @@ export default ({
         return transformResponse(json)
       })
   })
+}
