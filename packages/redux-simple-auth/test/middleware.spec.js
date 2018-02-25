@@ -266,21 +266,24 @@ describe('INVALIDATE_SESSION dispatched', () => {
     await expect(promise).rejects.toEqual(invalidateSessionFailed())
   })
 
-  describe('when there is no authenticator', () => {
-    it('throws error', () => {
-      const authenticator = createAuthenticator({
-        name: 'fake'
-      })
-      const middleware = configureMiddleware(authenticator)
-      const mockStore = configureStore([middleware])
-      const store = mockStore()
-      const action = invalidateSession()
-
-      expect(() => store.dispatch(action)).toThrow(
-        'No session data to invalidate. Be sure you authenticate the ' +
-          'session before you try to invalidate it'
-      )
+  it('throws error when authenticator does not exist', () => {
+    const authenticator = createAuthenticator({
+      name: 'fake'
     })
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticators: [authenticator]
+    })
+    const mockStore = configureStore([middleware])
+    const store = mockStore({
+      session: { isAuthenticated: true, authenticator: 'nope' }
+    })
+    const action = invalidateSession()
+
+    expect(() => store.dispatch(action)).toThrow(
+      'No authenticator with name `nope` was found. Be sure ' +
+        'you have defined it in the authenticators config'
+    )
   })
 })
 

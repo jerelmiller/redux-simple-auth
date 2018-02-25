@@ -143,7 +143,8 @@ export default (config = {}) => {
         }
         case INVALIDATE_SESSION: {
           const state = getState()
-          const authenticator = findAuthenticator(getAuthenticator(state))
+          const authenticatorName = getAuthenticator(state)
+          const authenticator = findAuthenticator(authenticatorName)
 
           if (!getIsAuthenticated(state)) {
             warning(
