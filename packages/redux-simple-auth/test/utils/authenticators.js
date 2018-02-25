@@ -13,10 +13,3 @@ export const testAuthenticator = createAuthenticator({
   restore: () => Promise.resolve(),
   invalidate: () => Promise.resolve()
 })
-
-export const failAuthenticator = createAuthenticator({
-  name: 'test',
-  authenticate: () => Promise.reject(),
-  restore: () => Promise.reject(),
-  invalidate: jest.fn(data => Promise.resolve(data))
-})
