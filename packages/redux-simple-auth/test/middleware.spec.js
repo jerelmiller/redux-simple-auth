@@ -240,23 +240,17 @@ describe('INVALIDATE_SESSION dispatched', () => {
     expect(authenticator.invalidate).toHaveBeenCalledWith(data)
   })
 
-  describe('when redux store authenticator is not found', () => {
-    it('returns a rejected promise and dispatches invalidate Session', async () => {
-      const authenticator = createAuthenticator({
-        name: 'unmatchable'
-      })
-      const middleware = configureMiddleware(authenticator)
-      const mockStore = configureStore([middleware])
-      const store = mockStore({ session: {} })
-      await expect(store.dispatch(invalidateSession())).rejects.toEqual(
-        new Error(
-          'No authenticated session. Be sure you authenticate the session ' +
-            'before you try to invalidate it'
-        )
-      )
-
-      expect(store.getActions()).toContainEqual(invalidateSessionFailed())
+  it('dispatches INVALIDATE_SESSION_FAILED if not authenticated', async () => {
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
     })
+    const mockStore = configureStore([middleware])
+    const store = mockStore({ session: { isAuthenticated: false } })
+
+    await store.dispatch(invalidateSession())
+
+    expect(store.getActions()).toContainEqual(invalidateSessionFailed())
   })
 
   describe('when there is no authenticator', () => {
