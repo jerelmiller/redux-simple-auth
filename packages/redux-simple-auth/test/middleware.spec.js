@@ -42,7 +42,7 @@ it('throws when no authenticator is given', () => {
 
 it('throws when authenticators are not an array', () => {
   expect(() =>
-    createAuthMiddleware({ storage, authenticators: spiedAuthenticator })
+    createAuthMiddleware({ storage, authenticators: 'bloop' })
   ).toThrow(
     'Expected `authenticators` to be an array. If you only need a single ' +
       'authenticator, consider using the `authenticator` option.'
