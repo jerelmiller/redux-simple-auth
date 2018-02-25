@@ -20,9 +20,6 @@ import warning from 'warning'
 
 const storage = createMockStorage()
 
-const configureMiddleware = (...authenticators) =>
-  createAuthMiddleware({ storage, authenticators })
-
 beforeEach(() => {
   fetch.resetMocks()
 })
