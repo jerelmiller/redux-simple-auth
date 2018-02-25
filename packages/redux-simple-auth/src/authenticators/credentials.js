@@ -21,7 +21,7 @@ export default ({
   restore = defaultRestore,
   transformRequest = JSON.stringify,
   transformResponse = identity
-}) => {
+} = {}) => {
   invariant(
     endpoint,
     'You must provide an endpoint for the `credentials` authenticator'
