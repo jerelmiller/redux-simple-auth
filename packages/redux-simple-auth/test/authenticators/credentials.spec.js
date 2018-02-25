@@ -156,3 +156,13 @@ it('allows response to be transformed by configuration', async () => {
 
   await expect(promise).resolves.toEqual({ token: '1234' })
 })
+
+it('default restore resolves if data exists', async () => {
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate'
+  })
+
+  const promise = credentials.restore({ token: '1234' })
+
+  await expect(promise).resolves.toEqual({ token: '1234' })
+})
