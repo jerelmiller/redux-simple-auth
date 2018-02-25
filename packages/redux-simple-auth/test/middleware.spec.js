@@ -252,7 +252,9 @@ describe('INVALIDATE_SESSION dispatched', () => {
     })
     const invalidateAction = invalidateSession()
 
-    await store.dispatch(invalidateAction)
+    try {
+      await store.dispatch(invalidateAction)
+    } catch (e) {}
 
     expect(store.getActions()).toContainEqual(invalidateSessionFailed())
   })
@@ -281,7 +283,9 @@ describe('INVALIDATE_SESSION dispatched', () => {
     const mockStore = configureStore([middleware])
     const store = mockStore({ session: { isAuthenticated: false } })
 
-    await store.dispatch(invalidateSession())
+    try {
+      await store.dispatch(invalidateSession())
+    } catch (e) {}
 
     expect(store.getActions()).toContainEqual(invalidateSessionFailed())
   })
