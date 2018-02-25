@@ -484,9 +484,12 @@ describe('FETCH dispatched', () => {
   })
 
   describe('when request returns 401 unauthorized', () => {
-    it('calls authenticators invalidate', async () => {
+    it('dispatches INVALIDATE_SESSION', async () => {
       fetch.mockResponse(JSON.stringify({ ok: true }), { status: 401 })
-      const middleware = configureMiddleware(spiedAuthenticator)
+      const middleware = createAuthMiddleware({
+        storage,
+        authenticator: testAuthenticator
+      })
       const mockStore = configureStore([middleware])
       const data = { token: '1235' }
       const store = mockStore({
@@ -495,10 +498,7 @@ describe('FETCH dispatched', () => {
 
       await store.dispatch(fetchAction('https://test.com'))
 
-      expect(spiedAuthenticator.invalidate).toHaveBeenCalledWith(data)
-
-      spiedAuthenticator.authenticate.mockClear()
-      spiedAuthenticator.invalidate.mockClear()
+      expect(store.getActions()).toContainEqual(invalidateSession())
     })
 
     it('does not dispatch if not authenticated', async () => {
