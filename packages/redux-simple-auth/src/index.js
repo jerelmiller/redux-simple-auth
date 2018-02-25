@@ -18,6 +18,9 @@ export { default as storage } from './storage/default'
 export {
   default as createOauth2ImplicitGrantAuthenticator
 } from './authenticators/oauth2ImplicitGrant'
+export {
+  default as createCredentialsAuthenticator
+} from './authenticators/credentials'
 export { default as oauth2BearerAuthorizer } from './authorizers/oauth2Bearer'
 export {
   getSessionData,
