@@ -142,7 +142,7 @@ describe('AUTHENTICATE dispatched', () => {
     store.dispatch(action)
 
     expect(testAuthenticator.authenticate).toHaveBeenCalledWith(data)
-    expect(credsAuthenticator.authenticate).not.toHaveBeenCalled
+    expect(credsAuthenticator.authenticate).not.toHaveBeenCalled()
   })
 
   it('throws error when authenticator is not found', () => {
