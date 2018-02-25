@@ -76,12 +76,13 @@ it('persists changed authenticated data to storage', () => {
   const mockStore = configureStore([middleware])
   const getState = jest
     .fn()
-    .mockReturnValueOnce({
-      session: { authenticator: null, data: {} }
-    })
-    .mockReturnValueOnce({
-      session: { authenticator: 'test', data: { token: '1234' } }
-    })
+    .mockReturnValueOnce(sessionState({ authenticator: null, data: {} }))
+    .mockReturnValue(
+      sessionState({
+        authenticator: 'test',
+        data: { token: '1234' }
+      })
+    )
   const store = mockStore(getState)
 
   store.dispatch({ type: 'test' })
