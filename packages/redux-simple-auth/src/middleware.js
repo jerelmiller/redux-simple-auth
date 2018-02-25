@@ -143,22 +143,14 @@ export default (config = {}) => {
         }
         case INVALIDATE_SESSION: {
           const state = getState()
-          const authenticatorName = getAuthenticator(state)
-          const authenticator = findAuthenticator(authenticatorName)
+          const authenticator = findAuthenticator(getAuthenticator(state))
 
-          warning(
-            getIsAuthenticated(state),
-            'You are trying to invalidate a session that is not authenticated.'
-          )
-
-          if (!authenticatorName) {
-            dispatch(invalidateSessionFailed())
-            return Promise.reject(
-              new Error(
-                'No authenticated session. Be sure you authenticate the session ' +
-                  'before you try to invalidate it'
-              )
+          if (!getIsAuthenticated(state)) {
+            warning(
+              true,
+              'You are trying to invalidate a session that is not authenticated.'
             )
+            return Promise.reject(dispatch(invalidateSessionFailed()))
           }
 
           if (!authenticator) {
