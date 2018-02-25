@@ -16,6 +16,7 @@
   },
   "scripts": {
     "build": "lerna run build",
-    "precommit": "precise-commits"
+    "precommit": "precise-commits",
+    "test": "lerna run test"
   }
 }
