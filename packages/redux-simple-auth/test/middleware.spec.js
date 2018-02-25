@@ -467,21 +467,19 @@ describe('FETCH dispatched', () => {
     })
   })
 
-  describe('when request succeeds', () => {
-    it('does not dispatch invalidate action', async () => {
-      fetch.mockResponse(JSON.stringify({ ok: true }))
-      const middleware = configureMiddleware()
-      const mockStore = configureStore([middleware])
-      const data = { token: '1235' }
-      const store = mockStore({ session: { data } })
-      const invalidateAction = invalidateSession()
+  it('does not dispatch invalidate action when request succeeds', async () => {
+    fetch.mockResponse(JSON.stringify({ ok: true }))
+    const middleware = configureMiddleware()
+    const mockStore = configureStore([middleware])
+    const data = { token: '1235' }
+    const store = mockStore({ session: { data } })
+    const invalidateAction = invalidateSession()
 
-      await store.dispatch(fetchAction('https://test.com'))
+    await store.dispatch(fetchAction('https://test.com'))
 
-      expect(store.getActions()).not.toEqual(
-        expect.arrayContaining([invalidateAction])
-      )
-    })
+    expect(store.getActions()).not.toEqual(
+      expect.arrayContaining([invalidateAction])
+    )
   })
 
   describe('when request returns 401 unauthorized', () => {
