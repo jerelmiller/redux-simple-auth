@@ -164,7 +164,9 @@ export default (config = {}) => {
 
           return authenticator
             .invalidate(getSessionData(state))
-            .then(sync, () => dispatch(invalidateSessionFailed()))
+            .then(sync, () =>
+              Promise.reject(dispatch(invalidateSessionFailed()))
+            )
         }
         default: {
           return sync()
