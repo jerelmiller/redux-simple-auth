@@ -30,7 +30,6 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  storage.persist.mockClear()
   storage.restore.mockClear()
 })
 
@@ -67,7 +66,11 @@ it('throws when authenticator is an array', () => {
 })
 
 it('persists changes to storage', () => {
-  const middleware = configureMiddleware(successAuthenticator)
+  const storage = createMockStorage()
+  const middleware = createAuthMiddleware({
+    storage,
+    authenticator: successAuthenticator
+  })
   const mockStore = configureStore([middleware])
   const getState = jest
     .fn()
@@ -81,7 +84,7 @@ it('persists changes to storage', () => {
 
   store.dispatch({ type: 'test' })
 
-  expect(storage.persist).toHaveBeenCalledWith({
+  expect(storage.getData()).toEqual({
     authenticated: {
       authenticator: 'test',
       token: '1234'
