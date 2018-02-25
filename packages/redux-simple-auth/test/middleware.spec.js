@@ -121,10 +121,18 @@ describe('AUTHENTICATE dispatched', () => {
     expect(authenticator.authenticate).toHaveBeenCalledWith(data)
   })
 
-  it('allows single authenticator', () => {
+  it('authenticates with matching authenticator', () => {
+    const credsAuthenticator = createAuthenticator({
+      name: 'creds',
+      authenticate: jest.fn(() => Promise.resolve())
+    })
+    const testAuthenticator = createAuthenticator({
+      name: 'test',
+      authenticate: jest.fn(() => Promise.resolve())
+    })
     const middleware = createAuthMiddleware({
       storage,
-      authenticator: spiedAuthenticator
+      authenticators: [credsAuthenticator, testAuthenticator]
     })
     const mockStore = configureStore([middleware])
     const store = mockStore()
@@ -133,9 +141,8 @@ describe('AUTHENTICATE dispatched', () => {
 
     store.dispatch(action)
 
-    expect(spiedAuthenticator.authenticate).toHaveBeenCalledWith(data)
-
-    spiedAuthenticator.authenticate.mockClear()
+    expect(testAuthenticator.authenticate).toHaveBeenCalledWith(data)
+    expect(credsAuthenticator.authenticate).not.toHaveBeenCalled
   })
 
   it('throws error when authenticator is not found', () => {
