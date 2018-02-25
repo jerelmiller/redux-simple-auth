@@ -223,18 +223,21 @@ describe('AUTHENTICATE dispatched', () => {
 })
 
 describe('INVALIDATE_SESSION dispatched', () => {
-  it('calls authenticators invalidate', () => {
-    const middleware = configureMiddleware(spiedAuthenticator)
+  it('invalidates with configured authenticator', () => {
+    const storage = createMockStorage()
+    const authenticator = createAuthenticator({
+      name: 'test',
+      invalidate: jest.fn(() => Promise.resolve())
+    })
+    const middleware = createAuthMiddleware({ storage, authenticator })
     const mockStore = configureStore([middleware])
-    const data = { username: 'test', password: 'password' }
+    const data = { token: 1234 }
     const store = mockStore({ session: { authenticator: 'test', data } })
     const invalidateAction = invalidateSession()
 
     store.dispatch(invalidateAction)
-    expect(spiedAuthenticator.invalidate).toHaveBeenCalledWith(data)
 
-    spiedAuthenticator.authenticate.mockClear()
-    spiedAuthenticator.invalidate.mockClear()
+    expect(authenticator.invalidate).toHaveBeenCalledWith(data)
   })
 
   it('throws error when there is no session', () => {
