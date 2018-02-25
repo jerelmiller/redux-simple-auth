@@ -406,7 +406,7 @@ describe('FETCH dispatched', () => {
       authorize: (data, block) => {
         block('Authorization', data.token)
       },
-      authenticator: spiedAuthenticator
+      authenticator: testAuthenticator
     })
     const mockStore = configureStore([middleware])
     const data = { token: '1235' }
