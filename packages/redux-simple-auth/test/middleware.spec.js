@@ -253,6 +253,19 @@ describe('INVALIDATE_SESSION dispatched', () => {
     expect(store.getActions()).toContainEqual(invalidateSessionFailed())
   })
 
+  it('returns rejected promise with action', async () => {
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
+    })
+    const mockStore = configureStore([middleware])
+    const store = mockStore({ session: { isAuthenticated: false } })
+
+    const promise = store.dispatch(invalidateSession())
+
+    await expect(promise).rejects.toEqual(invalidateSessionFailed())
+  })
+
   describe('when there is no authenticator', () => {
     it('throws error', () => {
       const authenticator = createAuthenticator({
