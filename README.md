@@ -907,7 +907,7 @@ The following actions are available action types
   - [ ] Google login
 - [ ] Built-in authorizers
   - [ ] Devise
-  - [ ] OAuth2 Bearer
+  - [x] OAuth2 Bearer
 - [ ] Integration with React Router v3
 - [ ] Integration with React Router v4
 - [ ] Typescript/Flow support
