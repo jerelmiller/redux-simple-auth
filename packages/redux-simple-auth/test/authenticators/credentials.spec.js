@@ -195,3 +195,13 @@ it('allows restore to be configured', async () => {
   await expect(valid).resolves.toEqual({ token: 'secret-key' })
   await expect(invalid).rejects.toBeUndefined()
 })
+
+it('has default invalidate', async () => {
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate'
+  })
+
+  const promise = credentials.invalidate({})
+
+  await expect(promise).resolves.toEqual({})
+})
