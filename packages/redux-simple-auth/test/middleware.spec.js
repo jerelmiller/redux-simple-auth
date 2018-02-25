@@ -362,8 +362,7 @@ describe('FETCH dispatched', () => {
       storage,
       authenticator: testAuthenticator
     })
-    const mockStore = configureStore([middleware])
-    const store = mockStore({ session: reducer(undefined, {}) })
+    const store = createStore({ middleware })
 
     store.dispatch(fetchAction('https://test.com'))
 
@@ -376,8 +375,7 @@ describe('FETCH dispatched', () => {
       storage,
       authenticator: testAuthenticator
     })
-    const mockStore = configureStore([middleware])
-    const store = mockStore({ session: reducer(undefined, {}) })
+    const store = createStore({ middleware })
 
     store.dispatch(
       fetchAction('https://test.com', {
@@ -402,9 +400,11 @@ describe('FETCH dispatched', () => {
       authorize,
       authenticator: testAuthenticator
     })
-    const mockStore = configureStore([middleware])
     const data = { token: '1235' }
-    const store = mockStore({ session: { data } })
+    const store = createStore({
+      middleware,
+      initialState: sessionState({ data })
+    })
 
     store.dispatch(fetchAction('https://test.com'))
 
@@ -420,9 +420,10 @@ describe('FETCH dispatched', () => {
       },
       authenticator: testAuthenticator
     })
-    const mockStore = configureStore([middleware])
-    const data = { token: '1235' }
-    const store = mockStore({ session: { data } })
+    const store = createStore({
+      middleware,
+      initialState: sessionState({ data: { token: '1235' } })
+    })
 
     store.dispatch(fetchAction('https://test.com'))
 
