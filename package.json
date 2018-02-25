@@ -15,6 +15,7 @@
     "prettier": "1.10.2"
   },
   "scripts": {
+    "build": "lerna run build",
     "precommit": "precise-commits"
   }
 }
