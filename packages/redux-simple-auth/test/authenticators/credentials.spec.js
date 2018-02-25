@@ -205,3 +205,16 @@ it('has default invalidate', async () => {
 
   await expect(promise).resolves.toEqual({})
 })
+
+it('allows invalidate to be overridden', () => {
+  const invalidate = jest.fn()
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate',
+    invalidate
+  })
+  const data = { token: '1234' }
+
+  credentials.invalidate(data)
+
+  expect(invalidate).toHaveBeenCalledWith(data)
+})
