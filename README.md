@@ -195,10 +195,89 @@ store.dispatch(authenticate('credentials', { email, password }))
 
 ### Built-in authenticators
 
-Redux Simple Auth currently ships with 1 authenticator. There are plans to
-implement more authenticators as this library matures. Refer to the [custom
-authenticators](#implementing-a-custom-authenticator) documentation if you would
-like to build your own.
+Redux Simple Auth ships with 2 authenticators. If you would like to build your
+own, refer to the [custom authenticators](#implementing-a-custom-authenticator)
+documentation.
+
+**Credentials**
+
+An authenticator aimed to abstract away many of the common authentication
+scenarios used when authenticating via credentials. You may find more
+documentation on the options available below.
+
+```javascript
+import { createCredentialsAuthenticator } from 'redux-simple-auth'
+
+const credentialsAuthenticator = createCredentialsAuthenticator({
+  endpoint: '/api/authenticate'
+})
+```
+
+When authenticating via the `authenticate` action, simply give the credentials
+payload as the second argument.
+
+```javascript
+const credentials = { email: 'test@example.com', password: 'F@keP@ssword!' }
+
+store.dispatch(authenticate('credentials', credentials))
+```
+
+**Options**
+
+* `endpoint` (_string_): The endpoint that will be called with the credentials
+  during authentication.
+
+* `contentType` (_string_): Specifies the `Content-Type` header for the request.
+  * _Default_: `application/json`
+
+* `headers` (_object_): Allows you to define any additional headers for the
+  request
+  * _Default_: `{}`
+
+* `method` (_string_): Allows you to define the HTTP method used for the
+  request.
+  * _Default_: `POST`
+
+* `transformRequest`: (_function_): A function that accepts the credentials data
+  and transforms it for the request body. This is useful if you need to encode
+  the request body in a different way, such as an
+  `application/x-www-form-urlencoded` request.
+  * _Default_: `JSON.stringify`
+
+```javascript
+const credentialsAuthenticator = createCredentialsAuthenticator({
+  endpoint: '/api/authenticate',
+  contentType: 'application/x-www-form-urlencoded',
+  transformRequest(credentials) {
+    return Object.keys(credentials)
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(credentials[key])}`)
+      .join('&')
+  }
+})
+```
+
+* `transformResponse`: (_function_): A function that allows you to transform the
+  payload returned from the server that will be saved in the `session` state.
+  * _Default_: `(payload) => payload`
+
+```javascript
+const credentialsAuthenticator = createCredentialsAuthenticator({
+  endpoint: '/api/authenticate',
+  transformResponse: data => ({
+    token: data.response.token
+  })
+})
+```
+
+* `restore`: (_function_): A restore function for the authenticator. The default
+  implementation will resolve if the data is non-empty. If you would like more
+  custom behavior, see the section on [custom
+  authenticators](#implementing-a-custom-authenticator) for usage information.
+
+* `invalidate`: (_function_): An invalidation function for the authenticator.
+  The default implementation will always resolve. If you would like more custom
+  behavior, see the section on [custom
+  authenticators](#implementing-a-custom-authenticator) for usage information.
 
 **OAuth2 Implicit Grant (alpha)**
 
@@ -261,12 +340,12 @@ const credentialsAuthenticator = createAuthenticator({
   always returns a rejected promise resulting in an unauthenticated session. It
   is important that this function is defined when creating your authenticator.
 
-* `invalidate(data)` (_function_): A function responsible for doing any 
-  additional cleanup of the authenticated data. This function will be invoked 
+* `invalidate(data)` (_function_): A function responsible for doing any
+  additional cleanup of the authenticated data. This function will be invoked
   when the [`invalidateSession`](#invalidatesession) action is dispatched. It
-  accepts a single argument with the data persisted to the session and must 
-  return a promise. A resolved promise will clear the authenticated session 
-  data and result in an unauthenticated session. A rejected promise will 
+  accepts a single argument with the data persisted to the session and must
+  return a promise. A resolved promise will clear the authenticated session
+  data and result in an unauthenticated session. A rejected promise will
   result in invalidation being interrupted, however session data will still be
   wiped. Note that a default implementation of this function is defined if none
   is given and always returns a resolved promise.
@@ -820,7 +899,7 @@ The following actions are available action types
 ## TODO
 
 - [ ] Built-in authenticators for common scenarios
-  - [ ] Credentials
+  - [x] Credentials
   - [ ] Devise
   - [ ] OAuth
   - [ ] Facebook Login
@@ -828,7 +907,7 @@ The following actions are available action types
   - [ ] Google login
 - [ ] Built-in authorizers
   - [ ] Devise
-  - [ ] OAuth2 Bearer
+  - [x] OAuth2 Bearer
 - [ ] Integration with React Router v3
 - [ ] Integration with React Router v4
 - [ ] Typescript/Flow support
