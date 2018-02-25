@@ -469,7 +469,10 @@ describe('FETCH dispatched', () => {
 
   it('does not dispatch invalidate action when request succeeds', async () => {
     fetch.mockResponse(JSON.stringify({ ok: true }))
-    const middleware = configureMiddleware()
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
+    })
     const mockStore = configureStore([middleware])
     const data = { token: '1235' }
     const store = mockStore({ session: { data } })
@@ -477,9 +480,7 @@ describe('FETCH dispatched', () => {
 
     await store.dispatch(fetchAction('https://test.com'))
 
-    expect(store.getActions()).not.toEqual(
-      expect.arrayContaining([invalidateAction])
-    )
+    expect(store.getActions()).not.toContainEqual(invalidateAction)
   })
 
   describe('when request returns 401 unauthorized', () => {
