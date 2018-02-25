@@ -146,8 +146,7 @@ describe('AUTHENTICATE dispatched', () => {
       storage,
       authenticators: [credsAuthenticator, testAuthenticator]
     })
-    const mockStore = configureStore([middleware])
-    const store = mockStore({ session: reducer(undefined, {}) })
+    const store = createStore({ middleware })
     const data = { username: 'test', password: 'password' }
     const action = authenticate('test', data)
 
@@ -165,8 +164,7 @@ describe('AUTHENTICATE dispatched', () => {
       storage,
       authenticators: [authenticator]
     })
-    const mockStore = configureStore([middleware])
-    const store = mockStore({ session: reducer(undefined, {}) })
+    const store = createStore({ middleware })
     const action = authenticate('not-real', {})
 
     expect(() => store.dispatch(action)).toThrow(
@@ -181,7 +179,7 @@ describe('AUTHENTICATE dispatched', () => {
       authenticator: testAuthenticator
     })
     const mockStore = configureStore([middleware])
-    const store = mockStore({ session: reducer(undefined, {}) })
+    const store = mockStore(sessionState())
     const data = { username: 'test', password: 'password' }
     const action = authenticate('test', data)
     const expectedAction = authenticateSucceeded('test', {
@@ -219,8 +217,7 @@ describe('AUTHENTICATE dispatched', () => {
       authenticate: () => Promise.reject(error)
     })
     const middleware = createAuthMiddleware({ storage, authenticator })
-    const mockStore = configureStore([middleware])
-    const store = mockStore({ session: { isAuthenticated: false } })
+    const store = createStore({ middleware })
     const data = { username: 'test', password: 'password' }
     const action = authenticate('test', data)
 
@@ -237,10 +234,14 @@ describe('INVALIDATE_SESSION dispatched', () => {
       invalidate: jest.fn(() => Promise.resolve())
     })
     const middleware = createAuthMiddleware({ storage, authenticator })
-    const mockStore = configureStore([middleware])
     const data = { token: 1234 }
-    const store = mockStore({
-      session: { isAuthenticated: true, authenticator: 'test', data }
+    const store = createStore({
+      middleware,
+      initialState: sessionState({
+        isAuthenticated: true,
+        authenticator: 'test',
+        data
+      })
     })
     const invalidateAction = invalidateSession()
 
@@ -274,9 +275,12 @@ describe('INVALIDATE_SESSION dispatched', () => {
       invalidate: () => Promise.reject()
     })
     const middleware = createAuthMiddleware({ storage, authenticator })
-    const mockStore = configureStore([middleware])
-    const store = mockStore({
-      session: { isAuthenticated: true, authenticator: 'test' }
+    const store = createStore({
+      middleware,
+      initialState: sessionState({
+        isAuthenticated: true,
+        authenticator: 'test'
+      })
     })
 
     const promise = store.dispatch(invalidateSession())
@@ -290,7 +294,7 @@ describe('INVALIDATE_SESSION dispatched', () => {
       authenticator: testAuthenticator
     })
     const mockStore = configureStore([middleware])
-    const store = mockStore({ session: { isAuthenticated: false } })
+    const store = mockStore(sessionState())
 
     try {
       await store.dispatch(invalidateSession())
@@ -300,12 +304,12 @@ describe('INVALIDATE_SESSION dispatched', () => {
   })
 
   it('warns if not authenticated', async () => {
-    const middleware = createAuthMiddleware({
-      storage,
-      authenticator: testAuthenticator
+    const store = createStore({
+      middleware: createAuthMiddleware({
+        storage,
+        authenticator: testAuthenticator
+      })
     })
-    const mockStore = configureStore([middleware])
-    const store = mockStore({ session: { isAuthenticated: false } })
 
     try {
       await store.dispatch(invalidateSession())
@@ -317,12 +321,12 @@ describe('INVALIDATE_SESSION dispatched', () => {
   })
 
   it('returns rejected promise with action when not authenticated', async () => {
-    const middleware = createAuthMiddleware({
-      storage,
-      authenticator: testAuthenticator
+    const store = createStore({
+      middleware: createAuthMiddleware({
+        storage,
+        authenticator: testAuthenticator
+      })
     })
-    const mockStore = configureStore([middleware])
-    const store = mockStore({ session: { isAuthenticated: false } })
 
     const promise = store.dispatch(invalidateSession())
 
