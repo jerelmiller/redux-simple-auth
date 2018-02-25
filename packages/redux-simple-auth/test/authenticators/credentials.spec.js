@@ -48,3 +48,9 @@ it('handles invalid responses', async () => {
 
   await expect(promise).rejects.toEqual(error)
 })
+
+it('throws invariant if `endpoint` is not given', () => {
+  expect(() => createCredentialsAuthenticator()).toThrow(
+    'You must provide an endpoint for the `credentials` authenticator'
+  )
+})
