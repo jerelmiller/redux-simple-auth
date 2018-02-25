@@ -148,7 +148,7 @@ export default (config = {}) => {
 
           if (!getIsAuthenticated(state)) {
             warning(
-              true,
+              false,
               'You are trying to invalidate a session that is not authenticated.'
             )
             return Promise.reject(dispatch(invalidateSessionFailed()))
