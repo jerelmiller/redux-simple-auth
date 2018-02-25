@@ -116,3 +116,29 @@ it('allows method to be configured', () => {
     body: JSON.stringify(creds)
   })
 })
+
+it('allows request body to be transform by configuration', () => {
+  fetch.mockResponse(JSON.stringify({ ok: true }))
+  const transformRequest = creds =>
+    Object.keys(creds)
+      .map(
+        key => `${encodeURIComponent(key)}=${encodeURIComponent(creds[key])}`
+      )
+      .join('&')
+  const credentials = createCredentialsAuthenticator({
+    endpoint: '/authenticate',
+    contentType: 'application/x-www-form-urlencoded',
+    transformRequest
+  })
+  const creds = { email: 'text@example.com', password: 'password' }
+
+  credentials.authenticate(creds)
+
+  expect(fetch).toHaveBeenCalledWith('/authenticate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: transformRequest(creds)
+  })
+})
