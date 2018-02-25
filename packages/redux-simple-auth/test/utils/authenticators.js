@@ -7,7 +7,7 @@ export const spiedAuthenticator = createAuthenticator({
   invalidate: jest.fn(data => Promise.resolve(data))
 })
 
-export const successAuthenticator = createAuthenticator({
+export const testAuthenticator = createAuthenticator({
   name: 'test',
   authenticate: () => Promise.resolve({ token: 'abcdefg' }),
   restore: () => Promise.resolve(),

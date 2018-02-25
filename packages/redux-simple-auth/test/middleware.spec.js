@@ -16,7 +16,7 @@ import {
 import {
   failAuthenticator,
   spiedAuthenticator,
-  successAuthenticator
+  testAuthenticator
 } from './utils/authenticators'
 import createMockStorage from './utils/testStorage'
 import configureStore from 'redux-mock-store'
@@ -70,7 +70,7 @@ it('persists changes to storage', () => {
   const storage = createMockStorage()
   const middleware = createAuthMiddleware({
     storage,
-    authenticator: successAuthenticator
+    authenticator: testAuthenticator
   })
   const mockStore = configureStore([middleware])
   const getState = jest
@@ -99,7 +99,7 @@ it('hydrates session data from storage', async () => {
   })
   const middleware = createAuthMiddleware({
     storage,
-    authenticator: successAuthenticator
+    authenticator: testAuthenticator
   })
   const mockStore = configureStore([middleware])
 
@@ -160,14 +160,14 @@ describe('when authenticating', () => {
   })
 
   describe('when successful', () => {
-    const middleware = configureMiddleware(successAuthenticator)
+    const middleware = configureMiddleware(testAuthenticator)
     const mockStore = configureStore([middleware])
 
     it('sets authenticated data on local storage', async () => {
       const storage = createMockStorage()
       const middleware = createAuthMiddleware({
         storage,
-        authenticator: successAuthenticator
+        authenticator: testAuthenticator
       })
       const mockStore = configureStore([middleware])
       const initialState = reducer(undefined, {})
@@ -388,7 +388,7 @@ describe('when fetch action is dispatched', () => {
       })
       const middleware = createAuthMiddleware({
         storage,
-        authenticator: successAuthenticator,
+        authenticator: testAuthenticator,
         refresh: response => ({
           token: response.headers.get('x-access-token')
         })
@@ -411,7 +411,7 @@ describe('when fetch action is dispatched', () => {
       })
       const middleware = createAuthMiddleware({
         storage,
-        authenticator: successAuthenticator,
+        authenticator: testAuthenticator,
         refresh: () => null
       })
       const mockStore = configureStore([middleware])
