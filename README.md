@@ -195,10 +195,58 @@ store.dispatch(authenticate('credentials', { email, password }))
 
 ### Built-in authenticators
 
-Redux Simple Auth currently ships with 1 authenticator. There are plans to
-implement more authenticators as this library matures. Refer to the [custom
-authenticators](#implementing-a-custom-authenticator) documentation if you would
-like to build your own.
+Redux Simple Auth ships with 2 authenticators. If you would like to build your
+own, refer to the [custom authenticators](#implementing-a-custom-authenticator)
+documentation.
+
+**Credentials**
+
+An authenticator that handles most email/username and password flows.
+
+```javascript
+import { createCredentialsAuthenticator } from 'redux-simple-auth'
+
+const credentialsAuthenticator = createCredentialsAuthenticator({
+  endpoint: '/api/authenticate'
+})
+```
+
+When authenticating via the `authenticate` action, simply give the credentials
+payload as the second argument.
+
+```
+const credentials = { email: 'test@example.com', password: 'F@keP@ssword!' }
+
+store.dispatch(authenticate('credentials', credentials))
+```
+
+**Options**
+
+* `endpoint` (_string_): The endpoint that will be called with the credentials
+  during authentication.
+
+* `contentType` (_string_): Specifies the `Content-Type` header for the request.
+  * _Default_: `application/json`
+
+* `headers` (_object_): Allows you to define any additional headers for the
+  request
+  * _Default_: `{}`
+
+* `method` (_string_): Allows you to define the HTTP method used for the
+  request.
+  * _Default_: `POST`
+
+* `transformRequest`: (_function_): A function that accepts the credentials data
+  and transforms it for the request body. This is useful if you need to encode
+  the request body in a different way, such as an
+  `application/x-www-form-urlencoded` request.
+  * _Default_: `JSON.stringify`
+
+* `transformResponse`: (_function_): A function that allows you to transform the
+  payload returned from the server as the data the will be stored in the
+  session.
+  * _Default_: `(payload) => payload`
+
 
 **OAuth2 Implicit Grant (alpha)**
 
