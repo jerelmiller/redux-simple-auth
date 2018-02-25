@@ -202,7 +202,8 @@ documentation.
 **Credentials**
 
 An authenticator aimed to abstract away many of the common authentication
-scenarios used when authenticating via credentials.
+scenarios used when authenticating via credentials. You may find more
+documentation on the options available below.
 
 ```javascript
 import { createCredentialsAuthenticator } from 'redux-simple-auth'
