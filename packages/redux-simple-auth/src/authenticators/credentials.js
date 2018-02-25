@@ -10,10 +10,13 @@ const defaultRestore = data => {
   return Promise.reject()
 }
 
+const defaultInvalidate = data => Promise.resolve(data)
+
 export default ({
   endpoint,
   contentType = 'application/json',
   headers = {},
+  invalidate = defaultInvalidate,
   method = 'POST',
   restore = defaultRestore,
   transformRequest = JSON.stringify,
@@ -43,6 +46,7 @@ export default ({
 
         return transformResponse(json)
       }),
-    restore
+    restore,
+    invalidate
   })
 }
