@@ -161,39 +161,6 @@ describe('AUTHENTICATE dispatched', () => {
   })
 
   describe('when successful', () => {
-    it('sets authenticated data on storage', async () => {
-      const storage = createMockStorage()
-      const middleware = createAuthMiddleware({
-        storage,
-        authenticator: testAuthenticator
-      })
-      const mockStore = configureStore([middleware])
-      const initialState = reducer(undefined, {})
-      const getState = jest
-        .fn()
-        .mockReturnValueOnce({ session: {} }) // restore
-        .mockReturnValueOnce({ session: {} }) // restore
-        .mockReturnValueOnce({ session: initialState })
-        .mockReturnValueOnce({
-          session: reducer(
-            initialState,
-            authenticateSucceeded('test', { token: '1234' })
-          )
-        })
-      const store = mockStore(getState)
-      const data = { username: 'test', password: 'password' }
-      const action = authenticate('test', data)
-
-      await store.dispatch(action)
-
-      expect(storage.getData()).toEqual({
-        authenticated: {
-          token: '1234',
-          authenticator: 'test'
-        }
-      })
-    })
-
     it('dispatches AUTHENTICATE_SUCCEEDED', async () => {
       const storage = createMockStorage()
       const middleware = createAuthMiddleware({
