@@ -55,7 +55,7 @@ it('throws invariant if `endpoint` is not given', () => {
   )
 })
 
-it('allows content-type to be overridden', () => {
+it('allows content-type to be configured', () => {
   fetch.mockResponse(JSON.stringify({ ok: true }))
   const credentials = createCredentialsAuthenticator({
     endpoint: '/authenticate',
