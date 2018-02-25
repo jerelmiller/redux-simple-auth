@@ -343,10 +343,13 @@ describe('INVALIDATE_SESSION dispatched', () => {
   })
 })
 
-describe('when fetch action is dispatched', () => {
-  it('fetches data', () => {
+describe('FETCH dispatched', () => {
+  it('uses global fetch to make network call', () => {
     fetch.mockResponse(JSON.stringify({ ok: true }))
-    const middleware = configureMiddleware()
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
+    })
     const mockStore = configureStore([middleware])
     const store = mockStore({ session: reducer(undefined, {}) })
 
@@ -357,7 +360,10 @@ describe('when fetch action is dispatched', () => {
 
   it('passes request options to fetch', () => {
     fetch.mockResponse(JSON.stringify({ ok: true }))
-    const middleware = configureMiddleware()
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
+    })
     const mockStore = configureStore([middleware])
     const store = mockStore({ session: reducer(undefined, {}) })
 
@@ -376,13 +382,13 @@ describe('when fetch action is dispatched', () => {
     })
   })
 
-  it('calls authorize with authenticated data', () => {
+  it('authorizes with configured authenticator', () => {
     fetch.mockResponse(JSON.stringify({ ok: true }))
     const authorize = jest.fn()
     const middleware = createAuthMiddleware({
       storage,
       authorize,
-      authenticator: spiedAuthenticator
+      authenticator: testAuthenticator
     })
     const mockStore = configureStore([middleware])
     const data = { token: '1235' }
@@ -393,14 +399,13 @@ describe('when fetch action is dispatched', () => {
     expect(authorize).toHaveBeenCalledWith(data, expect.any(Function))
   })
 
-  it('sets headers when authorize runs block function', () => {
+  it('sets headers defined in authorize function', () => {
     fetch.mockResponse(JSON.stringify({ ok: true }))
-    const authorize = (data, block) => {
-      block('Authorization', data.token)
-    }
     const middleware = createAuthMiddleware({
       storage,
-      authorize,
+      authorize: (data, block) => {
+        block('Authorization', data.token)
+      },
       authenticator: spiedAuthenticator
     })
     const mockStore = configureStore([middleware])
