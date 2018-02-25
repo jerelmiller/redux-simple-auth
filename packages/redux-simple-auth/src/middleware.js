@@ -151,8 +151,6 @@ export default (config = {}) => {
             'You are trying to invalidate a session that is not authenticated.'
           )
 
-          const authenticatorName = getAuthenticator(state)
-
           if (!authenticatorName) {
             dispatch(invalidateSessionFailed())
             return Promise.reject(
@@ -162,8 +160,6 @@ export default (config = {}) => {
               )
             )
           }
-
-          const authenticator = findAuthenticator(authenticatorName)
 
           if (!authenticator) {
             throw new Error(
