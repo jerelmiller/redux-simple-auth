@@ -153,7 +153,7 @@ describe('when authenticating', () => {
     const middleware = configureMiddleware(testAuthenticator)
     const mockStore = configureStore([middleware])
 
-    it('sets authenticated data on local storage', async () => {
+    it('sets authenticated data on storage', async () => {
       const storage = createMockStorage()
       const middleware = createAuthMiddleware({
         storage,
