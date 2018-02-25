@@ -164,47 +164,46 @@ describe('AUTHENTICATE dispatched', () => {
     )
   })
 
-  describe('when successful', () => {
-    it('dispatches AUTHENTICATE_SUCCEEDED', async () => {
-      const storage = createMockStorage()
-      const middleware = createAuthMiddleware({
-        storage,
-        authenticator: testAuthenticator
-      })
-      const mockStore = configureStore([middleware])
-      const store = mockStore({ session: reducer(undefined, {}) })
-      const data = { username: 'test', password: 'password' }
-      const action = authenticate('test', data)
-      const expectedAction = authenticateSucceeded('test', {
-        token: 'abcdefg'
-      })
-
-      await store.dispatch(action)
-
-      expect(store.getActions()).toContainEqual(expectedAction)
+  it('dispatches AUTHENTICATE_SUCCEEDED when authenticated', async () => {
+    const storage = createMockStorage()
+    const middleware = createAuthMiddleware({
+      storage,
+      authenticator: testAuthenticator
     })
+    const mockStore = configureStore([middleware])
+    const store = mockStore({ session: reducer(undefined, {}) })
+    const data = { username: 'test', password: 'password' }
+    const action = authenticate('test', data)
+    const expectedAction = authenticateSucceeded('test', {
+      token: 'abcdefg'
+    })
+
+    await store.dispatch(action)
+
+    expect(store.getActions()).toContainEqual(expectedAction)
+  })
+
+  it('dispatches AUTHENTICATE_FAILED when authentication fails', async () => {
+    const storage = createMockStorage()
+    const error = 'Nope'
+    const authenticator = createAuthenticator({
+      name: 'fail',
+      authenticate: () => Promise.reject(error)
+    })
+    const middleware = createAuthMiddleware({ storage, authenticator })
+    const mockStore = configureStore([middleware])
+    const store = mockStore()
+    const data = { username: 'test', password: 'password' }
+    const action = authenticate('test', data)
+
+    try {
+      await store.dispatch(action)
+    } catch (e) {}
+
+    expect(store.getActions()).toContainEqual(authenticateFailed(error))
   })
 
   describe('when not successful', () => {
-    it('dispatches AUTHENTICATE_FAILED', async () => {
-      const storage = createMockStorage()
-      const authenticator = createAuthenticator({
-        name: 'fail',
-        authenticate: () => Promise.reject()
-      })
-      const middleware = createAuthMiddleware({ storage, authenticator })
-      const mockStore = configureStore([middleware])
-      const store = mockStore()
-      const data = { username: 'test', password: 'password' }
-      const action = authenticate('test', data)
-
-      try {
-        await store.dispatch(action)
-      } catch (e) {}
-
-      expect(store.getActions()).toContainEqual(authenticateFailed())
-    })
-
     it('returns rejected promise', async () => {
       const storage = createMockStorage()
       const authenticator = createAuthenticator({
