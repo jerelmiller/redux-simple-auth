@@ -257,8 +257,7 @@ const credentialsAuthenticator = createCredentialsAuthenticator({
 ```
 
 * `transformResponse`: (_function_): A function that allows you to transform the
-  payload returned from the server as the data the will be stored in the
-  session.
+  payload returned from the server that will be saved in the `session` state.
   * _Default_: `(payload) => payload`
 
 ```javascript
