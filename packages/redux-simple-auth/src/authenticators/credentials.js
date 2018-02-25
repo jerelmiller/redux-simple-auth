@@ -33,6 +33,13 @@ export default ({
         }
 
         return transformResponse(json)
-      })
+      }),
+    restore: data => {
+      if (Object.keys(data).length > 0) {
+        return Promise.resolve(data)
+      }
+
+      return Promise.reject()
+    }
   })
 }
