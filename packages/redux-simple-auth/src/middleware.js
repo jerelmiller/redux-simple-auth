@@ -8,6 +8,7 @@ import {
   invalidateSessionFailed,
   restore,
   restoreFailed,
+  syncTab,
   updateSession
 } from './actions'
 import {
@@ -61,6 +62,7 @@ export default (config = {}) => {
     authenticators,
     authorize,
     refresh,
+    syncTabs = false,
     storage = defaultStorage
   } = config
 
@@ -82,6 +84,20 @@ export default (config = {}) => {
         )
     } else {
       dispatch(restoreFailed())
+    }
+
+    if (syncTabs) {
+      window.addEventListener('storage', e => {
+        if (
+          !e.isTrusted ||
+          e.key !== storage.__key ||
+          e.newValue === e.oldValue
+        ) {
+          return
+        }
+
+        dispatch(syncTab(JSON.parse(e.newValue)))
+      })
     }
 
     return next => action => {
