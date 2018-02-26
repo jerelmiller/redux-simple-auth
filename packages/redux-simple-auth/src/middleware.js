@@ -16,6 +16,7 @@ import {
   getAuthenticator,
   getIsAuthenticated
 } from './selectors'
+import subscribeToStorageEvents from './utils/subscribeToStorageEvents'
 import invariant from 'invariant'
 import warning from 'warning'
 
@@ -84,20 +85,17 @@ export default (config = {}) => {
       dispatch(restoreFailed())
     }
 
-    if (syncTabs && storage.__syncsAcrossTabs) {
-      window.addEventListener('storage', e => {
-        if (
-          !e.isTrusted ||
-          e.key !== storage.__key ||
-          e.newValue === e.oldValue
-        ) {
-          return
+    if (syncTabs) {
+      subscribeToStorageEvents(storage, ({ authenticated = {} }) => {
+        const { authenticator: authenticatorName, ...data } = authenticated
+        const authenticator = findAuthenticator(authenticatorName)
+
+        if (!authenticator) {
+          return dispatch(syncTab({ isAuthenticated: false, authenticated }))
         }
 
-        const { authenticated = {} } = JSON.parse(e.newValue)
-
         authenticator
-          .restore(authenticated)
+          .restore(data)
           .then(
             () => dispatch(syncTab({ isAuthenticated: true, authenticated })),
             () => dispatch(syncTab({ isAuthenticated: false, authenticated }))
