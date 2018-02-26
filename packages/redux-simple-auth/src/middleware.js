@@ -96,7 +96,14 @@ export default (config = {}) => {
           return
         }
 
-        dispatch(syncTab(JSON.parse(e.newValue)))
+        const { authenticated = {} } = JSON.parse(e.newValue)
+
+        authenticator
+          .restore(authenticated)
+          .then(
+            () => dispatch(syncTab({ isAuthenticated: true, authenticated })),
+            () => dispatch(syncTab({ isAuthenticated: false, authenticated }))
+          )
       })
     }
 
