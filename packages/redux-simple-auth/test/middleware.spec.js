@@ -95,7 +95,7 @@ it('persists changed authenticated data to storage', () => {
   })
 })
 
-it('hydrates session data from storage', async () => {
+it('hydrates session data from storage', () => {
   const restore = jest.fn(() => Promise.resolve())
   const authenticator = createAuthenticator({ name: 'test', restore })
   const storage = createMockStorage({
