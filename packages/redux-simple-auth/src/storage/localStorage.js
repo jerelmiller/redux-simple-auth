@@ -4,5 +4,7 @@ export default ({ key = DEFAULT_KEY } = {}) => ({
   persist: data => {
     localStorage.setItem(key, JSON.stringify(data || {}))
   },
-  restore: () => JSON.parse(localStorage.getItem(key)) || {}
+  restore: () => JSON.parse(localStorage.getItem(key)) || {},
+  __key: key,
+  __syncsAcrossTabs: true
 })
