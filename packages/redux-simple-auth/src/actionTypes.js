@@ -8,5 +8,6 @@ export const INITIALIZE = `${prefix}/INITIALIZE`
 export const INVALIDATE_SESSION = `${prefix}/INVALIDATE_SESSION`
 export const INVALIDATE_SESSION_FAILED = `${prefix}/INVALIDATE_SESSION_FAILED`
 export const UPDATE_SESSION = `${prefix}/UPDATE_SESSION`
+export const RESET = `${prefix}/RESET`
 export const RESTORE = `${prefix}/RESTORE`
 export const RESTORE_FAILED = `${prefix}/RESTORE_FAILED`
