@@ -1,18 +1,17 @@
+import invariant from 'invariant'
+
 export default ({
   name,
   restore = () => Promise.reject(),
   authenticate = () => Promise.reject(),
   invalidate = data => Promise.resolve(data)
 } = {}) => {
-  if (name == null) {
-    throw new Error('Authenticators must define a `name` property')
-  }
+  invariant(name != null, 'Authenticators must define a `name` property')
 
-  if (typeof name !== 'string') {
-    throw new Error(
-      'Expected the `name` property of the authenticator to be a string'
-    )
-  }
+  invariant(
+    typeof name === 'string',
+    'Expected the `name` property of the authenticator to be a string'
+  )
 
   return {
     name,
