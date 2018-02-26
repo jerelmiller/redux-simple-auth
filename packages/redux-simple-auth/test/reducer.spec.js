@@ -2,9 +2,9 @@ import { reducer } from '../src'
 import {
   authenticateSucceeded,
   authenticateFailed,
+  clearError,
   initialize,
   invalidateSession,
-  reset,
   restore,
   restoreFailed,
   updateSession
@@ -95,7 +95,7 @@ describe('session reducer', () => {
     expect(state).toEqual(expected)
   })
 
-  it('handles RESET', () => {
+  it('handles CLEAR_ERROR', () => {
     const currentState = {
       authenticator: null,
       hasFailedAuth: true,
@@ -113,7 +113,7 @@ describe('session reducer', () => {
       data: {}
     }
 
-    const state = reducer(currentState, reset())
+    const state = reducer(currentState, clearError())
 
     expect(state).toEqual(expected)
   })
