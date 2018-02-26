@@ -15,34 +15,32 @@ import {
   getAuthenticator,
   getIsAuthenticated
 } from './selectors'
+import invariant from 'invariant'
 import warning from 'warning'
 
 const validateAuthenticatorsPresence = ({ authenticator, authenticators }) => {
-  if (authenticator == null && authenticators == null) {
-    throw new Error(
-      'No authenticator was given. Be sure to configure an authenticator ' +
-        'by using the `authenticator` option for a single authenticator or ' +
-        'using the `authenticators` option to allow multiple authenticators'
-    )
-  }
+  invariant(
+    authenticator != null || authenticators != null,
+    'No authenticator was given. Be sure to configure an authenticator ' +
+      'by using the `authenticator` option for a single authenticator or ' +
+      'using the `authenticators` option to allow multiple authenticators'
+  )
 }
 
 const validateAuthenticatorsIsArray = authenticators => {
-  if (!Array.isArray(authenticators)) {
-    throw new Error(
-      'Expected `authenticators` to be an array. If you only need a single ' +
-        'authenticator, consider using the `authenticator` option.'
-    )
-  }
+  invariant(
+    Array.isArray(authenticators),
+    'Expected `authenticators` to be an array. If you only need a single ' +
+      'authenticator, consider using the `authenticator` option.'
+  )
 }
 
 const validateAuthenticatorIsObject = authenticator => {
-  if (!isPlainObject(authenticator)) {
-    throw new Error(
-      'Expected `authenticator` to be an object. If you need multiple ' +
-        'authenticators, consider using the `authenticators` option.'
-    )
-  }
+  invariant(
+    isPlainObject(authenticator),
+    'Expected `authenticator` to be an object. If you need multiple ' +
+      'authenticators, consider using the `authenticators` option.'
+  )
 }
 
 const validateConfig = config => {
