@@ -86,7 +86,7 @@ export default (config = {}) => {
       dispatch(restoreFailed())
     }
 
-    if (syncTabs) {
+    if (syncTabs && storage.__syncsAcrossTabs) {
       window.addEventListener('storage', e => {
         if (
           !e.isTrusted ||
