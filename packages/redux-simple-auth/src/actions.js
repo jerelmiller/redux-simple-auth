@@ -7,6 +7,7 @@ import {
   INVALIDATE_SESSION,
   INVALIDATE_SESSION_FAILED,
   UPDATE_SESSION,
+  CLEAR_ERROR,
   RESTORE,
   RESTORE_FAILED
 } from './actionTypes'
@@ -31,6 +32,10 @@ export const authenticateFailed = payload => ({
 export const fetch = (url, options) => ({
   type: FETCH,
   payload: { url, options }
+})
+
+export const clearError = () => ({
+  type: CLEAR_ERROR
 })
 
 export const invalidateSession = () => ({
