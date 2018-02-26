@@ -101,13 +101,12 @@ export default (config = {}) => {
         case AUTHENTICATE: {
           const authenticator = findAuthenticator(action.meta.authenticator)
 
-          if (!authenticator) {
-            throw new Error(
-              `No authenticator with name \`${action.meta.authenticator}\` ` +
-                'was found. Be sure you have defined it in the authenticators ' +
-                'config.'
-            )
-          }
+          invariant(
+            authenticator,
+            `No authenticator with name \`${action.meta.authenticator}\` ` +
+              'was found. Be sure you have defined it in the authenticators ' +
+              'config.'
+          )
 
           return authenticator
             .authenticate(action.payload)
