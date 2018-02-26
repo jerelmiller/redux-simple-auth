@@ -69,36 +69,30 @@ export default (config = {}) => {
     ? () => authenticator
     : name => authenticators.find(authenticator => authenticator.name === name)
 
-  return ({ dispatch, getState }) => {
-    const { authenticated = {} } = storage.restore() || {}
+  const restoreWithStorageData = ({ authenticated = {} }) => {
     const { authenticator: authenticatorName, ...data } = authenticated
     const authenticator = findAuthenticator(authenticatorName)
 
-    if (authenticator) {
-      authenticator
-        .restore(data)
-        .then(
-          () => dispatch(restore(authenticated)),
-          () => dispatch(restoreFailed())
-        )
-    } else {
-      dispatch(restoreFailed())
+    if (!authenticator) {
+      return Promise.reject(authenticated)
     }
 
+    return authenticator.restore(data).then(() => authenticated)
+  }
+
+  return ({ dispatch, getState }) => {
+    restoreWithStorageData(storage.restore() || {})
+      .then(authenticated => dispatch(restore(authenticated)))
+      .catch(() => dispatch(restoreFailed()))
+
     if (syncTabs) {
-      subscribeToStorageEvents(storage, ({ authenticated = {} }) => {
-        const { authenticator: authenticatorName, ...data } = authenticated
-        const authenticator = findAuthenticator(authenticatorName)
-
-        if (!authenticator) {
-          return dispatch(syncTab({ isAuthenticated: false, authenticated }))
-        }
-
-        authenticator
-          .restore(data)
-          .then(
-            () => dispatch(syncTab({ isAuthenticated: true, authenticated })),
-            () => dispatch(syncTab({ isAuthenticated: false, authenticated }))
+      subscribeToStorageEvents(storage, storageData => {
+        restoreWithStorageData(storageData)
+          .then(authenticated =>
+            dispatch(syncTab({ isAuthenticated: true, authenticated }))
+          )
+          .catch(authenticated =>
+            dispatch(syncTab({ isAuthenticated: false, authenticated }))
           )
       })
     }
