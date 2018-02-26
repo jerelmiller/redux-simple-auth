@@ -5,6 +5,7 @@ export { default as reducer } from './reducer'
 export { default as createAuthenticator } from './createAuthenticator'
 export {
   authenticate,
+  clearError,
   fetch,
   invalidateSession,
   updateSession
