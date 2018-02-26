@@ -15,34 +15,32 @@ import {
   getAuthenticator,
   getIsAuthenticated
 } from './selectors'
+import invariant from 'invariant'
 import warning from 'warning'
 
 const validateAuthenticatorsPresence = ({ authenticator, authenticators }) => {
-  if (authenticator == null && authenticators == null) {
-    throw new Error(
-      'No authenticator was given. Be sure to configure an authenticator ' +
-        'by using the `authenticator` option for a single authenticator or ' +
-        'using the `authenticators` option to allow multiple authenticators'
-    )
-  }
+  invariant(
+    authenticator != null || authenticators != null,
+    'No authenticator was given. Be sure to configure an authenticator ' +
+      'by using the `authenticator` option for a single authenticator or ' +
+      'using the `authenticators` option to allow multiple authenticators'
+  )
 }
 
 const validateAuthenticatorsIsArray = authenticators => {
-  if (!Array.isArray(authenticators)) {
-    throw new Error(
-      'Expected `authenticators` to be an array. If you only need a single ' +
-        'authenticator, consider using the `authenticator` option.'
-    )
-  }
+  invariant(
+    Array.isArray(authenticators),
+    'Expected `authenticators` to be an array. If you only need a single ' +
+      'authenticator, consider using the `authenticator` option.'
+  )
 }
 
 const validateAuthenticatorIsObject = authenticator => {
-  if (!isPlainObject(authenticator)) {
-    throw new Error(
-      'Expected `authenticator` to be an object. If you need multiple ' +
-        'authenticators, consider using the `authenticators` option.'
-    )
-  }
+  invariant(
+    isPlainObject(authenticator),
+    'Expected `authenticator` to be an object. If you need multiple ' +
+      'authenticators, consider using the `authenticators` option.'
+  )
 }
 
 const validateConfig = config => {
@@ -103,13 +101,12 @@ export default (config = {}) => {
         case AUTHENTICATE: {
           const authenticator = findAuthenticator(action.meta.authenticator)
 
-          if (!authenticator) {
-            throw new Error(
-              `No authenticator with name \`${action.meta.authenticator}\` ` +
-                'was found. Be sure you have defined it in the authenticators ' +
-                'config.'
-            )
-          }
+          invariant(
+            authenticator,
+            `No authenticator with name \`${action.meta.authenticator}\` ` +
+              'was found. Be sure you have defined it in the authenticators ' +
+              'config.'
+          )
 
           return authenticator
             .authenticate(action.payload)
@@ -154,13 +151,12 @@ export default (config = {}) => {
             return Promise.reject(dispatch(invalidateSessionFailed()))
           }
 
-          if (!authenticator) {
-            throw new Error(
-              `No authenticator with name \`${authenticatorName}\` ` +
-                'was found. Be sure you have defined it in the authenticators ' +
-                'config.'
-            )
-          }
+          invariant(
+            authenticator,
+            `No authenticator with name \`${authenticatorName}\` ` +
+              'was found. Be sure you have defined it in the authenticators ' +
+              'config.'
+          )
 
           return authenticator
             .invalidate(getSessionData(state))

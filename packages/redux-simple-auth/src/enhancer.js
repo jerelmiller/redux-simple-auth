@@ -1,14 +1,14 @@
 import isPlainObject from 'lodash.isplainobject'
 import { initialize } from './actions'
+import invariant from 'invariant'
 import reducer from './reducer'
 
 const validateStorage = storage => {
-  if (!isPlainObject(storage) || storage.restore == null) {
-    throw new Error(
-      'Expected `storage` to be a valid storage. You either forgot to ' +
-        'include it or you passed an invalid storage object'
-    )
-  }
+  invariant(
+    isPlainObject(storage) && storage.restore != null,
+    'Expected `storage` to be a valid storage. You either forgot to ' +
+      'include it or you passed an invalid storage object'
+  )
 }
 
 const enhancer = ({ storage } = {}) => {
