@@ -151,13 +151,12 @@ export default (config = {}) => {
             return Promise.reject(dispatch(invalidateSessionFailed()))
           }
 
-          if (!authenticator) {
-            throw new Error(
-              `No authenticator with name \`${authenticatorName}\` ` +
-                'was found. Be sure you have defined it in the authenticators ' +
-                'config.'
-            )
-          }
+          invariant(
+            authenticator,
+            `No authenticator with name \`${authenticatorName}\` ` +
+              'was found. Be sure you have defined it in the authenticators ' +
+              'config.'
+          )
 
           return authenticator
             .invalidate(getSessionData(state))
