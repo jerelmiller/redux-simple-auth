@@ -9,7 +9,7 @@
     "test": "jest",
     "test:watch": "yarn test -- --watch",
     "build:commonjs": "BABEL_ENV=commonjs babel src --out-dir lib",
-    "build:commonjs:watch": "yarn run build:commonjs -- --watch",
+    "build:commonjs:watch": "yarn run build:commonjs --watch",
     "build": "yarn run build:commonjs",
     "build:watch": "yarn run build:commonjs:watch",
     "prepublish": "yarn run clean && yarn run lint && yarn run test && yarn run build"
