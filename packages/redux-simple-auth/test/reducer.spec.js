@@ -4,6 +4,7 @@ import {
   authenticateFailed,
   initialize,
   invalidateSession,
+  reset,
   restore,
   restoreFailed,
   updateSession
@@ -90,6 +91,29 @@ describe('session reducer', () => {
     }
 
     const state = reducer(currentState, authenticateFailed('It failed'))
+
+    expect(state).toEqual(expected)
+  })
+
+  it('handles RESET', () => {
+    const currentState = {
+      authenticator: null,
+      hasFailedAuth: true,
+      isAuthenticated: false,
+      isRestored: true,
+      lastError: 'Wrong email or password',
+      data: {}
+    }
+    const expected = {
+      authenticator: null,
+      hasFailedAuth: false,
+      isAuthenticated: false,
+      isRestored: true,
+      lastError: null,
+      data: {}
+    }
+
+    const state = reducer(currentState, reset())
 
     expect(state).toEqual(expected)
   })

@@ -3,6 +3,7 @@ import {
   AUTHENTICATE_SUCCEEDED,
   INITIALIZE,
   INVALIDATE_SESSION,
+  RESET,
   RESTORE,
   RESTORE_FAILED,
   UPDATE_SESSION
@@ -45,6 +46,12 @@ const reducer = (state = initialState, action) => {
         isRestored: true,
         lastError: action.payload,
         data: {}
+      }
+    case RESET:
+      return {
+        ...state,
+        hasFailedAuth: false,
+        lastError: null
       }
     case INVALIDATE_SESSION:
     case RESTORE_FAILED:
