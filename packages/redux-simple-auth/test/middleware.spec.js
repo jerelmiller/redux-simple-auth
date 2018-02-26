@@ -96,23 +96,16 @@ it('persists changed authenticated data to storage', () => {
 })
 
 it('hydrates session data from storage', async () => {
+  const restore = jest.fn(() => Promise.resolve())
+  const authenticator = createAuthenticator({ name: 'test', restore })
   const storage = createMockStorage({
     authenticated: { authenticator: 'test', token: 1234 }
   })
-  const middleware = createAuthMiddleware({
-    storage,
-    authenticator: testAuthenticator
-  })
-  const store = await createStore({ middleware })
+  const middleware = createAuthMiddleware({ storage, authenticator })
 
-  expect(store.getState()).toEqual(
-    sessionState({
-      authenticator: 'test',
-      isAuthenticated: true,
-      isRestored: true,
-      data: { token: 1234 }
-    })
-  )
+  createStore({ middleware })
+
+  expect(restore).toHaveBeenCalledWith({ token: 1234 })
 })
 
 describe('AUTHENTICATE dispatched', () => {
