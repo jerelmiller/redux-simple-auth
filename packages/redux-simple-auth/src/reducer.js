@@ -6,6 +6,7 @@ import {
   CLEAR_ERROR,
   RESTORE,
   RESTORE_FAILED,
+  SYNC_TAB,
   UPDATE_SESSION
 } from './actionTypes'
 
@@ -80,6 +81,19 @@ const reducer = (state = initialState, action) => {
         ...state,
         data: action.payload
       }
+    case SYNC_TAB: {
+      const {
+        isAuthenticated,
+        authenticated: { authenticator, ...data }
+      } = action.payload
+
+      return {
+        ...state,
+        isAuthenticated,
+        authenticator,
+        data
+      }
+    }
     default:
       return state
   }

@@ -11,3 +11,4 @@ export const UPDATE_SESSION = `${prefix}/UPDATE_SESSION`
 export const CLEAR_ERROR = `${prefix}/CLEAR_ERROR`
 export const RESTORE = `${prefix}/RESTORE`
 export const RESTORE_FAILED = `${prefix}/RESTORE_FAILED`
+export const SYNC_TAB = `${prefix}/SYNC_TAB`
