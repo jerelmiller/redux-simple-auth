@@ -761,6 +761,17 @@ store.dispatch(
 // etc
 ```
 
+### `clearError()`
+
+Clears the last error and resets failed auth state. Useful if a user has failed
+authentication but has navigated away from the form.
+
+```javascript
+import { clearError } from 'redux-simple-auth'
+
+store.dispatch(clearError())
+```
+
 ### `invalidateSession()`
 
 Invalidate the session. This will clear the authenticated session data and
@@ -889,6 +900,7 @@ The following actions are available action types
 * `AUTHENTICATE`
 * `AUTHENTICATE_FAILED`
 * `AUTHENTICATE_SUCCEEDED`
+* `CLEAR_ERROR`
 * `FETCH`
 * `INVALIDATE_SESSION`
 * `INVALIDATE_SESSION_FAILED`
