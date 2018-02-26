@@ -9,7 +9,8 @@ import {
   UPDATE_SESSION,
   CLEAR_ERROR,
   RESTORE,
-  RESTORE_FAILED
+  RESTORE_FAILED,
+  SYNC_TAB
 } from './actionTypes'
 
 export const authenticate = (authenticator, payload) => ({
@@ -62,5 +63,10 @@ export const restoreFailed = () => ({
 
 export const initialize = payload => ({
   type: INITIALIZE,
+  payload
+})
+
+export const syncTab = payload => ({
+  type: SYNC_TAB,
   payload
 })
