@@ -929,7 +929,7 @@ The following actions are available action types
 - [ ] Typescript/Flow support
 - [ ] Create example applications
 - [ ] Solutions for server-side rendering
-- [ ] Sync state across tabs
+- [x] Sync state across tabs
 
 ## License
 
