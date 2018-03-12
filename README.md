@@ -181,6 +181,10 @@ const authMiddleware = createAuthMiddleware({
 * `refresh` (_function_): A function used to refresh the session data after each
   request.
 
+* `syncTabs` (_boolean_): Determines whether session state should be synced
+  across tabs or not.
+  * _Default_: `false`
+
 ## Authenticators
 
 Authenticators implement the business logic responsible for authenticating the
