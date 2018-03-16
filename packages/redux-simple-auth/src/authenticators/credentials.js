@@ -37,15 +37,15 @@ export default ({
           ...headers
         },
         body: transformRequest(credentials)
-      }).then(async response => {
-        const json = await response.json()
+      }).then(response =>
+        response.json().then(json => {
+          if (!response.ok) {
+            return Promise.reject(json)
+          }
 
-        if (!response.ok) {
-          return Promise.reject(json)
-        }
-
-        return transformResponse(json)
-      }),
+          return transformResponse(json)
+        })
+      ),
     restore,
     invalidate
   })
