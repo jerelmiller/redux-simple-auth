@@ -8,10 +8,8 @@
     "lint": "eslint src test",
     "test": "jest",
     "test:watch": "yarn test -- --watch",
-    "build:commonjs": "rollup -c",
-    "build:commonjs:watch": "yarn run build:commonjs --watch",
-    "build": "yarn run build:commonjs",
-    "build:watch": "yarn run build:commonjs:watch",
+    "build": "rollup -c",
+    "build:watch": "yarn run build --watch",
     "prepublish": "yarn run clean && yarn run lint && yarn run test && yarn run build"
   },
   "files": [
