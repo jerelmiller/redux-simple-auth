@@ -8,7 +8,7 @@
     "lint": "eslint src test",
     "test": "jest",
     "test:watch": "yarn test -- --watch",
-    "build:commonjs": "BABEL_ENV=commonjs babel src --out-dir lib",
+    "build:commonjs": "rollup -c",
     "build:commonjs:watch": "yarn run build:commonjs --watch",
     "build": "yarn run build:commonjs",
     "build:watch": "yarn run build:commonjs:watch",
