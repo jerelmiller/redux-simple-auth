@@ -1,4 +1,7 @@
 {
-  "presets": ["@babel/env"],
-  "plugins": ["@babel/proposal-object-rest-spread"]
+  "presets": [["@babel/env", { "modules": false }]],
+  "plugins": [
+    "@babel/plugin-external-helpers",
+    "@babel/proposal-object-rest-spread"
+  ]
 }
