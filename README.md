@@ -3,7 +3,17 @@
 [![npm version](https://img.shields.io/npm/v/redux-simple-auth.svg?style=flat-square)](https://www.npmjs.com/package/redux-simple-auth)
 [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lernajs.io/)
 
+⚠️ **A note from the author** ⚠️
+
+When I first started this project, I had ambitions that I would be able to
+eventually turn this into something the larger audience could use. While I am
+proud at some of the work done here, I just have too much else to focus on. Feel
+free to use this library, fork it, build on it, etc. While I may occasionally
+contribute to this library, I am unlikely to maintain it on a regular cadence. I
+want to thank everyone that has used this library.
+
 # Redux Simple Auth
+
 
 Redux Simple Auth is a library for implementing authentication and authorization
 within redux applications. Inspired by the wonderful [Ember Simple
